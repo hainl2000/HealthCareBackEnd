@@ -4,9 +4,26 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class ApiController extends Controller
 {
+
+    public function apiBeginTransaction()
+    {
+        return DB::beginTransaction();
+    }
+
+    public function apiCommit()
+    {
+        return DB::commit();
+    }
+
+    public function apiRollback()
+    {
+        return DB::rollback();
+    }
+
     /**
      * Return generic json response with the given data.
      *
@@ -15,6 +32,7 @@ class ApiController extends Controller
      * @param array $headers
      * @return JsonResponse
      */
+
     protected function respond($data, int $statusCode = 200, array $headers = []): JsonResponse
     {
         $newData = [
