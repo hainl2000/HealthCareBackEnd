@@ -154,9 +154,7 @@ class ApiController extends Controller
     protected function respondFailedLogin(): JsonResponse
     {
         return $this->respond([
-            'errors' => [
-                'email or password' => 'is invalid',
-            ]
+            'errors' => 'email or password is invalid'
         ], 422);
     }
 
