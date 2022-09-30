@@ -24,7 +24,7 @@ use App\Http\Controllers\VerifyController;
 Route::prefix('/user')->group(function() {
     Route::post('/login', [LoginController::class, 'login']);
     Route::post('/signup', [SignupController::class, 'register']);
-    Route::get('/signup/verify/{id}/{hash}', [VerifyController::class,'verifyAccount'])->middleware('auth:sanctum');
+    Route::get('/signup/verify/{id}/{hash}', [VerifyController::class,'verifyAccount'])->middleware('auth:sanctum','type.doctor');
 });
 
 

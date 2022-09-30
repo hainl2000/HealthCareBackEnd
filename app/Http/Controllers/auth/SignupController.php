@@ -45,7 +45,7 @@ class SignupController extends ApiController
             }
             $respData = [
                 "message" => 'Create new user successfully',
-                'token' => $user->createToken("API TOKEN")->plainTextToken
+                'token' => $user->createToken("API_TOKEN",['role:user'])->plainTextToken
             ];
             $resp = $this->respondCreated($respData);
         }  catch (SendMailFailException $e) {

@@ -3,15 +3,11 @@
 namespace App\Http\Controllers\auth;
 
 use App\Http\Controllers\ApiController;
-use App\Http\Controllers\Controller;
 use App\Http\Requests\LoginRequest;
 use App\Models\User;
 use Illuminate\Auth\Access\AuthorizationException;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-use MongoDB\Driver\Exception\Exception;
-use function PHPUnit\Framework\throwException;
 
 class LoginController extends ApiController
 {
@@ -31,11 +27,12 @@ class LoginController extends ApiController
                 throw new AuthorizationException();
             }
 
+            //login in 1 device at the same time
             $user->tokens()->delete();
 
             $respData = [
                 "message" => 'Login successfully',
-                'token' => $user->createToken("API TOKEN")->plainTextToken
+                'token' => $user->createToken("API_TOKEN",['role:user'])->plainTextToken
             ];
             $resp = $this->respondSuccess($respData);
         } catch (AuthorizationException $e) {
