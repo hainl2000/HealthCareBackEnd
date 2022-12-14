@@ -1,6 +1,8 @@
 <?php
 
-use Illuminate\Http\Request;
+use App\Http\Controllers\auth\LoginController;
+use App\Http\Controllers\auth\SignupController;
+use App\Http\Controllers\auth\VerifyController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -14,6 +16,11 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
+Route::prefix('/user')->group(function() {
+    Route::post('/login', [LoginController::class, 'login']);
+    Route::post('/signup', [SignupController::class, 'register']);
+//    Route::get('/signup/verify/{id}/{hash}', [VerifyController::class,'verifyAccount'])->middleware('auth:sanctum','type.user');
+    Route::get('/signup/verify/{hash}', [VerifyController::class,'verifyAccount']);
 });
+
+
