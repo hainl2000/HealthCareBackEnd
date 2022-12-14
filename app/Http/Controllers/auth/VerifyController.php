@@ -1,19 +1,16 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\auth;
 
+use App\Http\Controllers\ApiController;
 use App\Models\User;
 use Carbon\Carbon;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Crypt;
 
 class VerifyController extends ApiController
 {
-    public function verifyAccount($id,$hash)
+    public function verifyAccount($hash)
     {
-        $user_id = Crypt::decryptString($id);
         $user = User::where([
-            ['id' , '=' , $user_id],
             ['email_verify_token', '=' , $hash]
         ])->first();
         if ($user) {

@@ -6,6 +6,7 @@ use App\Http\Controllers\ApiController;
 use App\Http\Requests\LoginRequest;
 use App\Models\User;
 use Illuminate\Auth\Access\AuthorizationException;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 
@@ -30,9 +31,16 @@ class LoginController extends ApiController
             //login in 1 device at the same time
             $user->tokens()->delete();
 
+            $userData = [];
+            $userData['id'] = $user->id;
+            $userData['name'] = $user->name;
+            $userData['email'] = $user->email;
+            $userData['birthday'] = $user->birthday;
+            $userData['gender'] = $user->gender;
             $respData = [
                 "message" => 'Login successfully',
-                'token' => $user->createToken("API_TOKEN",['role:user'])->plainTextToken
+                'token' => $user->createToken("API_TOKEN",['role:user'])->plainTextToken,
+                'user' => $userData
             ];
             $resp = $this->respondSuccess($respData);
         } catch (AuthorizationException $e) {
