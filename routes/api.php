@@ -3,6 +3,7 @@
 use App\Http\Controllers\auth\LoginController;
 use App\Http\Controllers\auth\SignupController;
 use App\Http\Controllers\auth\VerifyController;
+use App\Http\Controllers\specialization\SpecializationController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -21,6 +22,10 @@ Route::prefix('/user')->group(function() {
     Route::post('/signup', [SignupController::class, 'register']);
 //    Route::get('/signup/verify/{id}/{hash}', [VerifyController::class,'verifyAccount'])->middleware('auth:sanctum','type.user');
     Route::get('/signup/verify/{hash}', [VerifyController::class,'verifyAccount']);
+});
+
+Route::prefix('/specialization')->group(function () {
+    Route::get('/list',[SpecializationController::class,'getListSpecializations']);
 });
 
 

@@ -37,7 +37,7 @@ class ApiController extends Controller
     {
         $newData = [
             'status' => 'success',
-            'response' => $data
+            'data' => $data
         ];
 
         return response()->json($newData, $statusCode, $headers);
@@ -63,7 +63,7 @@ class ApiController extends Controller
      */
     protected function respondSuccessWithoutData(string $message): JsonResponse
     {
-        return $this->respond(['status' => 'Success', 'message' => $message]);
+        return $this->respond(['status' => 200, 'message' => $message]);
     }
 
     /**
