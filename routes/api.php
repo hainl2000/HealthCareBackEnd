@@ -25,7 +25,8 @@ Route::prefix('/user')->group(function() {
 });
 
 Route::prefix('/specialization')->group(function () {
-    Route::get('/list',[SpecializationController::class,'getListSpecializations']);
+    Route::get('/detail/{slug}', [SpecializationController::class, 'getSpecializationDetail']);
+    Route::get('/list', [SpecializationController::class, 'getListSpecializations']);
 });
 
 

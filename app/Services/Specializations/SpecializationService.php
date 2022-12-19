@@ -20,4 +20,13 @@ class SpecializationService implements SpecializationInterface
         }
         return $listSpecialization;
     }
+
+    public function getSpecializationDetail($slug)
+    {
+        $specializationDetail = Specialization::select('id','name','description','image','slug')
+                                    ->where('slug', $slug)
+                                    ->first();
+        $specializationDetail->description = htmlspecialchars_decode($specializationDetail->description);
+        return $specializationDetail;
+    }
 }
