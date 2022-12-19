@@ -28,6 +28,10 @@ class LoginController extends ApiController
                 throw new AuthorizationException();
             }
 
+            if (!$user->email_verified) {
+                throw new \Exception("Need to verify email", 403);
+            }
+
             //login in 1 device at the same time
             $user->tokens()->delete();
 
