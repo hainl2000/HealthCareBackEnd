@@ -2,11 +2,14 @@
 
 namespace App\Providers;
 
-use App\Services\Specializations\SpecializationInterface;
+use Illuminate\Support\ServiceProvider;
+
 use App\Services\Specializations\SpecializationService;
+use App\Services\Specializations\SpecializationInterface;
 use App\Services\Users\UserService;
 use App\Services\Users\UserServiceInterface;
-use Illuminate\Support\ServiceProvider;
+use App\Services\Doctors\DoctorService;
+use App\Services\Doctors\DoctorServiceInterface;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -19,6 +22,7 @@ class AppServiceProvider extends ServiceProvider
     {
         $this->app->bind(UserServiceInterface::class, UserService::class);
         $this->app->bind(SpecializationInterface::class, SpecializationService::class);
+        $this->app->bind(DoctorServiceInterface::class, DoctorService::class);
     }
 
     /**

@@ -7,7 +7,7 @@ use App\Http\Controllers\ApiController;
 use App\Http\Requests\SignupRequest;
 use App\Jobs\SendVerifyAccountEmail;
 use App\Services\Users\UserServiceInterface;
-use Illuminate\Support\Facades\Crypt;
+use Illuminate\Http\Request;
 
 class SignupController extends ApiController
 {
@@ -43,6 +43,18 @@ class SignupController extends ApiController
         }  catch (SendMailFailException $e) {
             $this->apiRollback();
             $resp = $this->respondError($e->getMessage(),$e->getCode());
+        } catch (\Exception $e) {
+            $this->apiRollback();
+            $resp = $this->respondError($e->getMessage(),400);
+        }
+        return $resp;
+    }
+
+    public function registerDoctor(Request $request)
+    {
+        try {
+            $this->apiBeginTransaction();
+            $registerData = $request->all();
         } catch (\Exception $e) {
             $this->apiRollback();
             $resp = $this->respondError($e->getMessage(),400);
