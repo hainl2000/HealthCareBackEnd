@@ -2,7 +2,7 @@
 
 namespace App\Services\Specializations;
 
-interface SpecializationInterface
+interface SpecializationServiceInterface
 {
     public function getListSpecializations($isIncludeDetail = null);
     public function getSpecializationDetail($slug);

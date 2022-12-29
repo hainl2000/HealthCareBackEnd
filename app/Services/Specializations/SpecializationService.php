@@ -4,7 +4,7 @@ namespace App\Services\Specializations;
 
 use App\Models\Specialization;
 
-class SpecializationService implements SpecializationInterface
+class SpecializationService implements SpecializationServiceInterface
 {
     public function __construct()
     {

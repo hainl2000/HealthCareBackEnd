@@ -3,14 +3,14 @@
 namespace App\Http\Controllers\specialization;
 
 use App\Http\Controllers\ApiController;
-use App\Services\Specializations\SpecializationInterface;
+use App\Services\Specializations\SpecializationServiceInterface;
 use Illuminate\Http\Request;
 
 class SpecializationController extends ApiController
 {
     private $specializationService;
 
-    public function __construct(SpecializationInterface $specializationService)
+    public function __construct(SpecializationServiceInterface $specializationService)
     {
         $this->specializationService = $specializationService;
     }
