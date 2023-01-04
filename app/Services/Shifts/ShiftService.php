@@ -4,7 +4,7 @@ namespace App\Services\Shifts;
 
 use App\Models\Shift;
 
-class ShiftService implements ShiftInterface
+class ShiftService implements ShiftServiceInterface
 {
     public function getAllShifts()
     {

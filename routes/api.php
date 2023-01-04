@@ -4,6 +4,7 @@ use App\Http\Controllers\auth\LoginController;
 use App\Http\Controllers\auth\SignupController;
 use App\Http\Controllers\auth\VerifyController;
 use App\Http\Controllers\specialization\SpecializationController;
+use App\Http\Controllers\shift\ShiftController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -27,6 +28,10 @@ Route::prefix('/user')->group(function() {
 Route::prefix('/specialization')->group(function () {
     Route::get('/detail/{slug}', [SpecializationController::class, 'getSpecializationDetail']);
     Route::get('/list', [SpecializationController::class, 'getListSpecializations']);
+});
+
+Route::prefix('/shift')->group(function () {
+    Route::get('/list', [ShiftController::class, 'getAllShifts']);
 });
 
 
