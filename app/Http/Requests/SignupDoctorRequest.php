@@ -2,7 +2,7 @@
 
 namespace App\Http\Requests;
 
-class SignupRequest extends ApiRequest
+class SignupDoctorRequest extends ApiRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -23,10 +23,11 @@ class SignupRequest extends ApiRequest
     {
         return [
             'name' => 'required',
-            'email' => 'required|unique:users|email',
+            'email' => 'required|unique:doctors|email',
             'password' => 'required|min:6',
             'gender' => 'required',
-            'type' => 'required'
+            'type' => 'required|in:0,1',
+            'specialization_id' => 'required'
         ];
     }
 }

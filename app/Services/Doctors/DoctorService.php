@@ -1,22 +1,59 @@
 <?php
 namespace App\Services\Doctors;
 
+use App\Models\Doctor;
+use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Hash;
+
 class DoctorService implements DoctorServiceInterface
 {
+    const NO_PATIENT_STATUS = 1;
     public function __construct()
     {
 
     }
 
-    public function register($registerData)
+    public function signup($signupDoctorData)
     {
-
+        $doctor = Doctor::create([
+            'name' => Arr::get($signupDoctorData, 'name'),
+            'email' => Arr::get($signupDoctorData, 'email'),
+            'password' => Hash::make(Arr::get($signupDoctorData, 'password')),
+            'gender' => Arr::get($signupDoctorData, 'gender'),
+            'type' => Arr::get($signupDoctorData, 'type'),
+            'specialization_id' => Arr::get($signupDoctorData, 'specialization_id'),
+            'created_by' => 1,
+        ]);
+        return $doctor;
     }
 
     public function login($loginData)
     {
 
     }
+
+    public function registerShift($choseData)
+    {
+        try {
+            $doctor = Doctor::find(2);
+            $shiftId = Arr::get($choseData, "shiftId");
+            $date = Arr::get($choseData, "date");
+            $doctor->shifts()->attach($shiftId, [
+                "status" => self::NO_PATIENT_STATUS,
+                "date" => $date
+            ]);
+            return true;
+        } catch (\Exception $e) {
+            return false;
+        }
+    }
+
+    public function getRegisteredShifts()
+    {
+        $doctor = Doctor::find(2);
+        return $doctor->shifts;
+    }
+
 
 }
 

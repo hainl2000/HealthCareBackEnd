@@ -12,6 +12,8 @@ use App\Services\Doctors\DoctorService;
 use App\Services\Doctors\DoctorServiceInterface;
 use App\Services\Shifts\ShiftService;
 use App\Services\Shifts\ShiftServiceInterface;
+use App\Services\Mail\MailService;
+use App\Services\Mail\MailServiceInterface;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -26,6 +28,7 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(SpecializationServiceInterface::class, SpecializationService::class);
         $this->app->bind(DoctorServiceInterface::class, DoctorService::class);
         $this->app->bind(ShiftServiceInterface::class, ShiftService::class);
+        $this->app->bind(MailServiceInterface::class, MailService::class);
     }
 
     /**

@@ -3,6 +3,7 @@
 use App\Http\Controllers\auth\LoginController;
 use App\Http\Controllers\auth\SignupController;
 use App\Http\Controllers\auth\VerifyController;
+use App\Http\Controllers\doctor\DoctorController;
 use App\Http\Controllers\specialization\SpecializationController;
 use App\Http\Controllers\shift\ShiftController;
 use Illuminate\Support\Facades\Route;
@@ -32,6 +33,17 @@ Route::prefix('/specialization')->group(function () {
 
 Route::prefix('/shift')->group(function () {
     Route::get('/list', [ShiftController::class, 'getAllShifts']);
+});
+
+Route::prefix('/doctor')->group(function () {
+    Route::prefix('/shift')->group(function () {
+        Route::post('/register', [DoctorController::class, 'registerShift']);
+        Route::get('/list', [DoctorController::class, 'getRegisteredShifts']);
+    });
+});
+
+Route::prefix('/admin')->group(function() {
+    Route::post('/doctor/signup', [SignupController::class, 'signupDoctor']);
 });
 
 

@@ -3,6 +3,8 @@ namespace App\Services\Doctors;
 
 interface DoctorServiceInterface
 {
-    public function register($registerData);
-    public function login($loginData);
+    public function signup($signupDoctorData);
+    public function login($loginDoctorData);
+    public function registerShift($choseData);
+    public function getRegisteredShifts();
 }
