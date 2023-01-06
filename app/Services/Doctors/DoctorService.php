@@ -48,10 +48,15 @@ class DoctorService implements DoctorServiceInterface
         }
     }
 
-    public function getRegisteredShifts()
+    public function getRegisteredShifts($startDate, $endDate)
     {
-        $doctor = Doctor::find(2);
-        return $doctor->shifts;
+        $doctorId = 2;
+        $doctor = Doctor::find($doctorId);
+        $registeredShifts = $doctor->shifts()
+            ->where('date', '>=', $startDate)
+            ->where('date', '<=', $endDate)
+            ->get();
+        return $registeredShifts;
     }
 
 

@@ -42,7 +42,9 @@ class DoctorController extends ApiController
 
     public function getRegisteredShifts(Request $request)
     {
-        $registeredShifts = $this->doctorService->getRegisteredShifts();
+        $startDate = $request->input('startDate');
+        $endDate = $request->input('endDate');
+        $registeredShifts = $this->doctorService->getRegisteredShifts($startDate, $endDate);
         return $this->respondSuccess($registeredShifts);
     }
 }
