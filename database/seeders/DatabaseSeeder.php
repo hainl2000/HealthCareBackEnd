@@ -21,6 +21,7 @@ class DatabaseSeeder extends Seeder
         //     'name' => 'Test User',
         //     'email' => 'test@example.com',
         // ]);
+
 //        DB::table('specializations')->insert([
 //            [
 //                'name'=>'Vật lý trị liệu',
@@ -36,7 +37,8 @@ class DatabaseSeeder extends Seeder
 //                'image' => "https://cdn.bookingcare.vn/fo/2020/12/20/111237-tam-ly-2.jpg",
 //                'slug' => 'tamly',
 //                'created_at' => Carbon::now(),
-//                'updated_at' => Carbon::now()],
+//                'updated_at' => Carbon::now()
+//            ],
 //            [
 //                'name'=>'Sức khỏe tâm thần',
 //                'description' => htmlspecialchars('<p class="MsoNormal" style="color: rgb(51, 51, 51); font-family: Montserrat, sans-serif;"><span style="font-family: Arial, sans-serif;"><b>Tư vấn, khám chữa bệnh từ xa</b></span></p><p class="MsoNormal" style="color: rgb(51, 51, 51); font-family: Montserrat, sans-serif;"><span style="font-family: Arial, sans-serif;">Để đáp ứng nhu cầu chăm sóc sức khỏe Hậu COVID-19, BookingCare triển khai dịch vụ tư vấn khám chữa bệnh từ xa thông qua cuộc gọi Video.</span><br></p><p class="MsoNormal" style="color: rgb(51, 51, 51); font-family: Montserrat, sans-serif;"><b><span style="font-family: Arial, sans-serif;">Bác sĩ chuyên khoa Sức khỏe tâm thần từ xa</span></b></p><ul type="disc" style="color: rgb(51, 51, 51); font-family: Montserrat, sans-serif;"><li class="MsoNormal" style="line-height: normal;"><span style="font-size: 10.5pt; font-family: Arial, sans-serif;">Chăm sóc sức khỏe ban đầu</span><span style="font-size: 10.5pt; font-family: Helvetica, sans-serif;"><o:p></o:p></span></li><li class="MsoNormal" style="line-height: normal;"><span style="font-size: 10.5pt; font-family: Arial, sans-serif;">Chẩn đoán định hướng bệnh</span><span style="font-size: 10.5pt; font-family: Helvetica, sans-serif;"><o:p></o:p></span></li><li class="MsoNormal" style="line-height: normal;"><span style="font-size: 10.5pt; font-family: Arial, sans-serif;">Định hướng phương pháp điều trị</span><span style="font-size: 10.5pt; font-family: Helvetica, sans-serif;"><o:p></o:p></span></li><li class="MsoNormal" style="line-height: normal;"><span style="font-size: 10.5pt; font-family: Arial, sans-serif;">Tư vấn sử dụng thuốc</span><span style="font-size: 10.5pt; font-family: Helvetica, sans-serif;"><o:p></o:p></span></li><li class="MsoNormal" style="line-height: normal;"><span style="font-size: 10.5pt; font-family: Arial, sans-serif;">Tư vấn xét nghiệm, chụp chiếu</span><span style="font-size: 10.5pt; font-family: Helvetica, sans-serif;"><o:p></o:p></span></li><li class="MsoNormal" style="line-height: normal;"><span style="font-size: 10.5pt; font-family: Arial, sans-serif;">Người gặp các bệnh mãn tính</span><span style="font-size: 10.5pt; font-family: Helvetica, sans-serif;"><o:p></o:p></span></li><li class="MsoNormal" style="line-height: normal;"><span style="font-size: 10.5pt; font-family: Arial, sans-serif;">Bệnh nhân cũ cần tái khám với bác sĩ từ xa</span><span style="font-size: 10.5pt; font-family: Helvetica, sans-serif;"><o:p></o:p></span></li></ul><p class="MsoNormal" style="color: rgb(51, 51, 51); font-family: Montserrat, sans-serif;"><b><span style="font-family: Arial, sans-serif;">Các bệnh chuyên khoa Tâm thần (Tâm bệnh)</span></b></p><ul><li><font color="#333333" face="Arial, sans-serif">Rối loạn lo âu, hoa mắt chóng mặt</font></li><li><font color="#333333" face="Arial, sans-serif">Rối loạn tiền đình;&nbsp;</font>Rối loạn thần kinh thực vật</li><li><font color="#333333" face="Arial, sans-serif">Trầm cảm</font></li><li><font color="#333333" face="Arial, sans-serif">Mất ngủ, khó ngủ, khó duy trì giấc ngủ, dậy quá sớm, ngủ dậy vẫn thấy mệt, tỉnh dậy nhiều lần trong giấc ngủ.</font></li><li><font color="#333333" face="Arial, sans-serif">Đau đầu, đau lưng, đau mỏi vai gáy, mệt mỏi mạn tính, mất ngủ, bồn chồn, dễ cáu kỉnh, tự đánh giá thấp bản thân</font></li><li><span style="color: rgb(51, 51, 51); font-family: Arial, sans-serif;">Căng thẳng tâm lý, suy nghĩ tiêu cực, bi quan và tuyệt vọng kéo dài.</span><br></li><li><font color="#333333" face="Arial, sans-serif">Rối loạn lưỡng cực cảm xúc</font></li><li><font color="#333333" face="Arial, sans-serif">Tâm thần phân liệt, có thể kích động, khả năng học tập lao động giảm dần, ngày càng thờ ơ, vô cảm.</font></li><li><span style="color: rgb(51, 51, 51); font-family: Arial, sans-serif;">Rối loạn tăng động giảm chú ý (ADHD)</span><br></li><li><font color="#333333" face="Arial, sans-serif">Nghiện game,&nbsp;</font><font color="#333333" face="Arial, sans-serif">Nghiện rượu, thuốc lá,&nbsp;</font>Nghiện ma túy tổng hợp...</li></ul><p class="MsoNormal" style="color: rgb(51, 51, 51); font-family: Montserrat, sans-serif;"><b><span style="font-family: Arial, sans-serif;">Lợi ích khám tư vấn từ xa</span></b></p><p style="color: rgb(51, 51, 51); font-family: Montserrat, sans-serif;"></p><ul type="disc" style="margin-top: 0in; color: rgb(51, 51, 51); font-family: Montserrat, sans-serif;"><li class="MsoNormal"><span style="font-family: Arial, sans-serif;">Qui trình, thao tác đơn giản, nhanh gọn<o:p></o:p></span></li><li class="MsoNormal"><span style="font-family: Arial, sans-serif;">Đội ngũ bác sĩ chuyên khoa giàu kinh nghiệm và trách nhiệm cao<o:p></o:p></span></li><li class="MsoNormal"><span style="font-family: Arial, sans-serif;">Khám, tư vấn và điều trị hiệu quả chuyên sâu<o:p></o:p></span></li><li class="MsoNormal"><span style="font-family: Arial, sans-serif;">Kết nối mạng lưới nhiều bệnh viện, phòng khám chuyên khoa sâu, rộng<o:p></o:p></span></li><li class="MsoNormal"><span style="font-family: Arial, sans-serif;">Tiện lợi, nhanh chóng, bệnh nhân tại nhà gặp bác sĩ từ xa.<o:p></o:p></span></li><li class="MsoNormal"><span style="font-family: Arial, sans-serif;">An toàn mùa Covid-19 cho bệnh nhân và gia đình<o:p></o:p></span></li><li class="MsoNormal"><span style="font-family: Arial, sans-serif;">Tiết kiệm chi phí, giảm tàu xe, ăn ở, thời gian chờ đợi.</span></li></ul>'),
@@ -46,138 +48,149 @@ class DatabaseSeeder extends Seeder
 //                'updated_at' => Carbon::now()
 //            ],
 //        ]);
-        DB::table('shifts')->insert([
+
+//        DB::table('shifts')->insert([
+//            [
+//                'start_time' => '08:00:00',
+//                'end_time' => '08:25:00',
+//                'created_at' => Carbon::now(),
+//                'updated_at' => Carbon::now()
+//            ],
+//            [
+//                'start_time' => '08:30:00',
+//                'end_time' => '08:55:00',
+//                'created_at' => Carbon::now(),
+//                'updated_at' => Carbon::now()
+//            ],
+//            [
+//                'start_time' => '09:00:00',
+//                'end_time' => '09:25:00',
+//                'created_at' => Carbon::now(),
+//                'updated_at' => Carbon::now()
+//            ],
+//            [
+//                'start_time' => '09:30:00',
+//                'end_time' => '09:55:00',
+//                'created_at' => Carbon::now(),
+//                'updated_at' => Carbon::now()
+//            ],
+//            [
+//                'start_time' => '10:00:00',
+//                'end_time' => '10:25:00',
+//                'created_at' => Carbon::now(),
+//                'updated_at' => Carbon::now()
+//            ],
+//            [
+//                'start_time' => '10:30:00',
+//                'end_time' => '10:55:00',
+//                'created_at' => Carbon::now(),
+//                'updated_at' => Carbon::now()
+//            ],
+//            [
+//                'start_time' => '11:00:00',
+//                'end_time' => '11:25:00',
+//                'created_at' => Carbon::now(),
+//                'updated_at' => Carbon::now()
+//            ],
+//            [
+//                'start_time' => '11:30:00',
+//                'end_time' => '11:55:00',
+//                'created_at' => Carbon::now(),
+//                'updated_at' => Carbon::now()
+//            ],
+//            [
+//                'start_time' => '13:00:00',
+//                'end_time' => '13:25:00',
+//                'created_at' => Carbon::now(),
+//                'updated_at' => Carbon::now()
+//            ],
+//            [
+//                'start_time' => '13:30:00',
+//                'end_time' => '13:55:00',
+//                'created_at' => Carbon::now(),
+//                'updated_at' => Carbon::now()
+//            ],
+//            [
+//                'start_time' => '14:00:00',
+//                'end_time' => '14:25:00',
+//                'created_at' => Carbon::now(),
+//                'updated_at' => Carbon::now()
+//            ],
+//            [
+//                'start_time' => '14:30:00',
+//                'end_time' => '14:55:00',
+//                'created_at' => Carbon::now(),
+//                'updated_at' => Carbon::now()
+//            ],
+//            [
+//                'start_time' => '15:00:00',
+//                'end_time' => '15:25:00',
+//                'created_at' => Carbon::now(),
+//                'updated_at' => Carbon::now()
+//            ],
+//            [
+//                'start_time' => '15:30:00',
+//                'end_time' => '15:55:00',
+//                'created_at' => Carbon::now(),
+//                'updated_at' => Carbon::now()
+//            ],
+//            [
+//                'start_time' => '16:00:00',
+//                'end_time' => '16:25:00',
+//                'created_at' => Carbon::now(),
+//                'updated_at' => Carbon::now()
+//            ],
+//            [
+//                'start_time' => '16:30:00',
+//                'end_time' => '16:55:00',
+//                'created_at' => Carbon::now(),
+//                'updated_at' => Carbon::now()
+//            ],            [
+//                'start_time' => '17:00:00',
+//                'end_time' => '17:25:00',
+//                'created_at' => Carbon::now(),
+//                'updated_at' => Carbon::now()
+//            ],
+//            [
+//                'start_time' => '17:30:00',
+//                'end_time' => '17:55:00',
+//                'created_at' => Carbon::now(),
+//                'updated_at' => Carbon::now()
+//            ],
+//            [
+//                'start_time' => '18:00:00',
+//                'end_time' => '18:25:00',
+//                'created_at' => Carbon::now(),
+//                'updated_at' => Carbon::now()
+//            ],
+//            [
+//                'start_time' => '18:30:00',
+//                'end_time' => '18:55:00',
+//                'created_at' => Carbon::now(),
+//                'updated_at' => Carbon::now()
+//            ],
+//            [
+//                'start_time' => '19:00:00',
+//                'end_time' => '19:25:00',
+//                'created_at' => Carbon::now(),
+//                'updated_at' => Carbon::now()
+//            ],
+//            [
+//                'start_time' => '19:30:00',
+//                'end_time' => '19:55:00',
+//                'created_at' => Carbon::now(),
+//                'updated_at' => Carbon::now()
+//            ],
+//        ]);
+
+        DB::table('doctor_information')->insert([
             [
-                'start_time' => '08:00:00',
-                'end_time' => '08:25:00',
+                'doctor_id' => 3,
+                'short_introduction' => htmlspecialchars('Bác sĩ đang công tác Khoa Thần kinh, Bệnh viện Quân y 103<br>Bác sĩ từng công tác tại Khoa Thần kinh Tâm thần, Khoa Nội Tiêu hóa và Bệnh máu, Bệnh viện Quân y 5<br>Bác sĩ nhận tư vấn bệnh nhân từ 12 tuổi trở lên'),
+                'introduction' => htmlspecialchars('<li><span lang="VI">Phó giáo sư, Tiến sĩ, Bác sĩ cao cấp chuyên khoa Da liễu</span></li><li><span lang="VI">Bác sĩ từng công tác tại Bệnh viện Da liễu Trung ương</span></li><li><span lang="VI">Nguyên Trưởng phòng chỉ đạo tuyến tại Bệnh viện Da liễu Trung ương</span></li><li><span lang="VI">Đạt chứng chỉ Diploma về Da liễu tại Viện da liễu Băng Cốc - Thái Lan</span></li>'),
                 'created_at' => Carbon::now(),
-                'updated_at' => Carbon::now()
-            ],
-            [
-                'start_time' => '08:30:00',
-                'end_time' => '08:55:00',
-                'created_at' => Carbon::now(),
-                'updated_at' => Carbon::now()
-            ],
-            [
-                'start_time' => '09:00:00',
-                'end_time' => '09:25:00',
-                'created_at' => Carbon::now(),
-                'updated_at' => Carbon::now()
-            ],
-            [
-                'start_time' => '09:30:00',
-                'end_time' => '09:55:00',
-                'created_at' => Carbon::now(),
-                'updated_at' => Carbon::now()
-            ],
-            [
-                'start_time' => '10:00:00',
-                'end_time' => '10:25:00',
-                'created_at' => Carbon::now(),
-                'updated_at' => Carbon::now()
-            ],
-            [
-                'start_time' => '10:30:00',
-                'end_time' => '10:55:00',
-                'created_at' => Carbon::now(),
-                'updated_at' => Carbon::now()
-            ],
-            [
-                'start_time' => '11:00:00',
-                'end_time' => '11:25:00',
-                'created_at' => Carbon::now(),
-                'updated_at' => Carbon::now()
-            ],
-            [
-                'start_time' => '11:30:00',
-                'end_time' => '11:55:00',
-                'created_at' => Carbon::now(),
-                'updated_at' => Carbon::now()
-            ],
-            [
-                'start_time' => '13:00:00',
-                'end_time' => '13:25:00',
-                'created_at' => Carbon::now(),
-                'updated_at' => Carbon::now()
-            ],
-            [
-                'start_time' => '13:30:00',
-                'end_time' => '13:55:00',
-                'created_at' => Carbon::now(),
-                'updated_at' => Carbon::now()
-            ],
-            [
-                'start_time' => '14:00:00',
-                'end_time' => '14:25:00',
-                'created_at' => Carbon::now(),
-                'updated_at' => Carbon::now()
-            ],
-            [
-                'start_time' => '14:30:00',
-                'end_time' => '14:55:00',
-                'created_at' => Carbon::now(),
-                'updated_at' => Carbon::now()
-            ],
-            [
-                'start_time' => '15:00:00',
-                'end_time' => '15:25:00',
-                'created_at' => Carbon::now(),
-                'updated_at' => Carbon::now()
-            ],
-            [
-                'start_time' => '15:30:00',
-                'end_time' => '15:55:00',
-                'created_at' => Carbon::now(),
-                'updated_at' => Carbon::now()
-            ],
-            [
-                'start_time' => '16:00:00',
-                'end_time' => '16:25:00',
-                'created_at' => Carbon::now(),
-                'updated_at' => Carbon::now()
-            ],
-            [
-                'start_time' => '16:30:00',
-                'end_time' => '16:55:00',
-                'created_at' => Carbon::now(),
-                'updated_at' => Carbon::now()
-            ],            [
-                'start_time' => '17:00:00',
-                'end_time' => '17:25:00',
-                'created_at' => Carbon::now(),
-                'updated_at' => Carbon::now()
-            ],
-            [
-                'start_time' => '17:30:00',
-                'end_time' => '17:55:00',
-                'created_at' => Carbon::now(),
-                'updated_at' => Carbon::now()
-            ],
-            [
-                'start_time' => '18:00:00',
-                'end_time' => '18:25:00',
-                'created_at' => Carbon::now(),
-                'updated_at' => Carbon::now()
-            ],
-            [
-                'start_time' => '18:30:00',
-                'end_time' => '18:55:00',
-                'created_at' => Carbon::now(),
-                'updated_at' => Carbon::now()
-            ],
-            [
-                'start_time' => '19:00:00',
-                'end_time' => '19:25:00',
-                'created_at' => Carbon::now(),
-                'updated_at' => Carbon::now()
-            ],
-            [
-                'start_time' => '19:30:00',
-                'end_time' => '19:55:00',
-                'created_at' => Carbon::now(),
-                'updated_at' => Carbon::now()
-            ],
+                'updated_at' => Carbon::now(),
+            ]
         ]);
     }
 }

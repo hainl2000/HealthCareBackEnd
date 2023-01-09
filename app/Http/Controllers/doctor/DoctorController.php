@@ -47,4 +47,10 @@ class DoctorController extends ApiController
         $registeredShifts = $this->doctorService->getRegisteredShifts($startDate, $endDate);
         return $this->respondSuccess($registeredShifts);
     }
+
+    public function getDoctorsBySpecialization($slug)
+    {
+        $doctors = $this->doctorService->getDoctorsBySpecialization($slug);
+        return $this->respondSuccess($doctors);
+    }
 }

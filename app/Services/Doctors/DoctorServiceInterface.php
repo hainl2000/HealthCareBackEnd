@@ -7,4 +7,5 @@ interface DoctorServiceInterface
     public function login($loginDoctorData);
     public function registerShift($choseData);
     public function getRegisteredShifts($startDate, $endDate);
+    public function getDoctorsBySpecialization($slug);
 }

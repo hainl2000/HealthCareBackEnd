@@ -11,6 +11,14 @@ class Shift extends Model
 
     protected $hidden = [
         'created_at',
-        'updated_at'
+        'updated_at',
     ];
+
+    public function toArray()
+    {
+        $attributes = $this->attributesToArray();
+        $attributes = array_merge($attributes, $this->relationsToArray());
+        unset($attributes['pivot']['updated_at']);
+        return $attributes;
+    }
 }

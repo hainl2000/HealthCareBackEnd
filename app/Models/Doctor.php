@@ -29,12 +29,25 @@ class Doctor extends Model
      * @var array<int, string>
      */
     protected $hidden = [
-        'password'
+        'password',
+        'created_at',
+        'updated_at',
+        'deleted_at'
     ];
 
     public function shifts()
     {
         return $this->belongsToMany(Shift::class, 'doctor_shift', 'doctor_id', 'shift_id')
             ->withPivot('date', 'status')->withTimestamps();
+    }
+
+    public function specializations()
+    {
+        return $this->belongsTo(Specialization::class, 'specialization_id', 'id');
+    }
+
+    public function doctor_information()
+    {
+        return $this->hasOne(DoctorInformation::class, 'doctor_id', 'id');
     }
 }

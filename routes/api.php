@@ -29,6 +29,7 @@ Route::prefix('/user')->group(function() {
 Route::prefix('/specialization')->group(function () {
     Route::get('/detail/{slug}', [SpecializationController::class, 'getSpecializationDetail']);
     Route::get('/list', [SpecializationController::class, 'getListSpecializations']);
+    Route::get('/doctors/{slug}', [DoctorController::class, 'getDoctorsBySpecialization']);
 });
 
 Route::prefix('/shift')->group(function () {
