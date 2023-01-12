@@ -4,6 +4,7 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class DoctorMiddleWare
 {
@@ -16,10 +17,13 @@ class DoctorMiddleWare
      */
     public function handle(Request $request, Closure $next)
     {
-        if (auth()->user()->tokenCan('role:doctor')) {
+        if (Auth::guard('sanctum')->user()->tokenCan('role:doctor')) {
             return $next($request);
         }
 
-        return response()->json('Not Doctor Authorized', 401);
+        return response()->json([
+            'status_code' => 401,
+            'message' => 'Not Doctor Authorized.'
+        ], 401);
     }
 }

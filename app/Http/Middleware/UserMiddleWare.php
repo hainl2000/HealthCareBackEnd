@@ -20,6 +20,9 @@ class UserMiddleWare
             return $next($request);
         }
 
-        return response()->json('Not User Authorized', 401);
+        return response()->json([
+            'status_code' => 401,
+            'message' => 'Not User Authorized.'
+        ], 401);
     }
 }

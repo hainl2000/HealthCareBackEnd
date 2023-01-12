@@ -8,6 +8,7 @@ use App\Models\Specialization;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 
 class DoctorService implements DoctorServiceInterface
@@ -41,7 +42,8 @@ class DoctorService implements DoctorServiceInterface
     public function registerShift($choseData)
     {
         try {
-            $doctor = Doctor::find(2);
+            $loginDoctorId = Auth::guard('sanctum')->id();
+            $doctor = Doctor::find($loginDoctorId);
             $shiftId = Arr::get($choseData, "shiftId");
             $shift = Shift::where('id', '=', $shiftId)->first('start_time');
             $date = Arr::get($choseData, "date");
@@ -59,8 +61,8 @@ class DoctorService implements DoctorServiceInterface
 
     public function getRegisteredShifts($startDate, $endDate)
     {
-        $doctorId = 2;
-        $doctor = Doctor::find($doctorId);
+        $loginDoctorId = Auth::guard('sanctum')->id();
+        $doctor = Doctor::find($loginDoctorId);
         $startDate = Carbon::create($startDate)->format("Y-m-d H:i:s");
         $endDate = Carbon::create($endDate)->format("Y-m-d 23:59:59");
         $registeredShifts = $doctor->shifts()

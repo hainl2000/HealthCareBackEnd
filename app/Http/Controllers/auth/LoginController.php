@@ -4,6 +4,7 @@ namespace App\Http\Controllers\auth;
 
 use App\Http\Controllers\ApiController;
 use App\Http\Requests\LoginRequest;
+use App\Models\Doctor;
 use App\Models\User;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\Request;
@@ -50,6 +51,49 @@ class LoginController extends ApiController
         } catch (AuthorizationException $e) {
             $resp = $this->respondFailedLogin();
         } catch (\Exception $e) {
+            $resp = $this->respondError($e->getMessage(),$e->getCode());
+        }
+        return $resp;
+    }
+
+    public function doctorLogin(LoginRequest $request)
+    {
+        try {
+            $email = $request->input("email");
+            $password = $request->input("password");
+            $credentials = ['email' => $email, 'password' => $password];
+            if(!Auth::guard('doctor')->attempt($credentials)){
+                throw new AuthorizationException();
+            }
+            $doctor = Doctor::with('specializations:id,name')->where('email','=', $email)->first();
+
+            if (!$doctor || !Hash::check($password, $doctor->password)) {
+                throw new AuthorizationException();
+            }
+
+            //login in 1 device at the same time
+            $doctor->tokens()->delete();
+
+            $doctorData = [];
+            $doctorData['id'] = $doctor->id;
+            $doctorData['name'] = $doctor->name;
+            $doctorData['email'] = $doctor->email;
+            $doctorData['image'] = $doctor->image;
+            $doctorData['type'] = $doctor->type;
+            $doctorData['gender'] = $doctor->gender;
+            $doctorData['specializationId'] = $doctor->specialization_id;
+            $doctorData['specializationName'] = $doctor->specializations->name;
+
+            $respData = [
+                "message" => 'Login successfully',
+                'token' => $doctor->createToken("API_TOKEN", ['role:doctor'])->plainTextToken,
+                'doctor' => $doctorData
+            ];
+            $resp = $this->respondSuccess($respData);
+        } catch (AuthorizationException $e) {
+            $resp = $this->respondFailedLogin();
+        } catch (\Exception $e) {
+            dd($e->getMessage());
             $resp = $this->respondError($e->getMessage(),$e->getCode());
         }
         return $resp;

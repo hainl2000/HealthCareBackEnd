@@ -5,6 +5,7 @@ namespace App\Http\Controllers\doctor;
 use App\Http\Controllers\ApiController;
 use App\Services\Doctors\DoctorServiceInterface;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 
 class DoctorController extends ApiController
