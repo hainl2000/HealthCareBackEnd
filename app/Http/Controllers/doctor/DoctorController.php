@@ -54,4 +54,10 @@ class DoctorController extends ApiController
         $doctors = $this->doctorService->getDoctorsBySpecialization($slug);
         return $this->respondSuccess($doctors);
     }
+
+    public function getDoctorInformationById($id)
+    {
+        $doctor = $this->doctorService->getDoctorInformationById($id);
+        return $this->respondSuccess($doctor);
+    }
 }

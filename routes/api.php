@@ -38,6 +38,7 @@ Route::prefix('/shift')->group(function () {
 
 Route::prefix('/doctor')->group(function () {
     Route::post('/login', [LoginController::class, 'doctorLogin']);
+    Route::get('/{id}', [DoctorController::class, 'getDoctorInformationById']);
     Route::middleware(['auth:sanctum', 'type.doctor'])->prefix("/shift")->group(function () {
         Route::post('/register', [DoctorController::class, 'registerShift']);
         Route::get('/list', [DoctorController::class, 'getRegisteredShifts']);
