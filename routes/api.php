@@ -34,6 +34,7 @@ Route::prefix('/specialization')->group(function () {
 
 Route::prefix('/shift')->group(function () {
     Route::get('/list', [ShiftController::class, 'getAllShifts']);
+    Route::get('/detail/{id}', [ShiftController::class, 'getShiftInformationById']);
 });
 
 Route::prefix('/doctor')->group(function () {

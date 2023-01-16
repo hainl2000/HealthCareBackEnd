@@ -55,9 +55,10 @@ class DoctorController extends ApiController
         return $this->respondSuccess($doctors);
     }
 
-    public function getDoctorInformationById($id)
+    public function getDoctorInformationById(Request $request, $id)
     {
-        $doctor = $this->doctorService->getDoctorInformationById($id);
+        $isIncludeShifts = $request->input('includeShifts');
+        $doctor = $this->doctorService->getDoctorInformationById($id, $isIncludeShifts);
         return $this->respondSuccess($doctor);
     }
 }

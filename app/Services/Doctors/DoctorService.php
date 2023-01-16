@@ -34,11 +34,6 @@ class DoctorService implements DoctorServiceInterface
         return $doctor;
     }
 
-    public function login($loginData)
-    {
-
-    }
-
     public function registerShift($choseData)
     {
         try {
@@ -101,24 +96,28 @@ class DoctorService implements DoctorServiceInterface
         return $doctors;
     }
 
-    public function getDoctorInformationById($id)
+    public function getDoctorInformationById($id, $isIncludeShifts)
     {
         $selectData = [
             "doctors.id",
             "doctors.name",
             "doctors.image",
         ];
-        $next30Mins = Carbon::now()->addMinutes(30)->toDateTimeLocalString();
-        $next3Days = Carbon::now()->addDay(3)->endOfDay();
-        $doctor = Doctor::select($selectData)->with(["shifts" => function ($query) use ($next30Mins, $next3Days) {
-            $query->where('date', '>=', $next30Mins);
-            $query->where('date', '<=', $next3Days);
-            $query->where('status', '=', self::NO_PATIENT_STATUS);
-            $query->orderBy('date', 'asc');
-            $query->orderBy('start_time', 'asc');
-        }, "doctor_information"])
-            ->where('id', '=', $id)
-            ->first();
+
+        $query = Doctor::select($selectData)->with("doctor_information");
+
+        if ($isIncludeShifts) {
+            $next30Mins = Carbon::now()->addMinutes(30)->toDateTimeLocalString();
+            $next3Days = Carbon::now()->addDay(3)->endOfDay();
+            $query = $query->with(["shifts" => function ($query) use ($next30Mins, $next3Days) {
+                $query->where('date', '>=', $next30Mins);
+                $query->where('date', '<=', $next3Days);
+                $query->where('status', '=', self::NO_PATIENT_STATUS);
+                $query->orderBy('date', 'asc');
+                $query->orderBy('start_time', 'asc');
+            }]);
+        }
+        $doctor = $query->where('id', '=', $id)->first();
 
         if (isset($doctor["doctor_information"])) {
             $doctor["doctor_information"]["short_introduction"] = htmlspecialchars_decode($doctor["doctor_information"]["short_introduction"]);
