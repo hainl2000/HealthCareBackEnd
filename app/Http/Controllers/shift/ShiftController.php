@@ -26,16 +26,14 @@ class ShiftController extends ApiController
     public function getShiftInformationById($id)
     {
         $shift = $this->shiftService->getShiftInformationById($id);
-
-        $noPatientStatus = Config::get('constants.SHIFT.NO_PATIENT_STATUS');
-        $next30Mins = Carbon::now()->addMinutes(30)->toDateTimeLocalString();
-        $next3Days = Carbon::now()->addDay(3)->endOfDay();
         if (isset($shift)) {
-            if ($shift->date <= $next30Mins || $shift->date >= $next3Days) {
-                $shift = [];
-            }
+            $noPatientStatus = Config::get('constants.SHIFT.NO_PATIENT_STATUS');
+            $next30Mins = Carbon::now()->addMinutes(30)->toDateTimeLocalString();
+            $next3Days = Carbon::now()->addDay(3)->endOfDay();
 
-            if ($shift->status != $noPatientStatus) {
+            if (Carbon::create($shift->date)->toDateTimeLocalString() <= $next30Mins || $shift->date >= $next3Days) {
+                $shift = [];
+            } else if ($shift->status != $noPatientStatus) {
                 $shift = [];
             }
 

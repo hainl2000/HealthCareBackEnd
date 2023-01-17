@@ -41,7 +41,7 @@ class Doctor extends Authenticatable
     public function shifts()
     {
         return $this->belongsToMany(Shift::class, 'doctor_shift', 'doctor_id', 'shift_id')
-            ->withPivot('date', 'status')->withTimestamps();
+            ->withPivot('id', 'date', 'status')->withTimestamps();
     }
 
     public function specializations()
