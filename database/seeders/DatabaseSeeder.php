@@ -185,7 +185,7 @@ class DatabaseSeeder extends Seeder
 
         DB::table('doctor_information')->insert([
             [
-                'doctor_id' => 3,
+                'doctor_id' => 1,
                 'short_introduction' => htmlspecialchars('Bác sĩ đang công tác Khoa Thần kinh, Bệnh viện Quân y 103<br>Bác sĩ từng công tác tại Khoa Thần kinh Tâm thần, Khoa Nội Tiêu hóa và Bệnh máu, Bệnh viện Quân y 5<br>Bác sĩ nhận tư vấn bệnh nhân từ 12 tuổi trở lên'),
                 'introduction' => htmlspecialchars('<li><span lang="VI">Phó giáo sư, Tiến sĩ, Bác sĩ cao cấp chuyên khoa Da liễu</span></li><li><span lang="VI">Bác sĩ từng công tác tại Bệnh viện Da liễu Trung ương</span></li><li><span lang="VI">Nguyên Trưởng phòng chỉ đạo tuyến tại Bệnh viện Da liễu Trung ương</span></li><li><span lang="VI">Đạt chứng chỉ Diploma về Da liễu tại Viện da liễu Băng Cốc - Thái Lan</span></li>'),
                 'created_at' => Carbon::now(),
