@@ -26,7 +26,7 @@ class SignupRequest extends ApiRequest
             'email' => 'required|unique:users|email',
             'password' => 'required|min:6',
             'gender' => 'required',
-            'type' => 'required'
+            'birthday' => 'required'
         ];
     }
 }

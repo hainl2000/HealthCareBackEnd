@@ -36,6 +36,7 @@ class ApiController extends Controller
     protected function respond($data, int $statusCode = 200, array $headers = []): JsonResponse
     {
         $newData = [
+            'status_code' => $statusCode,
             'status' => 'success',
             'data' => $data
         ];
@@ -69,10 +70,10 @@ class ApiController extends Controller
     /**
      * Respond with created.
      *
-     * @param $data
+     * @param array $data
      * @return JsonResponse
      */
-    protected function respondCreated($data): JsonResponse
+    protected function respondCreated(array $data = []): JsonResponse
     {
         return $this->respond($data, 201);
     }

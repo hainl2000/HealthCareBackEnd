@@ -61,4 +61,5 @@ class DoctorController extends ApiController
         $doctor = $this->doctorService->getDoctorInformationById($id, $isIncludeShifts);
         return $this->respondSuccess($doctor);
     }
+
 }

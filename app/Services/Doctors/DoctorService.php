@@ -9,12 +9,11 @@ use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Hash;
 
 class DoctorService implements DoctorServiceInterface
 {
-    const NO_PATIENT_STATUS = 1;
-
     public function __construct()
     {
 
@@ -45,7 +44,7 @@ class DoctorService implements DoctorServiceInterface
             $dateTimeRegister = Carbon::create($date)->toDateString() . " " . Carbon::create($shift->start_time)->toTimeString();
             $dateTimeRegister = Carbon::create($dateTimeRegister);
             $doctor->shifts()->attach($shiftId, [
-                "status" => self::NO_PATIENT_STATUS,
+                "status" => Config::get("constants.SHIFT.NO_PATIENT_STATUS"),
                 "date" => $dateTimeRegister
             ]);
             return true;
@@ -79,7 +78,7 @@ class DoctorService implements DoctorServiceInterface
         $doctors = Doctor::with(["shifts" => function ($query) use ($next30Mins, $next3Days) {
             $query->where('date', '>=', $next30Mins);
             $query->where('date', '<=', $next3Days);
-            $query->where('status', '=', self::NO_PATIENT_STATUS);
+            $query->where('status', '=', Config::get("constants.SHIFT.NO_PATIENT_STATUS"));
             $query->orderBy('date', 'asc');
             $query->orderBy('start_time', 'asc');
             }, "doctor_information"])
@@ -112,7 +111,7 @@ class DoctorService implements DoctorServiceInterface
             $query = $query->with(["shifts" => function ($query) use ($next30Mins, $next3Days) {
                 $query->where('date', '>=', $next30Mins);
                 $query->where('date', '<=', $next3Days);
-                $query->where('status', '=', self::NO_PATIENT_STATUS);
+                $query->where('status', '=', Config::get("constants.SHIFT.NO_PATIENT_STATUS"));
                 $query->orderBy('date', 'asc');
                 $query->orderBy('start_time', 'asc');
             }]);

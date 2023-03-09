@@ -22,4 +22,11 @@ class ShiftService implements ShiftServiceInterface
             ->where('id', $id)
             ->first();
     }
+
+    public function updateShiftStatus($id, $status)
+    {
+        return DoctorShift::where("id", "=", $id)->update([
+            "status" => $status
+        ]);
+    }
 }

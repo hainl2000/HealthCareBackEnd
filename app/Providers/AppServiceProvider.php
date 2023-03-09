@@ -2,6 +2,10 @@
 
 namespace App\Providers;
 
+use App\Services\Booking\BookingService;
+use App\Services\Booking\BookingServiceInterface;
+use App\Services\File\FileService;
+use App\Services\File\FileServiceInterface;
 use Illuminate\Support\ServiceProvider;
 
 use App\Services\Specializations\SpecializationService;
@@ -29,6 +33,8 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(DoctorServiceInterface::class, DoctorService::class);
         $this->app->bind(ShiftServiceInterface::class, ShiftService::class);
         $this->app->bind(MailServiceInterface::class, MailService::class);
+        $this->app->bind(BookingServiceInterface::class, BookingService::class);
+        $this->app->bind(FileServiceInterface::class, FileService::class);
     }
 
     /**
