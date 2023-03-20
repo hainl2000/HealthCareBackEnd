@@ -58,4 +58,6 @@ Route::prefix('/admin')->group(function() {
     Route::post('/doctor/signup', [SignupController::class, 'signupDoctor']);
 });
 
+Route::post('/create-meet', [\App\Services\Google\GoogleService::class, 'createMeeting']);
+
 

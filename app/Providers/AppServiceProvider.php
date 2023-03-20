@@ -6,6 +6,8 @@ use App\Services\Booking\BookingService;
 use App\Services\Booking\BookingServiceInterface;
 use App\Services\File\FileService;
 use App\Services\File\FileServiceInterface;
+use App\Services\Google\GoogleService;
+use App\Services\Google\GoogleServiceInterface;
 use Illuminate\Support\ServiceProvider;
 
 use App\Services\Specializations\SpecializationService;
@@ -35,6 +37,7 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(MailServiceInterface::class, MailService::class);
         $this->app->bind(BookingServiceInterface::class, BookingService::class);
         $this->app->bind(FileServiceInterface::class, FileService::class);
+        $this->app->bind(GoogleServiceInterface::class, GoogleService::class);
     }
 
     /**
