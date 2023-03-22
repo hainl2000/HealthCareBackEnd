@@ -41,8 +41,21 @@ class BookingService implements BookingServiceInterface
         }
     }
 
-    public function getBookingInformationById($id, $attributes = ["*"])
+    public function getBookingInformationById($id, $attributes = ["*"], $isShortInformation = false)
     {
-        return BookingInformation::select($attributes)->where("shift_id", "=", $id)->first();
+        $query = BookingInformation::select($attributes);
+        if (!$isShortInformation) {
+            $query = $query->join('doctor_shift as ds', function ($join) {
+                    $join->on('ds.id', '=', 'booking_information.shift_id');
+                })
+                ->join('shifts as sh', function ($join) {
+                    $join->on('sh.id', '=', 'ds.shift_id');
+                })
+                ->join('doctors as do', function ($join) {
+                    $join->on('do.id', '=', 'ds.doctor_id');
+                });
+        }
+
+        return $query->where("booking_information.id", "=", $id)->first();
     }
 }

@@ -56,19 +56,33 @@ class BookingController extends ApiController
     public function getBookingInformation(Request $request, $id)
     {
         $isShortInformation = $request->input('short', false);
-        if (isset($isShortInformation)) {
+        if ($isShortInformation) {
             $selectData = [
+                "id",
                 "name",
                 "created_at"
             ];
         } else {
             $selectData = [
-                "*"
+                "booking_information.id",
+                "booking_information.name as patient_name",
+                "booking_information.gender as patient_gender",
+                "booking_information.address as patient_address",
+                "booking_information.symptom as patient_sympton",
+                "booking_information.anamnesis as patient_anamnesis",
+                "booking_information.prev_information as patient_prev_information",
+                "booking_information.video_link as booking_video_link",
+                "do.name as doctor_name",
             ];
         }
-        $bookingInformation = $this->bookingService->getBookingInformationById($id, $selectData);
+        $bookingInformation = $this->bookingService->getBookingInformationById($id, $selectData, $isShortInformation);
         return $this->respondSuccess([
             "information" => $bookingInformation
         ]);
+    }
+
+    public function getBookingDetailInformation($id)
+    {
+
     }
 }

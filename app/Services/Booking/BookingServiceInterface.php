@@ -5,5 +5,5 @@ namespace App\Services\Booking;
 interface BookingServiceInterface
 {
     public function createBooking($data);
-    public function getBookingInformationById($id, $attributes = ["*"]);
+    public function getBookingInformationById($id, $attributes = ["*"], $isShortInformation = false);
 }
