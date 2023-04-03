@@ -14,6 +14,6 @@ return [
     ],
 
     'UPLOAD_FOLDER' => [
-        'BOOKING_DIAGNOSE' => "/booking/PreviousDiagnose"
+        'BOOKING_DIAGNOSE' => "public/booking/PreviousDiagnose"
     ]
 ];

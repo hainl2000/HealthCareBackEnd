@@ -26,7 +26,7 @@ Route::prefix('/user')->group(function() {
 //    Route::get('/signup/verify/{id}/{hash}', [VerifyController::class,'verifyAccount'])->middleware('auth:sanctum','type.user');
     Route::get('/signup/verify/{hash}', [VerifyController::class, 'verifyAccount']);
     Route::prefix('/booking')->group(function () {
-        Route::post('create', [BookingController::class, 'createBooking']);
+        Route::post('/create', [BookingController::class, 'createBooking']);
     });
 });
 

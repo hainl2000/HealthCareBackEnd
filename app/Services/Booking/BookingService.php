@@ -53,9 +53,12 @@ class BookingService implements BookingServiceInterface
                 })
                 ->join('doctors as do', function ($join) {
                     $join->on('do.id', '=', 'ds.doctor_id');
+                })
+                ->join('specializations as sp', function ($join) {
+                    $join->on('sp.id', '=', 'do.specialization_id');
                 });
         }
 
-        return $query->where("booking_information.id", "=", $id)->first();
+        return $query->where("booking_information.shift_id", "=", $id)->first();
     }
 }

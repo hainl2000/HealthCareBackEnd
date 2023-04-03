@@ -40,10 +40,7 @@ class BookingController extends ApiController
         //TODO: integrate meeting service
         try {
             $this->apiBeginTransaction();
-            $isCreatedSuccessfully = $this->bookingService->createBooking($bookingData);
-            if (!$isCreatedSuccessfully) {
-                throw new \Exception();
-            }
+            $this->bookingService->createBooking($bookingData);
             $this->shiftService->updateShiftStatus($bookingData["shift_id"], Config::get("constants.SHIFT.HAVE_PATIENT_STATUS"));
             $this->apiCommit();
             return $this->respondCreated();
@@ -71,18 +68,15 @@ class BookingController extends ApiController
                 "booking_information.symptom as patient_sympton",
                 "booking_information.anamnesis as patient_anamnesis",
                 "booking_information.prev_information as patient_prev_information",
+                "booking_information.image as patient_history_image",
                 "booking_information.video_link as booking_video_link",
+                "booking_information.created_at as booking_created_at",
+                "ds.date as booking_start_date",
                 "do.name as doctor_name",
+                "sp.name as doctor_specialization"
             ];
         }
         $bookingInformation = $this->bookingService->getBookingInformationById($id, $selectData, $isShortInformation);
-        return $this->respondSuccess([
-            "information" => $bookingInformation
-        ]);
-    }
-
-    public function getBookingDetailInformation($id)
-    {
-
+        return $this->respondSuccess($bookingInformation);
     }
 }
