@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use App\Services\Auth\AuthService;
+use App\Services\Auth\AuthServiceInterface;
 use App\Services\Booking\BookingService;
 use App\Services\Booking\BookingServiceInterface;
 use App\Services\File\FileService;
@@ -38,6 +40,7 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(BookingServiceInterface::class, BookingService::class);
         $this->app->bind(FileServiceInterface::class, FileService::class);
         $this->app->bind(GoogleServiceInterface::class, GoogleService::class);
+        $this->app->bind(AuthServiceInterface::class, AuthService::class);
     }
 
     /**

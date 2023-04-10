@@ -42,6 +42,7 @@ Route::prefix('/shift')->group(function () {
 });
 
 Route::prefix('/booking')->group(function () {
+    Route::get('/list', [BookingController::class, 'getListBooking']);
     Route::get('/{id}', [BookingController::class, 'getBookingInformation']);
 });
 

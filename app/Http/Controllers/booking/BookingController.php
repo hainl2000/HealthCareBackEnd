@@ -3,10 +3,12 @@
 namespace App\Http\Controllers\booking;
 
 use App\Http\Controllers\ApiController;
+use App\Services\Auth\AuthServiceInterface;
 use App\Services\Booking\BookingServiceInterface;
 use App\Services\File\FileServiceInterface;
 use App\Services\Shifts\ShiftServiceInterface;
 use Illuminate\Http\Request;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\DB;
@@ -16,16 +18,19 @@ class BookingController extends ApiController
     private $bookingService;
     private $fileService;
     private $shiftService;
+    private $authService;
 
     public function __construct(
         BookingServiceInterface $bookingService,
         FileServiceInterface $fileService,
-        ShiftServiceInterface $shiftService
+        ShiftServiceInterface $shiftService,
+        AuthServiceInterface $authService
     )
     {
         $this->bookingService = $bookingService;
         $this->fileService = $fileService;
         $this->shiftService = $shiftService;
+        $this->authService = $authService;
     }
 
     public function createBooking(Request $request)
@@ -34,6 +39,7 @@ class BookingController extends ApiController
         $prevDiagnose = $request->file('prev_diagnose');
         $folderPath = Config::get("constants.UPLOAD_FOLDER.BOOKING_DIAGNOSE") . "/" . $loginUserId;
         $bookingData = $request->input();
+        $bookingData["created_by"] = $loginUserId;
         if (isset($prevDiagnose)) {
             $bookingData["prev_diagnose"] = $this->fileService->uploadImage($folderPath, $prevDiagnose);
         }
@@ -78,5 +84,21 @@ class BookingController extends ApiController
         }
         $bookingInformation = $this->bookingService->getBookingInformationById($id, $selectData, $isShortInformation);
         return $this->respondSuccess($bookingInformation);
+    }
+
+    public function getListBooking()
+    {
+        $loggingActor = $this->authService->getLoggingInActor();
+        $attributes = [];
+        if (isset($loggingActor["user"])) {
+            $attributes = [
+
+            ];
+        } else if (isset($loggingActor["doctor"])) {
+            $attributes = [
+
+            ];
+        }
+        return $this->bookingService->getListBooking($attributes, $loggingActor);
     }
 }

@@ -73,6 +73,7 @@ return [
              'driver' => 'eloquent',
              'model' => App\Models\Doctor::class,
          ],
+
     ],
 
     /*

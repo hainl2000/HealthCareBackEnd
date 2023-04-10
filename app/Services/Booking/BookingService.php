@@ -23,6 +23,7 @@ class BookingService implements BookingServiceInterface
             "shift_id" => Arr::get($data, "shift_id"),
             "name" => Arr::get($data, "name"),
             "email" => Arr::get($data, "email"),
+            "phone_number" => Arr::get($data, "phone_number"),
             "booker_email" => Arr::get($data, "booker_email"),
             "gender" => Arr::get($data, "gender"),
             "address" => Arr::get($data, "address"),
@@ -31,7 +32,8 @@ class BookingService implements BookingServiceInterface
             "anamnesis" => Arr::get($data, "anamnesis"),
             "prev_information" => Arr::get($data, "prev_information"),
             "image" => Arr::get($data, "prev_diagnose"),
-            "status" => Config::get("constants.BOOKING_STATUS.NOT_START")
+            "status" => Config::get("constants.BOOKING_STATUS.NOT_START"),
+            "created_by" => Arr::get($data, "created_by")
         ];
         try {
             BookingInformation::create($createData);
@@ -60,5 +62,27 @@ class BookingService implements BookingServiceInterface
         }
 
         return $query->where("booking_information.shift_id", "=", $id)->first();
+    }
+
+    public function getListBooking($attributes = ["*"], $data = null)
+    {
+        $query = BookingInformation::select($attributes)
+            ->join('doctor_shift as ds', function ($join) {
+                $join->on('ds.id', '=', 'booking_information.shift_id');
+            })
+            ->join('shifts as sh', function ($join) {
+                $join->on('sh.id', '=', 'ds.shift_id');
+            })
+            ->join('doctors as do', function ($join) {
+                $join->on('do.id', '=', 'ds.doctor_id');
+            });
+        if ($data) {
+            if (isset($data["doctor"])) {
+                $query->where("ds.doctor_id", "=", $data["doctor"]["id"]);
+            } else if (isset($data["user"])) {
+                $query->where("booking_information.created_by", "=", $data["user"]["id"]);
+            }
+        }
+        return $query->all();
     }
 }

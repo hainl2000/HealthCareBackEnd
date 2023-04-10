@@ -6,4 +6,5 @@ interface BookingServiceInterface
 {
     public function createBooking($data);
     public function getBookingInformationById($id, $attributes = ["*"], $isShortInformation = false);
+    public function getListBooking($attributes = ["*"], $doctorId = null);
 }
