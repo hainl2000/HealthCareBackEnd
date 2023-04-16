@@ -62,4 +62,10 @@ class DoctorController extends ApiController
         return $this->respondSuccess($doctor);
     }
 
+    public function getListDoctor(Request $request)
+    {
+        $doctors = $this->doctorService->getListDoctor($request);
+        return $this->respondSuccess($doctors);
+    }
+
 }

@@ -91,14 +91,59 @@ class BookingController extends ApiController
         $loggingActor = $this->authService->getLoggingInActor();
         $attributes = [];
         if (isset($loggingActor["user"])) {
-            $attributes = [
-
-            ];
+            $attributes = $this->getBookingAttributesForUser();
         } else if (isset($loggingActor["doctor"])) {
-            $attributes = [
-
-            ];
+            $attributes = $this->getBookingAttributesForDoctor();
+        } else if (isset($loggingActor["admin"])) {
+            $attributes = $this->getBookingAttributesForAdmin();
         }
-        return $this->bookingService->getListBooking($attributes, $loggingActor);
+        $listBooking = $this->bookingService->getListBooking($attributes, $loggingActor);
+        return $this->respondSuccess($listBooking);
+    }
+
+    private function getBookingAttributesForDoctor()
+    {
+        return [
+            "booking_information.id",
+            "booking_information.name as patient_name",
+            "ds.date as date",
+            "sh.end_time as end_time",
+            "booking_information.status",
+            "booking_information.created_at"
+        ];
+    }
+
+    private function getBookingAttributesForUser()
+    {
+        return [
+
+        ];
+    }
+
+    private function getBookingAttributesForAdmin()
+    {
+        return [
+            "booking_information.id",
+            "booking_information.name as patient_name",
+            "ds.date as date",
+            "sh.end_time as end_time",
+            "booking_information.status",
+            "booking_information.created_at"
+        ];
+    }
+
+    public function deleteBooking(Request $request)
+    {
+        $id = $request->input('id');
+        try {
+            $this->apiBeginTransaction();
+            $this->bookingService->updateBookingStatus($id, Config::get('constants.BOOKING_STATUS.CANCEL'));
+            $doctorShift = $this->shiftService->getShiftByBookingId($id);
+            $this->shiftService->updateShiftStatus($doctorShift->id, Config::get('constants.SHIFT.NO_PATIENT_STATUS'));
+            $this->apiCommit();
+        } catch (\Exception $e) {
+            $this->apiRollback();
+            dd($e->getMessage());
+        }
     }
 }

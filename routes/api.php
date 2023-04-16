@@ -56,9 +56,12 @@ Route::prefix('/doctor')->group(function () {
 });
 
 Route::prefix('/admin')->group(function() {
+    Route::post('/login', [LoginController::class, 'adminLogin']);
+    Route::post('/booking/delete', [BookingController::class, 'deleteBooking']);
     Route::post('/doctor/signup', [SignupController::class, 'signupDoctor']);
+    Route::get('/doctor/list', [DoctorController::class, 'getListDoctor']);
 });
 
-Route::post('/create-meet', [\App\Services\Google\GoogleService::class, 'createMeeting']);
+//Route::post('/create-meet', [\App\Services\Google\GoogleService::class, 'createMeeting']);
 
 

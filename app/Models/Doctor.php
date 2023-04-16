@@ -33,7 +33,6 @@ class Doctor extends Authenticatable
      */
     protected $hidden = [
         'password',
-        'created_at',
         'updated_at',
         'deleted_at'
     ];
@@ -52,5 +51,10 @@ class Doctor extends Authenticatable
     public function doctor_information()
     {
         return $this->hasOne(DoctorInformation::class, 'doctor_id', 'id');
+    }
+
+    public function admin()
+    {
+        return $this->belongsTo(Admin::class, 'created_by', 'id');
     }
 }

@@ -12,7 +12,7 @@ class ShiftService implements ShiftServiceInterface
 {
     public function getAllShifts()
     {
-        $allShifts = Shift::all('id','start_time','end_time');
+        $allShifts = Shift::all('id', 'start_time', 'end_time');
         return $allShifts;
     }
 
@@ -28,5 +28,17 @@ class ShiftService implements ShiftServiceInterface
         return DoctorShift::where("id", "=", $id)->update([
             "status" => $status
         ]);
+    }
+
+    public function getShiftByBookingId($id)
+    {
+        $selectData = [
+            "doctor_shift.*"
+        ];
+        return DoctorShift::select($selectData)->join("booking_information", function ($join) use ($id) {
+            $join->on('booking_information.shift_id', '=', 'doctor_shift.id')
+                ->where('booking_information.id', '=', $id);
+            })
+            ->first();
     }
 }

@@ -8,4 +8,5 @@ interface DoctorServiceInterface
     public function getRegisteredShifts($startDate, $endDate);
     public function getDoctorsBySpecialization($slug);
     public function getDoctorInformationById($id, $isIncludeShifts);
+    public function getListDoctor($searchParams);
 }

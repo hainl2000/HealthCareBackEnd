@@ -16,6 +16,7 @@ class BookingInformation extends Model
         "name",
         "email",
         "booker_email",
+        "phone_number",
         "gender",
         "address",
         "symptom",
@@ -23,6 +24,7 @@ class BookingInformation extends Model
         "prev_information",
         "image",
         "status",
-        "video_link"
+        "video_link",
+        "created_by"
     ];
 }

@@ -78,11 +78,23 @@ class BookingService implements BookingServiceInterface
             });
         if ($data) {
             if (isset($data["doctor"])) {
-                $query->where("ds.doctor_id", "=", $data["doctor"]["id"]);
+                $query->where("ds.doctor_id", "=", $data["doctor"]["id"])
+                    ->whereNotIn("booking_information.status", [
+                        Config::get("constants.BOOKING_STATUS.CANCEL"),
+                        Config::get("constants.BOOKING_STATUS.WAITING_PAYMENT")
+                    ]);
             } else if (isset($data["user"])) {
                 $query->where("booking_information.created_by", "=", $data["user"]["id"]);
             }
         }
-        return $query->all();
+        $query->orderBy('booking_information.created_at', 'desc');
+        return $query->get();
+    }
+
+    public function updateBookingStatus($id, $status)
+    {
+        return BookingInformation::where('id', $id)->update([
+            "status" => $status
+        ]);
     }
 }

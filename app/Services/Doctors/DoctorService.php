@@ -125,6 +125,19 @@ class DoctorService implements DoctorServiceInterface
         return $doctor;
     }
 
-
+    public function getListDoctor($searchParams)
+    {
+        $selectData = [
+            'doctors.id',
+            'doctors.name',
+            'doctors.type',
+            'doctors.created_at',
+            'doctors.created_by',
+            'doctors.specialization_id'
+        ];
+        return Doctor::select($selectData)->with("specializations:id,name","admin:id,name")
+            ->whereNull('deleted_at')
+            ->get();
+    }
 }
 

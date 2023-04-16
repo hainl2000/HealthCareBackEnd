@@ -11,10 +11,12 @@ class AuthService implements AuthServiceInterface
         $loginningUser = Auth::guard('sanctum')->user();
         $actor = array();
         if ($loginningUser) {
-            if ($loginningUser->token()->payload('role:doctor')) {
+            if ($loginningUser->tokenCan('role:doctor')) {
                 $actor["doctor"] = $loginningUser;
-            } else if ($loginningUser->token()->payload('role:user')) {
+            } else if ($loginningUser->tokenCan('role:user')) {
                 $actor["user"] = $loginningUser;
+            } else if ($loginningUser->tokenCan('role:admin')) {
+                $actor["admin"] = $loginningUser;
             }
             return $actor;
         }

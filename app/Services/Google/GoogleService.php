@@ -30,7 +30,8 @@ class GoogleService implements GoogleServiceInterface
                 $accessToken = json_decode(file_get_contents($tokenPath), true);
                 $client->setAccessToken($accessToken);
             }
-
+//            $authUrl = $client->createAuthUrl();
+//            dd($authUrl);
             // If there is no previous token or it's expired.
             if ($client->isAccessTokenExpired()) {
                 // Refresh the token if possible, else fetch a new one.
@@ -38,10 +39,10 @@ class GoogleService implements GoogleServiceInterface
                     $client->fetchAccessTokenWithRefreshToken($client->getRefreshToken());
                 } else {
                     // Request authorization from the user.
-//                    $authUrl = $client->createAuthUrl();
+
                     $authCode = config('google.auth_code');
                     // Exchange authorization code for an access token.
-                    $accessToken = $client->fetchAccessToadkenWithAuthCode($authCode);
+                    $accessToken = $client->fetchAccessTokenWithAuthCode($authCode);
                     $client->setAccessToken($accessToken);
                     // Check to see if there was an error.
                     if (array_key_exists('error', $accessToken)) {

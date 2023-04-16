@@ -4,10 +4,10 @@ namespace App\Http\Controllers\auth;
 
 use App\Http\Controllers\ApiController;
 use App\Http\Requests\LoginRequest;
+use App\Models\Admin;
 use App\Models\Doctor;
 use App\Models\User;
 use Illuminate\Auth\Access\AuthorizationException;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 
@@ -93,7 +93,44 @@ class LoginController extends ApiController
         } catch (AuthorizationException $e) {
             $resp = $this->respondFailedLogin();
         } catch (\Exception $e) {
-            dd($e->getMessage());
+            $resp = $this->respondError($e->getMessage(),$e->getCode());
+        }
+        return $resp;
+    }
+
+    public function adminLogin(LoginRequest $request)
+    {
+        try {
+            $email = $request->input("email");
+            $password = $request->input("password");
+            $credentials = ['email' => $email, 'password' => $password];
+            if(!Auth::guard('admins')->attempt($credentials)) {
+                throw new AuthorizationException();
+            }
+
+            $admin = Admin::where('email','=', $email)->first();
+            if (!$admin || !Hash::check($password, $admin->password)) {
+                throw new AuthorizationException();
+            }
+
+            //login in 1 device at the same time
+            $admin->tokens()->delete();
+
+            $adminData = [];
+            $adminData['id'] = $admin->id;
+            $adminData['name'] = $admin->name;
+            $adminData['email'] = $admin->email;
+            $adminData['image'] = $admin->image;
+
+            $respData = [
+                "message" => 'Login successfully',
+                'token' => $admin->createToken("API_TOKEN",['role:admin'])->plainTextToken,
+                'admin' => $adminData
+            ];
+            $resp = $this->respondSuccess($respData);
+        } catch (AuthorizationException $e) {
+            $resp = $this->respondFailedLogin();
+        } catch (\Exception $e) {
             $resp = $this->respondError($e->getMessage(),$e->getCode());
         }
         return $resp;
