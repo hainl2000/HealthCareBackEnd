@@ -32,6 +32,8 @@ class GoogleService implements GoogleServiceInterface
             }
 //            $authUrl = $client->createAuthUrl();
 //            dd($authUrl);
+            //get code and delete file google-token.json
+
             // If there is no previous token or it's expired.
             if ($client->isAccessTokenExpired()) {
                 // Refresh the token if possible, else fetch a new one.

@@ -9,6 +9,12 @@ class DoctorInformation extends Model
 {
     use HasFactory;
 
+    protected $fillable = [
+        'doctor_id',
+        'short_introduction',
+        'introduction'
+    ];
+
     protected $hidden = [
         'id',
         'doctor_id',

@@ -14,9 +14,9 @@ class SpecializationService implements SpecializationServiceInterface
     public function getListSpecializations($isIncludeDetail = null)
     {
         if ($isIncludeDetail) {
-            $listSpecialization = Specialization::all('name','image','slug','description');
+            $listSpecialization = Specialization::all('id','name','image','slug','description');
         } else {
-            $listSpecialization = Specialization::all('name','image','slug');
+            $listSpecialization = Specialization::all('id','name','image','slug');
         }
         return $listSpecialization;
     }

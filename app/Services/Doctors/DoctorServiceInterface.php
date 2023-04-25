@@ -9,4 +9,5 @@ interface DoctorServiceInterface
     public function getDoctorsBySpecialization($slug);
     public function getDoctorInformationById($id, $isIncludeShifts);
     public function getListDoctor($searchParams);
+    public function insertDoctorInformation($doctorId, $doctorInfo);
 }

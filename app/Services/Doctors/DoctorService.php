@@ -3,6 +3,7 @@
 namespace App\Services\Doctors;
 
 use App\Models\Doctor;
+use App\Models\DoctorInformation;
 use App\Models\Shift;
 use App\Models\Specialization;
 use Carbon\Carbon;
@@ -26,11 +27,21 @@ class DoctorService implements DoctorServiceInterface
             'email' => Arr::get($signupDoctorData, 'email'),
             'password' => Hash::make(Arr::get($signupDoctorData, 'password')),
             'gender' => Arr::get($signupDoctorData, 'gender'),
+            'image' => Arr::get($signupDoctorData, 'image'),
             'type' => Arr::get($signupDoctorData, 'type'),
             'specialization_id' => Arr::get($signupDoctorData, 'specialization_id'),
             'created_by' => 1,
         ]);
         return $doctor;
+    }
+
+    public function insertDoctorInformation($doctorId, $doctorInfo)
+    {
+        return DoctorInformation::create([
+            'doctor_id' => $doctorId,
+            'short_introduction' => Arr::get($doctorInfo, "shortIntro"),
+            'introduction' => Arr::get($doctorInfo, "fullIntro"),
+        ]);
     }
 
     public function registerShift($choseData)

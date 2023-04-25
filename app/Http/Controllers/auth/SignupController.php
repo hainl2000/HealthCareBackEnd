@@ -7,25 +7,30 @@ use App\Http\Controllers\ApiController;
 use App\Http\Requests\SignupDoctorRequest;
 use App\Http\Requests\SignupRequest;
 use App\Services\Doctors\DoctorServiceInterface;
+use App\Services\File\FileServiceInterface;
 use App\Services\Mail\MailServiceInterface;
 use App\Services\Users\UserServiceInterface;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Config;
 
 class SignupController extends ApiController
 {
     private $userService;
     private $mailService;
     private $doctorService;
+    private $fileService;
 
     public function __construct(
         UserServiceInterface $userService,
         MailServiceInterface $mailService,
-        DoctorServiceInterface $doctorService
+        DoctorServiceInterface $doctorService,
+        FileServiceInterface $fileService
     )
     {
         $this->userService = $userService;
         $this->mailService = $mailService;
         $this->doctorService = $doctorService;
+        $this->fileService = $fileService;
     }
 
     public function register(SignupRequest $request)
@@ -62,9 +67,14 @@ class SignupController extends ApiController
     {
         try {
             $this->apiBeginTransaction();
-            $signupDoctorData = $request->all();
+            $signupDoctorData = $request->input();
+            $avatar = $request->file('image');
+            $folderPath = Config::get("constants.UPLOAD_FOLDER.AVATAR");
+            $signupDoctorData["image"] = $this->fileService->uploadImage($folderPath, $avatar);
             $doctor = $this->doctorService->signup($signupDoctorData);
-            if ($doctor) {
+
+            $doctorInfo = $this->doctorService->insertDoctorInformation($doctor->id, $signupDoctorData);
+            if ($doctor && $doctorInfo) {
                 $this->apiCommit();
             }
             $respData = [

@@ -32,7 +32,7 @@ class BookingService implements BookingServiceInterface
             "anamnesis" => Arr::get($data, "anamnesis"),
             "prev_information" => Arr::get($data, "prev_information"),
             "image" => Arr::get($data, "prev_diagnose"),
-            "status" => Config::get("constants.BOOKING_STATUS.NOT_START"),
+            "status" => Config::get("constants.BOOKING_STATUS.WAITING_PAYMENT"),
             "created_by" => Arr::get($data, "created_by")
         ];
         try {
@@ -64,7 +64,7 @@ class BookingService implements BookingServiceInterface
         return $query->where("booking_information.shift_id", "=", $id)->first();
     }
 
-    public function getListBooking($attributes = ["*"], $data = null)
+    public function getListBooking($attributes = ["*"], $data = null, $searchConditions = [])
     {
         $query = BookingInformation::select($attributes)
             ->join('doctor_shift as ds', function ($join) {
@@ -75,6 +75,9 @@ class BookingService implements BookingServiceInterface
             })
             ->join('doctors as do', function ($join) {
                 $join->on('do.id', '=', 'ds.doctor_id');
+            })
+            ->join('specializations as sp', function ($join) {
+                $join->on('sp.id', '=', 'do.specialization_id');
             });
         if ($data) {
             if (isset($data["doctor"])) {

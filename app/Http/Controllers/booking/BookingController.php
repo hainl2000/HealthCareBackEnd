@@ -116,7 +116,13 @@ class BookingController extends ApiController
     private function getBookingAttributesForUser()
     {
         return [
-
+            "booking_information.id",
+            "do.name as doctor_name",
+            "sp.name as specialization_name",
+            "ds.date as date",
+            "sh.end_time as end_time",
+            "booking_information.status",
+            "booking_information.created_at"
         ];
     }
 
@@ -140,6 +146,22 @@ class BookingController extends ApiController
             $this->bookingService->updateBookingStatus($id, Config::get('constants.BOOKING_STATUS.CANCEL'));
             $doctorShift = $this->shiftService->getShiftByBookingId($id);
             $this->shiftService->updateShiftStatus($doctorShift->id, Config::get('constants.SHIFT.NO_PATIENT_STATUS'));
+            $this->apiCommit();
+            return $this->respondSuccessWithoutData();
+        } catch (\Exception $e) {
+            $this->apiRollback();
+            return $this->respondError();
+        }
+    }
+
+    public function confirmBooking(Request $request)
+    {
+        $id = $request->input('id');
+        try {
+            $this->apiBeginTransaction();
+            $this->bookingService->updateBookingStatus($id, Config::get('constants.BOOKING_STATUS.NOT_START'));
+            $doctorShift = $this->shiftService->getShiftByBookingId($id);
+            $this->shiftService->updateShiftStatus($doctorShift->id, Config::get('constants.SHIFT.HAVE_PATIENT_STATUS'));
             $this->apiCommit();
         } catch (\Exception $e) {
             $this->apiRollback();

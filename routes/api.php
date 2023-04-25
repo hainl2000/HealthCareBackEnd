@@ -58,6 +58,7 @@ Route::prefix('/doctor')->group(function () {
 Route::prefix('/admin')->group(function() {
     Route::post('/login', [LoginController::class, 'adminLogin']);
     Route::post('/booking/delete', [BookingController::class, 'deleteBooking']);
+    Route::post('/booking/confirm', [BookingController::class, 'confirmBooking']);
     Route::post('/doctor/signup', [SignupController::class, 'signupDoctor']);
     Route::get('/doctor/list', [DoctorController::class, 'getListDoctor']);
 });
