@@ -4,6 +4,7 @@ namespace App\Services\Booking;
 
 use App\Models\BookingInformation;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Config;
 use App\Services\Google\GoogleServiceInterface;
 
@@ -99,5 +100,37 @@ class BookingService implements BookingServiceInterface
         return BookingInformation::where('id', $id)->update([
             "status" => $status
         ]);
+    }
+
+    public function getSoonestBooking()
+    {
+//        $loginDoctorId = Auth::guard('sanctum')->id();
+        $loginDoctorId = 1;
+        $selectAttributes = [
+            'booking_information.id',
+            'users.name',
+            'ds.date',
+        ];
+
+        return BookingInformation::select($selectAttributes)
+            ->join('doctor_shift as ds', function ($join) {
+                $join->on('ds.id', '=', 'booking_information.shift_id');
+            })
+            ->join('shifts as sh', function ($join) {
+                $join->on('sh.id', '=', 'ds.shift_id');
+            })
+            ->join('doctors as do', function ($join) {
+                $join->on('do.id', '=', 'ds.doctor_id');
+            })
+            ->join('users', function ($join) {
+                $join->on('users.id', '=', 'booking_information.created_by');
+            })
+            ->where([
+                ["ds.doctor_id", "=", $loginDoctorId],
+                ['ds.date', '>', now()],
+                ['booking_information.status', '=',  Config::get("constants.BOOKING_STATUS.NOT_START")]
+            ])
+            ->orderByRaw('ABS(TIMESTAMPDIFF(MINUTE, ds.date, NOW()))')
+            ->first();
     }
 }

@@ -35,13 +35,13 @@ class ApiController extends Controller
 
     protected function respond($data, int $statusCode = 200, array $headers = []): JsonResponse
     {
-        $newData = [
+        $responseData = [
             'status_code' => $statusCode,
             'status' => 'success',
             'data' => $data
         ];
 
-        return response()->json($newData, $statusCode, $headers);
+        return response()->json($responseData, $statusCode, $headers);
     }
 
     /**

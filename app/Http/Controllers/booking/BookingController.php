@@ -168,4 +168,10 @@ class BookingController extends ApiController
             dd($e->getMessage());
         }
     }
+
+    public function getSoonestBooking()
+    {
+        $soonestBooking = $this->bookingService->getSoonestBooking();
+        return $this->respondSuccess($soonestBooking);
+    }
 }

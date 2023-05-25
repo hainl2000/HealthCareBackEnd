@@ -20,7 +20,9 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+
 Route::prefix('/user')->group(function() {
+    Route::get('test', [LoginController::class, 'test']);
     Route::post('/login', [LoginController::class, 'login']);
     Route::post('/signup', [SignupController::class, 'register']);
 //    Route::get('/signup/verify/{id}/{hash}', [VerifyController::class,'verifyAccount'])->middleware('auth:sanctum','type.user');
@@ -49,9 +51,15 @@ Route::prefix('/booking')->group(function () {
 Route::prefix('/doctor')->group(function () {
     Route::post('/login', [LoginController::class, 'doctorLogin']);
     Route::get('/{id}', [DoctorController::class, 'getDoctorInformationById']);
-    Route::middleware(['auth:sanctum', 'type.doctor'])->prefix("/shift")->group(function () {
-        Route::post('/register', [DoctorController::class, 'registerShift']);
-        Route::get('/list', [DoctorController::class, 'getRegisteredShifts']);
+
+    Route::middleware(['auth:sanctum', 'type.doctor'])->group(function () {
+        Route::prefix('shift')->group(function () {
+            Route::post('/register', [DoctorController::class, 'registerShift']);
+            Route::get('/list', [DoctorController::class, 'getRegisteredShifts']);
+        });
+        Route::prefix('booking')->group(function () {
+            Route::get('/soonest', [BookingController::class, 'getSoonestBooking']);
+        });
     });
 });
 
@@ -63,6 +71,7 @@ Route::prefix('/admin')->group(function() {
     Route::get('/doctor/list', [DoctorController::class, 'getListDoctor']);
 });
 
+//Route::get('/test', [BookingController::class, 'getSoonestBooking']);
 //Route::post('/create-meet', [\App\Services\Google\GoogleService::class, 'createMeeting']);
 
 
