@@ -6,6 +6,8 @@ use App\Services\Auth\AuthService;
 use App\Services\Auth\AuthServiceInterface;
 use App\Services\Booking\BookingService;
 use App\Services\Booking\BookingServiceInterface;
+use App\Services\Drug\DrugService;
+use App\Services\Drug\DrugServiceInterface;
 use App\Services\File\FileService;
 use App\Services\File\FileServiceInterface;
 use App\Services\Google\GoogleService;
@@ -41,6 +43,7 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(FileServiceInterface::class, FileService::class);
         $this->app->bind(GoogleServiceInterface::class, GoogleService::class);
         $this->app->bind(AuthServiceInterface::class, AuthService::class);
+        $this->app->bind(DrugServiceInterface::class, DrugService::class);
     }
 
     /**

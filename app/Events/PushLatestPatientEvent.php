@@ -42,7 +42,7 @@ class PushLatestPatientEvent implements ShouldBroadcast
             'name' => $this->patientName,
             'date' => $this->bookingDate
         ];
-        return new PrivateChannel('private-doctor-channel.' . $this->doctorId);
+        return new PrivateChannel('doctor-channel.' . $this->doctorId);
     }
 
     public function broadcastAs()
