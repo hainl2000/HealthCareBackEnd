@@ -20,14 +20,10 @@ class PushLatestPatientEvent implements ShouldBroadcast
      * @return void
      */
     private $doctorId;
-    private $patientName;
-    private $bookingDate;
 
-    public function __construct(int $bookingId, string $patientName, string $bookingDate)
+    public function __construct(int $doctorId)
     {
-        $this->doctorId = $bookingId;
-        $this->patientName = $patientName;
-        $this->bookingDate = $bookingDate;
+        $this->doctorId = $doctorId;
     }
 
     /**
@@ -37,12 +33,7 @@ class PushLatestPatientEvent implements ShouldBroadcast
      */
     public function broadcastOn()
     {
-        $soonestBooking = [
-            'id' => $this->doctorId,
-            'name' => $this->patientName,
-            'date' => $this->bookingDate
-        ];
-        return new PrivateChannel('doctor-channel.' . $this->doctorId);
+        return new Channel('doctor-channel-' . $this->doctorId);
     }
 
     public function broadcastAs()

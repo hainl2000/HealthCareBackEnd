@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\booking;
 
+use App\Events\PushLatestPatientEvent;
 use App\Http\Controllers\ApiController;
 use App\Services\Auth\AuthServiceInterface;
 use App\Services\Booking\BookingServiceInterface;
@@ -163,6 +164,9 @@ class BookingController extends ApiController
             $doctorShift = $this->shiftService->getShiftByBookingId($id);
             $this->shiftService->updateShiftStatus($doctorShift->id, Config::get('constants.SHIFT.HAVE_PATIENT_STATUS'));
             $this->apiCommit();
+
+            event(new PushLatestPatientEvent(Auth::guard('sanctum')->id()));
+            $this->respondNoContent();
         } catch (\Exception $e) {
             $this->apiRollback();
             dd($e->getMessage());

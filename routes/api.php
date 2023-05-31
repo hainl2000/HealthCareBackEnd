@@ -7,6 +7,7 @@ use App\Http\Controllers\doctor\DoctorController;
 use App\Http\Controllers\specialization\SpecializationController;
 use App\Http\Controllers\shift\ShiftController;
 use App\Http\Controllers\booking\BookingController;
+use App\Http\Controllers\drug\DrugController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -69,6 +70,7 @@ Route::prefix('/admin')->group(function() {
     Route::post('/booking/confirm', [BookingController::class, 'confirmBooking']);
     Route::post('/doctor/signup', [SignupController::class, 'signupDoctor']);
     Route::get('/doctor/list', [DoctorController::class, 'getListDoctor']);
+    Route::get('/drug/list', [DrugController::class, 'getListDrugs']);
 });
 
 //Route::get('/test', [BookingController::class, 'getSoonestBooking']);

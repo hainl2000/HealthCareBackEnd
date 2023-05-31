@@ -19,7 +19,7 @@ class BookingService implements BookingServiceInterface
 
     public function createBooking($data)
     {
-        $data["video_link"] = $this->googleService->createMeeting();
+//        $data["video_link"] = $this->googleService->createMeeting();
         $createData = [
             "shift_id" => Arr::get($data, "shift_id"),
             "name" => Arr::get($data, "name"),
@@ -105,7 +105,7 @@ class BookingService implements BookingServiceInterface
     public function getSoonestBooking()
     {
 //        $loginDoctorId = Auth::guard('sanctum')->id();
-        $loginDoctorId = 1;
+        $loginDoctorId = Auth::guard('sanctum')->id();
         $selectAttributes = [
             'booking_information.id',
             'users.name',
