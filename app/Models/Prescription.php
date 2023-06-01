@@ -21,6 +21,7 @@ class Prescription
         'in_afternoon',
         'in_evening',
         'meals',
-        'note'
+        'note',
+        'is_other'
     ];
 }

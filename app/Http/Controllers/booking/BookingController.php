@@ -209,4 +209,9 @@ class BookingController extends ApiController
         $soonestBooking = $this->bookingService->getSoonestBooking();
         return $this->respondSuccess($soonestBooking);
     }
+
+    public function createPrescription(Request $request)
+    {
+        //TODO
+    }
 }

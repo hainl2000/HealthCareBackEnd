@@ -16,8 +16,8 @@ return new class extends Migration
         Schema::table('booking_information', function (Blueprint $table) {
             $table->float('rating')->nullable();
             $table->text('comment')->nullable();
-            $table->boolean('patient_finish')->nullable();
-            $table->boolean('doctor_finish')->nullable();
+            $table->boolean('patient_finish')->nullable()->default(false);
+            $table->boolean('doctor_finish')->nullable()->default(false);
         });
     }
 

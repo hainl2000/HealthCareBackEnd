@@ -25,6 +25,15 @@ class BookingInformation extends Model
         "image",
         "status",
         "video_link",
-        "created_by"
+        "created_by",
+        "rating",
+        "comment",
+        "patient_finish",
+        "doctor_finish"
     ];
+
+    public function prescription()
+    {
+        return $this->hasOne(Prescription::class, 'booking_id', 'id');
+    }
 }

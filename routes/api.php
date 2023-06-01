@@ -53,7 +53,7 @@ Route::prefix('/booking')->group(function () {
 Route::prefix('/doctor')->group(function () {
     Route::post('/login', [LoginController::class, 'doctorLogin']);
     Route::get('/{id}', [DoctorController::class, 'getDoctorInformationById']);
-
+    Route::get('/drug/list', [DrugController::class, 'getListDrugs']);
     Route::middleware(['auth:sanctum', 'type.doctor'])->group(function () {
         Route::prefix('shift')->group(function () {
             Route::post('/register', [DoctorController::class, 'registerShift']);

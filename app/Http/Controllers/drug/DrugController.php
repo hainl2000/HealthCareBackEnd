@@ -22,7 +22,7 @@ class DrugController extends ApiController
     public function getListDrugs(Request $request)
     {
         $paginationParams = [];
-        $paginationParams['recordsPerPage'] = $request->input('itemsPerPage', PaginationParams::RecordsPerPage);
+        $paginationParams['itemsPerPage'] = $request->input('itemsPerPage', PaginationParams::RecordsPerPage);
         $paginationParams['currentPage'] = $request->input('currentPage', PaginationParams::FirstPage);
         try {
             $records = $this->drugService->getListDrugs($paginationParams);
