@@ -28,10 +28,6 @@ return new class extends Migration
             $table->string('note', 512)->nullable();
             $table->timestamps();
         });
-
-        Schema::table('booking_information', function (Blueprint $table) {
-            $table->integer('prescription_id')->after('image');
-        });
     }
 
     /**
@@ -42,8 +38,5 @@ return new class extends Migration
     public function down()
     {
         Schema::dropIfExists('prescriptions');
-        Schema::table('booking_information', function (Blueprint $table) {
-            $table->dropColumn("prescription_id");
-        });
     }
 };

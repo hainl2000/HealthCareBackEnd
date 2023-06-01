@@ -9,5 +9,7 @@ interface BookingServiceInterface
     public function getListBooking($attributes = ["*"], $doctorId = null, $searchConditions = []);
     public function updateBookingStatus($id, $status);
     public function getSoonestBooking();
+    public function rateBooking($bookingId, $rating);
+    public function updateFinishStatus($bookingId, $finishActor);
 
 }

@@ -17,5 +17,9 @@ return [
     'UPLOAD_FOLDER' => [
         'BOOKING_DIAGNOSE' => "public/booking/PreviousDiagnose",
         'AVATAR' => "public/avatar/"
+    ],
+
+    "RES_MESSAGES" => [
+        'RATING_SUCCESSFULLY' => "Đánh giá ca khám thành công",
     ]
 ];

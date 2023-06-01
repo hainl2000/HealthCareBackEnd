@@ -95,9 +95,9 @@ class BookingService implements BookingServiceInterface
         return $query->get();
     }
 
-    public function updateBookingStatus($id, $status)
+    public function updateBookingStatus($bookingId, $status)
     {
-        return BookingInformation::where('id', $id)->update([
+        return BookingInformation::where('id', $bookingId)->update([
             "status" => $status
         ]);
     }
@@ -132,5 +132,26 @@ class BookingService implements BookingServiceInterface
             ])
             ->orderByRaw('ABS(TIMESTAMPDIFF(MINUTE, ds.date, NOW()))')
             ->first();
+    }
+
+    public function rateBooking($bookingId, $rating)
+    {
+        $booking = BookingInformation::where([
+            'id' => $bookingId
+        ])->first();
+        if ($booking) {
+            $booking->rate = Arr::get($rating, 'rate');
+            $booking->comment = Arr::get($rating, 'comment');
+            $booking->save();
+        }
+        return $booking;
+    }
+
+    public function updateFinishStatus($bookingId, $finishActor)
+    {
+        $finishActor = $finishActor . "_status";
+        return BookingInformation::where('id', $bookingId)->update([
+            $finishActor => true
+        ]);
     }
 }

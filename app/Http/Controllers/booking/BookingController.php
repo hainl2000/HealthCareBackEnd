@@ -16,6 +16,9 @@ use Illuminate\Support\Facades\DB;
 
 class BookingController extends ApiController
 {
+    const PATIENT_ACTOR = "patient";
+    const DOCTOR_ACTOR = "patient";
+
     private $bookingService;
     private $fileService;
     private $shiftService;
@@ -173,14 +176,37 @@ class BookingController extends ApiController
         }
     }
 
+    public function rateBooking(Request $request)
+    {
+        $bookingId = $request->input('booking_id');
+        $rating = $request->input('rating');
+        try {
+            $this->apiBeginTransaction();
+            $updatedBooking = $this->bookingService->rateBooking($bookingId, $rating);
+            if (!$updatedBooking) {
+                throw new \Exception("rate booking error");
+            }
+
+            if (!$this->bookingService->updateFinishStatus($bookingId, self::PATIENT_ACTOR)) {
+                throw new \Exception("Update patient finish error");
+            }
+            if ($updatedBooking->doctor_finish) {
+                if (!$this->bookingService->updateBookingStatus($bookingId, Config::get("constants.BOOKING_STATUS.END"))) {
+                    throw new \Exception("Update status error");
+                }
+            }
+            $this->apiCommit();
+            $this->respondSuccessWithoutData(Config::get("constants.RES_MESSAGES.RATING_SUCCESSFULLY"));
+
+        } catch (\Exception $e) {
+            $this->apiRollback();
+            $this->respondError($e->getMessage());
+        }
+    }
+
     public function getSoonestBooking()
     {
         $soonestBooking = $this->bookingService->getSoonestBooking();
         return $this->respondSuccess($soonestBooking);
-    }
-
-    public function changeBooking()
-    {
-
     }
 }
