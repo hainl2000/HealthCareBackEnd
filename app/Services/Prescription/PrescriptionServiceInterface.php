@@ -4,5 +4,5 @@ namespace App\Services\Prescription;
 
 interface PrescriptionServiceInterface
 {
-    public function createPrescription();
+    public function createPrescription($bookingId, $prescriptionData);
 }

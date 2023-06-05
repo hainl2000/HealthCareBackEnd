@@ -7,6 +7,7 @@ use App\Http\Controllers\ApiController;
 use App\Services\Auth\AuthServiceInterface;
 use App\Services\Booking\BookingServiceInterface;
 use App\Services\File\FileServiceInterface;
+use App\Services\Prescription\PrescriptionService;
 use App\Services\Shifts\ShiftServiceInterface;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
@@ -23,18 +24,22 @@ class BookingController extends ApiController
     private $fileService;
     private $shiftService;
     private $authService;
+    private $prescriptionService;
+
 
     public function __construct(
         BookingServiceInterface $bookingService,
         FileServiceInterface $fileService,
         ShiftServiceInterface $shiftService,
-        AuthServiceInterface $authService
+        AuthServiceInterface $authService,
+        PrescriptionService $prescriptionService
     )
     {
         $this->bookingService = $bookingService;
         $this->fileService = $fileService;
         $this->shiftService = $shiftService;
         $this->authService = $authService;
+        $this->prescriptionService = $prescriptionService;
     }
 
     public function createBooking(Request $request)
@@ -47,7 +52,6 @@ class BookingController extends ApiController
         if (isset($prevDiagnose)) {
             $bookingData["prev_diagnose"] = $this->fileService->uploadImage($folderPath, $prevDiagnose);
         }
-        //TODO: integrate meeting service
         try {
             $this->apiBeginTransaction();
             $this->bookingService->createBooking($bookingData);
@@ -83,7 +87,7 @@ class BookingController extends ApiController
                 "booking_information.created_at as booking_created_at",
                 "ds.date as booking_start_date",
                 "do.name as doctor_name",
-                "sp.name as doctor_specialization"
+                "sp.name as doctor_specialization",
             ];
         }
         $bookingInformation = $this->bookingService->getBookingInformationById($id, $selectData, $isShortInformation);
@@ -212,6 +216,21 @@ class BookingController extends ApiController
 
     public function createPrescription(Request $request)
     {
-        //TODO
+        $prescriptionData = $request->input('prescription');
+        $bookingId = $request->input('booking_id');
+
+        try {
+            $this->apiBeginTransaction();
+            $isCreatedPrescription = $this->prescriptionService->createPrescription($bookingId, $prescriptionData);
+            if (!$isCreatedPrescription) {
+                throw new \Exception('create prescription fail');
+            }
+
+            $this->apiCommit();
+            $this->respondCreated([]);
+        } catch (\Exception $e) {
+            $this->apiRollback();
+            $this->respondError($e->getMessage());
+        }
     }
 }

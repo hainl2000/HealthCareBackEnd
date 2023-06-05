@@ -34,6 +34,6 @@ class BookingInformation extends Model
 
     public function prescription()
     {
-        return $this->hasOne(Prescription::class, 'booking_id', 'id');
+        return $this->hasOne(Prescription::class, 'booking_id', 'id')->withTrashed();
     }
 }

@@ -18,15 +18,19 @@ return new class extends Migration
             $table->integer('booking_id');
             $table->string('diagnose', 512);
             $table->string('additional_direction', 512)->nullable();
-            $table->integer('drug_id');
+            $table->timestamps();
+        });
+
+        Schema::create('prescription_drugs', function (Blueprint $table) {
+            $table->integer('prescription_id');
+            $table->integer('drug_id')->nullable();
+            $table->string('other_drug_name', 256)->nullable();
+            $table->integer('other_drug_unit')->nullable();
             $table->integer('dosages');
             $table->integer('number_per_time');
-            $table->boolean('in_morning')->nullable();
-            $table->boolean('in_afternoon')->nullable();
-            $table->boolean('in_evening')->nullable();
+            $table->json('times');
             $table->integer('meals');
             $table->string('note', 512)->nullable();
-            $table->timestamps();
         });
     }
 
@@ -38,5 +42,6 @@ return new class extends Migration
     public function down()
     {
         Schema::dropIfExists('prescriptions');
+        Schema::dropIfExists('prescription_drugs');
     }
 };

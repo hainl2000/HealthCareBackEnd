@@ -29,7 +29,7 @@ return new class extends Migration
     public function down()
     {
         Schema::table('booking_information', function (Blueprint $table) {
-            $table->dropColumn('rate');
+            $table->dropColumn('rating');
             $table->dropColumn('comment');
             $table->dropColumn('patient_finish');
             $table->dropColumn('doctor_finish');

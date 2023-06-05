@@ -12,6 +12,8 @@ use App\Services\File\FileService;
 use App\Services\File\FileServiceInterface;
 use App\Services\Google\GoogleService;
 use App\Services\Google\GoogleServiceInterface;
+use App\Services\Prescription\PrescriptionService;
+use App\Services\Prescription\PrescriptionServiceInterface;
 use Illuminate\Support\ServiceProvider;
 
 use App\Services\Specializations\SpecializationService;
@@ -44,6 +46,7 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(GoogleServiceInterface::class, GoogleService::class);
         $this->app->bind(AuthServiceInterface::class, AuthService::class);
         $this->app->bind(DrugServiceInterface::class, DrugService::class);
+        $this->app->bind(PrescriptionServiceInterface::class, PrescriptionService::class);
     }
 
     /**

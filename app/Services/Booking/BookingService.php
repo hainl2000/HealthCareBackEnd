@@ -46,7 +46,8 @@ class BookingService implements BookingServiceInterface
 
     public function getBookingInformationById($id, $attributes = ["*"], $isShortInformation = false)
     {
-        $query = BookingInformation::select($attributes);
+        $query = BookingInformation::with('prescription.prescriptionDrugs.drug')
+            ->select($attributes);
         if (!$isShortInformation) {
             $query = $query->join('doctor_shift as ds', function ($join) {
                     $join->on('ds.id', '=', 'booking_information.shift_id');
