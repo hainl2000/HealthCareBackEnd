@@ -25,7 +25,7 @@ return new class extends Migration
             $table->integer('prescription_id');
             $table->integer('drug_id')->nullable();
             $table->string('other_drug_name', 256)->nullable();
-            $table->integer('other_drug_unit')->nullable();
+            $table->string('other_drug_unit')->nullable();
             $table->integer('dosages');
             $table->integer('number_per_time');
             $table->json('times');

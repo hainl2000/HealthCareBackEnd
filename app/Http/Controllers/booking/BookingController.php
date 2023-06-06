@@ -217,20 +217,20 @@ class BookingController extends ApiController
     public function createPrescription(Request $request)
     {
         $prescriptionData = $request->input('prescription');
-        $bookingId = $request->input('booking_id');
+        $shiftId = $request->input('shift_id');
 
         try {
             $this->apiBeginTransaction();
-            $isCreatedPrescription = $this->prescriptionService->createPrescription($bookingId, $prescriptionData);
+            $isCreatedPrescription = $this->prescriptionService->createPrescription($shiftId, $prescriptionData);
             if (!$isCreatedPrescription) {
-                throw new \Exception('create prescription fail');
+                throw new \Exception('tao moi loi');
             }
 
             $this->apiCommit();
-            $this->respondCreated([]);
+            return $this->respondCreated(["message" => "tao thanh cong"]);
         } catch (\Exception $e) {
             $this->apiRollback();
-            $this->respondError($e->getMessage());
+            return $this->respondError($e->getMessage());
         }
     }
 }

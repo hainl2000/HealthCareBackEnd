@@ -2,16 +2,17 @@
 
 namespace App\Services\Prescription;
 
-use App\Models\Drug;
+use App\Models\BookingInformation;
 use App\Models\Prescription;
 use App\Models\PrescriptionDrugs;
 use Illuminate\Support\Arr;
 
 class PrescriptionService implements PrescriptionServiceInterface
 {
-    public function createPrescription($bookingId, $prescriptionData)
+    public function createPrescription($shiftId, $prescriptionData)
     {
         try {
+            $bookingId = $this->getBookingInformationByShiftId($shiftId)->id;
             $newPrescription =  Prescription::create([
                 'booking_id' => $bookingId,
                 'diagnose' => Arr::get($prescriptionData, 'diagnose'),
@@ -20,9 +21,9 @@ class PrescriptionService implements PrescriptionServiceInterface
             if (!$newPrescription) {
                 throw new \Exception('create new prescription fail');
             }
-
-            $insertPrescriptionDrugsDatas = $this->handlePrescriptionDrugsData($newPrescription->id , Arr::get($prescriptionData, 'prescription_drugs'));
+            $insertPrescriptionDrugsDatas = $this->handlePrescriptionDrugsData($newPrescription->id , Arr::get($prescriptionData, 'prescriptionDrugs'));
             $isCreatedPrescriptionDrugs = PrescriptionDrugs::insert($insertPrescriptionDrugsDatas);
+
             if (!$isCreatedPrescriptionDrugs) {
                 throw new \Exception('create list prescription drugs fail');
             }
@@ -33,6 +34,13 @@ class PrescriptionService implements PrescriptionServiceInterface
             return false;
         }
 
+    }
+
+    private function getBookingInformationByShiftId($shiftId)
+    {
+        return BookingInformation::where([
+            'shift_id' => $shiftId
+        ])->first();
     }
 
     private function handlePrescriptionDrugsData($prescriptionId, $prescriptionDrugs)
@@ -46,10 +54,10 @@ class PrescriptionService implements PrescriptionServiceInterface
                 $drugData['other_drug_name'] = Arr::get($drug, 'is_other') ? Arr::get($drug, 'name') : null;
                 $drugData['other_drug_unit'] = Arr::get($drug, 'is_other') ? Arr::get($drug, 'unit') : null;
                 $drugData['dosages'] = $drug['dosages'];
-                $drugData['number_per_time'] = $drug['number_per_time'];
+                $drugData['number_per_time'] = 2;
                 $drugData['times'] = json_encode($drug['times']);
                 $drugData['meals'] = $drug['meals'];
-                $drugData['note'] = $drug['note'] ?? "";
+                $drugData['note'] = Arr::get($drug, 'note') ?? "";
                 $insertPrescriptionDrugsDatas[] = $drugData;
             }
             return $insertPrescriptionDrugsDatas;
