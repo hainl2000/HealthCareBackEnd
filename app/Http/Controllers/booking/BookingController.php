@@ -287,7 +287,33 @@ class BookingController extends ApiController
 
     public function changeBooking(Request $request)
     {
-        //change shift id
-        //change status doctor_shift old and new
+        $bookingId = $request->input('booking_id');
+        $changeShiftId = $request->input('change_shift_id');
+
+        try {
+            $this->apiBeginTransaction();
+
+            if (!$this->shiftService->updateShiftStatus($changeShiftId, Config::get('constants.SHIFT.HAVE_PATIENT_STATUS'))) {
+                return new \Exception('update change shift status fail');
+            }
+
+            $selectBookingAttributes = [
+                'shift_id'
+            ];
+            $booking = $this->bookingService->getBookingInformationById($bookingId, $selectBookingAttributes, true);
+            if (!$this->shiftService->updateShiftStatus($booking->shift_id, Config::get('constants.SHIFT.NO_PATIENT_STATUS'))) {
+                return new \Exception('update old shift status fail');
+            }
+
+            if (!$this->bookingService->updateBookingShift($bookingId, $changeShiftId)) {
+                return new \Exception('update booking shift fail');
+            }
+
+            $this->apiCommit();
+            return $this->respondSuccessWithoutData("Cap nhat thanh cong");
+        } catch (\Exception $e) {
+            $this->apiRollback();
+            return $this->respondError($e->getMessage());
+        }
     }
 }

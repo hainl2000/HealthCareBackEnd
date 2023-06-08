@@ -31,6 +31,7 @@ Route::prefix('/user')->group(function() {
     Route::prefix('/booking')->group(function () {
         Route::post('/create', [BookingController::class, 'createBooking']);
         Route::post('/rate', [BookingController::class, 'rateBooking']);
+        Route::post('/change', [BookingController::class, 'changeBooking']);
     });
 });
 

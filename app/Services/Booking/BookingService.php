@@ -186,4 +186,13 @@ class BookingService implements BookingServiceInterface
             'shift_id' => $shiftId
         ])->first();
     }
+
+    public function updateBookingShift($bookingId, $changeShiftId)
+    {
+        return BookingInformation::where([
+            'id' => $bookingId
+        ])->update([
+            'shift_id' => $changeShiftId
+        ]);
+    }
 }
