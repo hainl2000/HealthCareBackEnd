@@ -2,12 +2,15 @@
 
 namespace App\Http\Controllers\booking;
 
+use App\Enums\Status;
 use App\Events\PushLatestPatientEvent;
 use App\Http\Controllers\ApiController;
+use App\Models\BookingInformation;
 use App\Services\Auth\AuthServiceInterface;
 use App\Services\Booking\BookingServiceInterface;
 use App\Services\File\FileServiceInterface;
 use App\Services\Prescription\PrescriptionService;
+use App\Services\Prescription\PrescriptionServiceInterface;
 use App\Services\Shifts\ShiftServiceInterface;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
@@ -18,7 +21,7 @@ use Illuminate\Support\Facades\DB;
 class BookingController extends ApiController
 {
     const PATIENT_ACTOR = "patient";
-    const DOCTOR_ACTOR = "patient";
+    const DOCTOR_ACTOR = "doctor";
 
     private $bookingService;
     private $fileService;
@@ -32,7 +35,7 @@ class BookingController extends ApiController
         FileServiceInterface $fileService,
         ShiftServiceInterface $shiftService,
         AuthServiceInterface $authService,
-        PrescriptionService $prescriptionService
+        PrescriptionServiceInterface $prescriptionService
     )
     {
         $this->bookingService = $bookingService;
@@ -85,13 +88,50 @@ class BookingController extends ApiController
                 "booking_information.image as patient_history_image",
                 "booking_information.video_link as booking_video_link",
                 "booking_information.created_at as booking_created_at",
+                "booking_information.rating as booking_rating",
+                "booking_information.comment as booking_comment",
+                "booking_information.patient_finish",
+                "booking_information.doctor_finish",
                 "ds.date as booking_start_date",
                 "do.name as doctor_name",
+                "do.id as doctor_id",
                 "sp.name as doctor_specialization",
+                "sp.slug"
             ];
         }
-        $bookingInformation = $this->bookingService->getBookingInformationById($id, $selectData, $isShortInformation);
+        $bookingInformation = $this->bookingService->getBookingInformationById($id, $selectData, $isShortInformation)->toArray();
+        if ($prescription = Arr::get($bookingInformation, "prescription")) {
+            $bookingInformation["prescription"] = $this->handlePrescriptionResource($prescription);
+        }
         return $this->respondSuccess($bookingInformation);
+    }
+
+    private function handlePrescriptionResource($prescription)
+    {
+        $returnPrescriptionData = [];
+        $returnPrescriptionData["id"] = $prescription["id"];
+        $returnPrescriptionData["diagnose"] = $prescription["diagnose"];
+        $returnPrescriptionData["additional_direction"] = $prescription["additional_direction"];
+        $returnPrescriptionData["prescriptionDrugs"] = [];
+        foreach ($prescription["prescription_drugs"] as $drug) {
+            $drugData = [];
+            $drugData["id"] = $drug["drug_id"];
+            if ($drugData["id"]) {
+                $drugData["name"] = $drug["drug"]["name"];
+                $drugData["unit"] = $drug["drug"]["unit"];
+            } else {
+                $drugData["is_other"] = true;
+                $drugData["name"] = $drug["other_drug_name"];
+                $drugData["unit"] = $drug["other_drug_unit"];
+            }
+            $drugData["dosages"] = $drug["dosages"];
+            $drugData["number_per_time"] = $drug["number_per_time"];
+            $drugData["meals"] = strval($drug["meals"]);
+            $drugData["note"] = $drug["note"];
+            $drugData["times"] = $drug["times"];
+            $returnPrescriptionData["prescriptionDrugs"][] = $drugData;
+        }
+        return $returnPrescriptionData;
     }
 
     public function getListBooking()
@@ -191,11 +231,8 @@ class BookingController extends ApiController
                 throw new \Exception("rate booking error");
             }
 
-            if (!$this->bookingService->updateFinishStatus($bookingId, self::PATIENT_ACTOR)) {
-                throw new \Exception("Update patient finish error");
-            }
             if ($updatedBooking->doctor_finish) {
-                if (!$this->bookingService->updateBookingStatus($bookingId, Config::get("constants.BOOKING_STATUS.END"))) {
+                if (!$this->bookingService->updateBookingStatus($updatedBooking->id, Config::get("constants.BOOKING_STATUS.END"))) {
                     throw new \Exception("Update status error");
                 }
             }
@@ -217,13 +254,27 @@ class BookingController extends ApiController
     public function createPrescription(Request $request)
     {
         $prescriptionData = $request->input('prescription');
-        $shiftId = $request->input('shift_id');
+        $bookingId = $request->input('booking_id');
 
         try {
             $this->apiBeginTransaction();
-            $isCreatedPrescription = $this->prescriptionService->createPrescription($shiftId, $prescriptionData);
+            $isCreatedPrescription = $this->prescriptionService->createPrescription($bookingId, $prescriptionData);
             if (!$isCreatedPrescription) {
                 throw new \Exception('tao moi loi');
+            }
+
+            $booking = BookingInformation::where([
+                'id' => $bookingId
+            ])->first();
+
+            if (!$this->bookingService->updateFinishStatus($booking->id, self::DOCTOR_ACTOR, Status::ACTIVE)) {
+                throw new \Exception("Update patient finish error");
+            }
+
+            if ($booking->patient_finish) {
+                if (!$this->bookingService->updateBookingStatus($booking->id, Config::get("constants.BOOKING_STATUS.END"))) {
+                    throw new \Exception("Update status error");
+                }
             }
 
             $this->apiCommit();
@@ -232,5 +283,11 @@ class BookingController extends ApiController
             $this->apiRollback();
             return $this->respondError($e->getMessage());
         }
+    }
+
+    public function changeBooking(Request $request)
+    {
+        //change shift id
+        //change status doctor_shift old and new
     }
 }

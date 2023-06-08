@@ -10,6 +10,7 @@ interface BookingServiceInterface
     public function updateBookingStatus($id, $status);
     public function getSoonestBooking();
     public function rateBooking($bookingId, $rating);
-    public function updateFinishStatus($bookingId, $finishActor);
+    public function updateFinishStatus($bookingId, $finishActor, $status);
+    public function getBookingInformationByShiftId($shiftId);
 
 }

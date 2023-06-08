@@ -9,10 +9,9 @@ use Illuminate\Support\Arr;
 
 class PrescriptionService implements PrescriptionServiceInterface
 {
-    public function createPrescription($shiftId, $prescriptionData)
+    public function createPrescription($bookingId, $prescriptionData)
     {
         try {
-            $bookingId = $this->getBookingInformationByShiftId($shiftId)->id;
             $newPrescription =  Prescription::create([
                 'booking_id' => $bookingId,
                 'diagnose' => Arr::get($prescriptionData, 'diagnose'),
@@ -30,17 +29,9 @@ class PrescriptionService implements PrescriptionServiceInterface
 
             return true;
         } catch (\Exception $e) {
-            dd($e->getMessage());
             return false;
         }
 
-    }
-
-    private function getBookingInformationByShiftId($shiftId)
-    {
-        return BookingInformation::where([
-            'shift_id' => $shiftId
-        ])->first();
     }
 
     private function handlePrescriptionDrugsData($prescriptionId, $prescriptionDrugs)

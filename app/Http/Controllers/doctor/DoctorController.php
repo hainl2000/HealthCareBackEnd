@@ -49,9 +49,10 @@ class DoctorController extends ApiController
         return $this->respondSuccess($registeredShifts);
     }
 
-    public function getDoctorsBySpecialization($slug)
+    public function getDoctorsBySpecialization(Request $request, $slug)
     {
-        $doctors = $this->doctorService->getDoctorsBySpecialization($slug);
+        $priorityId = $request->input('priorityId');
+        $doctors = $this->doctorService->getDoctorsBySpecialization($slug, $priorityId);
         return $this->respondSuccess($doctors);
     }
 

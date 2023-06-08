@@ -2,6 +2,7 @@
 
 namespace App\Services\Booking;
 
+use App\Enums\Status;
 use App\Models\BookingInformation;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Auth;
@@ -46,24 +47,42 @@ class BookingService implements BookingServiceInterface
 
     public function getBookingInformationById($id, $attributes = ["*"], $isShortInformation = false)
     {
-        $query = BookingInformation::with('prescription.prescriptionDrugs.drug')
-            ->select($attributes);
+        $query = BookingInformation::select($attributes);
         if (!$isShortInformation) {
-            $query = $query->join('doctor_shift as ds', function ($join) {
-                    $join->on('ds.id', '=', 'booking_information.shift_id');
-                })
-                ->join('shifts as sh', function ($join) {
-                    $join->on('sh.id', '=', 'ds.shift_id');
-                })
-                ->join('doctors as do', function ($join) {
-                    $join->on('do.id', '=', 'ds.doctor_id');
-                })
-                ->join('specializations as sp', function ($join) {
-                    $join->on('sp.id', '=', 'do.specialization_id');
-                });
+            $query = $query->with([
+                'prescription' => function ($builder) {
+                    $builder->select('id', 'booking_id', 'diagnose', 'additional_direction');
+                },
+                'prescription.prescriptionDrugs' => function ($builder) {
+                    $builder->select(
+                        'prescription_id',
+                        'drug_id',
+                        'other_drug_name',
+                        'other_drug_unit',
+                        'dosages',
+                        'number_per_time',
+                        'meals',
+                        'note',
+                        'times'
+                    );
+                },
+                'prescription.prescriptionDrugs.drug' => function ($builder) {
+                    $builder->select(
+                        'id', 'name', 'unit'
+                    );
+                }
+            ])->join('doctor_shift as ds', function ($join) {
+                $join->on('ds.id', '=', 'booking_information.shift_id');
+            })->join('shifts as sh', function ($join) {
+                $join->on('sh.id', '=', 'ds.shift_id');
+            })->join('doctors as do', function ($join) {
+                $join->on('do.id', '=', 'ds.doctor_id');
+            })->join('specializations as sp', function ($join) {
+                $join->on('sp.id', '=', 'do.specialization_id');
+            });
         }
 
-        return $query->where("booking_information.shift_id", "=", $id)->first();
+        return $query->where("booking_information.id", "=", $id)->first();
     }
 
     public function getListBooking($attributes = ["*"], $data = null, $searchConditions = [])
@@ -129,7 +148,7 @@ class BookingService implements BookingServiceInterface
             ->where([
                 ["ds.doctor_id", "=", $loginDoctorId],
                 ['ds.date', '>', now()],
-                ['booking_information.status', '=',  Config::get("constants.BOOKING_STATUS.NOT_START")]
+                ['booking_information.status', '=', Config::get("constants.BOOKING_STATUS.NOT_START")]
             ])
             ->orderByRaw('ABS(TIMESTAMPDIFF(MINUTE, ds.date, NOW()))')
             ->first();
@@ -137,22 +156,34 @@ class BookingService implements BookingServiceInterface
 
     public function rateBooking($bookingId, $rating)
     {
-        $booking = BookingInformation::where([
-            'id' => $bookingId
-        ])->first();
-        if ($booking) {
-            $booking->rate = Arr::get($rating, 'rate');
-            $booking->comment = Arr::get($rating, 'comment');
-            $booking->save();
+        try {
+            $booking = BookingInformation::where([
+                'id' => $bookingId
+            ])->first();
+            if ($booking) {
+                $booking->rating = Arr::get($rating, 'rating');
+                $booking->comment = Arr::get($rating, 'comment');
+                $booking->patient_finish = Status::ACTIVE;
+                $booking->save();
+            }
+            return $booking;
+        } catch (\Exception $e) {
+            return false;
         }
-        return $booking;
     }
 
-    public function updateFinishStatus($bookingId, $finishActor)
+    public function updateFinishStatus($bookingId, $finishActor, $status)
     {
-        $finishActor = $finishActor . "_status";
+        $finishActor = $finishActor . "_finish";
         return BookingInformation::where('id', $bookingId)->update([
-            $finishActor => true
+            $finishActor => $status
         ]);
+    }
+
+    public function getBookingInformationByShiftId($shiftId)
+    {
+        return BookingInformation::where([
+            'shift_id' => $shiftId
+        ])->first();
     }
 }

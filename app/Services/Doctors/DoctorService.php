@@ -77,7 +77,7 @@ class DoctorService implements DoctorServiceInterface
         return $registeredShifts;
     }
 
-    public function getDoctorsBySpecialization($slug)
+    public function getDoctorsBySpecialization($slug, $priorityId = null)
     {
         $selectData = [
             "doctors.id",
@@ -95,8 +95,12 @@ class DoctorService implements DoctorServiceInterface
             }, "doctor_information"])
             ->whereHas('specializations', function (Builder $query) use ($slug) {
                 $query->where('specializations.slug', '=', $slug);
-            })
-            ->get($selectData);
+            });
+        if ($priorityId) {
+            $doctors->orderByRaw('(id = ?) DESC', [$priorityId]);
+        }
+        $doctors = $doctors->get($selectData);
+
         foreach ($doctors as $doctor) {
             if (isset($doctor["doctor_information"])) {
                 $doctor["doctor_information"]["short_introduction"] = htmlspecialchars_decode($doctor["doctor_information"]["short_introduction"]);
