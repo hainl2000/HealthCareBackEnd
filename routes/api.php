@@ -79,7 +79,7 @@ Route::prefix('/admin')->group(function() {
 });
 
 Route::prefix('/notification')->group(function() {
-    Route::get('/', [NotificationController::class, 'getNotification']);
+    Route::get('/', [NotificationController::class, 'getNotifications']);
     Route::post('/markSeen', [NotificationController::class, 'markNotificationsSeen']);
 });
 

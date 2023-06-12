@@ -4,8 +4,9 @@ namespace App\Services\Notification;
 
 interface NotificationServiceInterface
 {
-    public function updateNotificationsStatus($listNotificationIds);
-    public function getNotifications($receiverActor, $receiverId, $isCountOnly);
+    public function getNotifications($receiveActor, $receiverId, $isCountOnly);
     public function notifyNewNotification($channel, $actor, $notificationData);
     public function createTransferringMoneyNotification($bookingId);
+    public function createBookingConfirmationNotificationForDoctor($bookingId, $doctorId);
+    public function createBookingConfirmationNotificationForUser($bookingId, $userId);
 }

@@ -21,28 +21,23 @@ class NotificationService implements NotificationServiceInterface
             'receive_actor' => Arr::get($notificationData, 'receive_actor'),
             'title' => Arr::get($notificationData, 'title'),
             'description' => Arr::get($notificationData, 'description'),
-            'is_seen' => Status::INACTIVE
+            'is_seen' => Status::ACTIVE
         ]);
     }
 
-    public function updateNotificationsStatus($listNotificationIds)
-    {
-        //TODO: update notification status to seen
-    }
-
-    public function getNotifications($receiverActor, $receiverId, $isCountOnly)
+    public function getNotifications($receiveActor, $receiverId, $isCountOnly)
     {
         $query = Notification::where([
-            'receive_actor' => Config::get('constants.ACTOR.ADMIN')
+            'receive_actor' => $receiveActor
         ]);
-        if ($receiverActor != Config::get('constants.ACTOR.ADMIN')) {
+        if ($receiveActor != Config::get('constants.ACTOR.ADMIN')) {
             $query = $query->where([
                 'receiver_id' => $receiverId
             ]);
         }
         if ($isCountOnly) {
             $records = $query->where([
-                'is_seen' => Status::INACTIVE
+                'is_seen' => Status::ACTIVE
             ])->count();
         } else {
             $records = $query->get();
@@ -55,6 +50,44 @@ class NotificationService implements NotificationServiceInterface
         event(new NewNotification($channel, $actor, $notificationData));
     }
 
+    public function createBookingConfirmationNotificationForDoctor($bookingId, $doctorId)
+    {
+        $replaceData = [
+            'bookingId' => $bookingId
+        ];
+        $description = replacePlaceholders(Config::get('constants.NOTIFICATIONS.BOOKING_CONFIRMATION_FOR_DOCTOR.DESCRIPTION'), $replaceData);
+        $bookingConfirmationNotificationData = [
+            'direct_id' => $bookingId,
+            'direct_object' => Config::get('constants.NOTIFICATIONS.BOOKING_CONFIRMATION_FOR_DOCTOR.DIRECT_OBJECT'),
+            'receiver_id' => $doctorId,
+            'receive_actor' => Config::get('constants.NOTIFICATIONS.BOOKING_CONFIRMATION_FOR_DOCTOR.RECEIVE_ACTOR'),
+            'title' => Config::get('constants.NOTIFICATIONS.BOOKING_CONFIRMATION_FOR_DOCTOR.TITLE'),
+            'description' => $description,
+            'is_seen' => Status::ACTIVE
+        ];
+
+        return $this->createNotification($bookingConfirmationNotificationData);
+    }
+
+    public function createBookingConfirmationNotificationForUser($bookingId, $userId)
+    {
+        $replaceData = [
+            'bookingId' => $bookingId
+        ];
+        $description = replacePlaceholders(Config::get('constants.NOTIFICATIONS.BOOKING_CONFIRMATION_FOR_USER.DESCRIPTION'), $replaceData);
+        $bookingConfirmationNotificationData = [
+            'direct_id' => $bookingId,
+            'direct_object' => Config::get('constants.NOTIFICATIONS.BOOKING_CONFIRMATION_FOR_USER.DIRECT_OBJECT'),
+            'receiver_id' => $userId,
+            'receive_actor' => Config::get('constants.NOTIFICATIONS.BOOKING_CONFIRMATION_FOR_USER.RECEIVE_ACTOR'),
+            'title' => Config::get('constants.NOTIFICATIONS.BOOKING_CONFIRMATION_FOR_USER.TITLE'),
+            'description' => $description,
+            'is_seen' => Status::ACTIVE
+        ];
+
+        return $this->createNotification($bookingConfirmationNotificationData);
+    }
+
     public function createTransferringMoneyNotification($bookingId)
     {
         $replaceData = [
@@ -65,7 +98,7 @@ class NotificationService implements NotificationServiceInterface
         $transferringMoneyNotificationData = [
             'direct_id' => $bookingId,
             'direct_object' => Config::get('constants.NOTIFICATIONS.MONEY_TRANSFER.DIRECT_OBJECT'),
-            'receiver_id' => Config::get('constants.NOTIFICATIONS.MONEY_TRANSFER.RECEIVER_ID'),
+            'receiver_id' => null,
             'receive_actor' => Config::get('constants.NOTIFICATIONS.MONEY_TRANSFER.RECEIVE_ACTOR'),
             'title' => Config::get('constants.NOTIFICATIONS.MONEY_TRANSFER.TITLE'),
             'description' => $description,

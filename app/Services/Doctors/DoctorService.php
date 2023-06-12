@@ -154,5 +154,23 @@ class DoctorService implements DoctorServiceInterface
             ->whereNull('deleted_at')
             ->get();
     }
+
+    public function getDoctorInformationByBookingId($bookingId)
+    {
+        $selectData = [
+            'doctors.*'
+        ];
+        return Doctor::select($selectData)
+            ->join('doctor_shift as ds', function ($join) {
+                $join->on('ds.doctor_id', '=', 'doctors.id');
+            })
+            ->join('booking_information as bi', function ($join) {
+                $join->on('bi.shift_id', '=', 'ds.id');
+            })
+            ->where([
+                'bi.id' => $bookingId
+            ])
+            ->first();
+    }
 }
 

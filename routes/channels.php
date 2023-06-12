@@ -21,4 +21,11 @@ Broadcast::channel('doctor-channel-{doctorId}', function () {
     return true;
 });
 
-Broadcast::channel('admin-channel', [NotificationController::class, 'handleResponseNotification']);
+Broadcast::channel('admin-channel', function () {
+    return true;
+});
+
+Broadcast::channel('user-channel-{userId}', function () {
+    return true;
+});
+

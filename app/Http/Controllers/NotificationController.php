@@ -38,7 +38,7 @@ class NotificationController extends ApiController
         }
     }
 
-    public function getNotification(Request $request)
+    public function getNotifications(Request $request)
     {
         try {
             $loggingActor = $this->handleLoggingActor();
@@ -47,7 +47,7 @@ class NotificationController extends ApiController
             }
             $isCountOnly = $request->query('is_count_only');
             $notifications = $this->notifcationService->getNotifications($loggingActor, Auth::guard('sanctum')->id(), $isCountOnly);
-            if (!$notifications) {
+            if (!isset($notifications)) {
                 throw new \Exception();
             }
             return $this->respond($notifications);
