@@ -16,6 +16,7 @@ use App\Services\Notification\NotificationService;
 use App\Services\Notification\NotificationServiceInterface;
 use App\Services\Prescription\PrescriptionService;
 use App\Services\Prescription\PrescriptionServiceInterface;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\ServiceProvider;
 
 use App\Services\Specializations\SpecializationService;
@@ -59,6 +60,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        //
+        Builder::macro('whereLike', function(string $attribute, string $searchTerm) {
+            return $this->orWhere($attribute, 'LIKE', "%{$searchTerm}%");
+        });
     }
 }

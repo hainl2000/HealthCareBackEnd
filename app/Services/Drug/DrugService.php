@@ -20,10 +20,14 @@ class DrugService implements DrugServiceInterface
 
     public function getListDrugs($paginationParams)
     {
+        $query = Drug::query();
+        if (!empty($paginationParams['name'])) {
+            $query = $query->whereLike('name', "%{$paginationParams['name']}%");
+        }
         if ($paginationParams['itemsPerPage'] == PaginationParams::GetAllItems) {
-            $records = Drug::all();
+            $records = $query->get();
         } else {
-            $records = Drug::paginate($paginationParams['itemsPerPage']);
+            $records = $query->paginate($paginationParams['itemsPerPage']);
         }
         return $records;
     }

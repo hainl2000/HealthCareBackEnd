@@ -58,7 +58,7 @@ class BookingController extends ApiController
         try {
             $this->apiBeginTransaction();
             $this->bookingService->createBooking($bookingData);
-            $this->shiftService->updateShiftStatus($bookingData["shift_id"], Config::get("constants.SHIFT.HAVE_PATIENT_STATUS"));
+            $this->shiftService->updateShiftStatus($bookingData["shift_id"], Config::get("constants.SHIFT.CHOSEN_STATUS"));
             $this->apiCommit();
             return $this->respondCreated();
         } catch (\Exception $e) {
@@ -70,6 +70,10 @@ class BookingController extends ApiController
     public function getBookingInformation(Request $request, $id)
     {
         $isShortInformation = $request->input('short', false);
+        $isFromShirt = $request->input('from_shift', false);
+        if ($isFromShirt) {
+            $id = $this->bookingService->getBookingInformationByShiftId($id)->id;
+        }
         if ($isShortInformation) {
             $selectData = [
                 "id",
@@ -179,6 +183,7 @@ class BookingController extends ApiController
         return [
             "booking_information.id",
             "booking_information.name as patient_name",
+            "booking_information.phone_number as phone_number",
             "ds.date as date",
             "sh.end_time as end_time",
             "booking_information.status",
@@ -212,7 +217,7 @@ class BookingController extends ApiController
             $this->shiftService->updateShiftStatus($doctorShift->id, Config::get('constants.SHIFT.HAVE_PATIENT_STATUS'));
             $this->apiCommit();
 
-            event(new PushLatestPatientEvent(Auth::guard('sanctum')->id()));
+            event(new PushLatestPatientEvent($doctorShift->doctor_id));
             $this->respondNoContent();
         } catch (\Exception $e) {
             $this->apiRollback();
@@ -235,6 +240,7 @@ class BookingController extends ApiController
                 if (!$this->bookingService->updateBookingStatus($updatedBooking->id, Config::get("constants.BOOKING_STATUS.END"))) {
                     throw new \Exception("Update status error");
                 }
+                event(new PushLatestPatientEvent($updatedBooking->doctor_id));
             }
             $this->apiCommit();
             $this->respondSuccessWithoutData(Config::get("constants.RES_MESSAGES.RATING_SUCCESSFULLY"));
@@ -263,9 +269,7 @@ class BookingController extends ApiController
                 throw new \Exception('tao moi loi');
             }
 
-            $booking = BookingInformation::where([
-                'id' => $bookingId
-            ])->first();
+            $booking = $this->bookingService->getBookingInformationById($bookingId);
 
             if (!$this->bookingService->updateFinishStatus($booking->id, self::DOCTOR_ACTOR, Status::ACTIVE)) {
                 throw new \Exception("Update patient finish error");
@@ -275,6 +279,7 @@ class BookingController extends ApiController
                 if (!$this->bookingService->updateBookingStatus($booking->id, Config::get("constants.BOOKING_STATUS.END"))) {
                     throw new \Exception("Update status error");
                 }
+                event(new PushLatestPatientEvent($booking->doctor_id));
             }
 
             $this->apiCommit();
@@ -308,6 +313,7 @@ class BookingController extends ApiController
             if (!$this->bookingService->updateBookingShift($bookingId, $changeShiftId)) {
                 return new \Exception('update booking shift fail');
             }
+            event(new PushLatestPatientEvent($booking->doctor_id));
 
             $this->apiCommit();
             return $this->respondSuccessWithoutData("Cap nhat thanh cong");
