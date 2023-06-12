@@ -22,5 +22,23 @@ return [
 
     "RES_MESSAGES" => [
         'RATING_SUCCESSFULLY' => "Đánh giá ca khám thành công",
+    ],
+
+    'NOTIFICATIONS' => [
+        'MONEY_TRANSFER' => [
+            'CHANNEL' => 'admin-channel',
+            'ACTION' => 'notify-transferring-money',
+            'DIRECT_OBJECT' => 'AdminBookingInformation',
+            'RECEIVER_ID' => null,
+            'RECEIVE_ACTOR' => 'admin',
+            'TITLE' => 'THÔNG BÁO CHUYỂN TIỀN',
+            'DESCRIPTION' => 'Người dùng {name} đã thông báo chuyển tiền tới ca khám #{bookingId}'
+        ]
+    ],
+
+    'ACTOR' => [
+        'ADMIN' => 'admin',
+        'DOCTOR' => 'doctor',
+        'PATIENT' => 'patient',
     ]
 ];

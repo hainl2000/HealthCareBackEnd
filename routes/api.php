@@ -8,6 +8,7 @@ use App\Http\Controllers\specialization\SpecializationController;
 use App\Http\Controllers\shift\ShiftController;
 use App\Http\Controllers\booking\BookingController;
 use App\Http\Controllers\drug\DrugController;
+use App\Http\Controllers\NotificationController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -32,6 +33,7 @@ Route::prefix('/user')->group(function() {
         Route::post('/create', [BookingController::class, 'createBooking']);
         Route::post('/rate', [BookingController::class, 'rateBooking']);
         Route::post('/change', [BookingController::class, 'changeBooking']);
+        Route::post('/notify', [NotificationController::class, 'notifyTransferringMoney']);
     });
 });
 
@@ -74,6 +76,11 @@ Route::prefix('/admin')->group(function() {
     Route::post('/doctor/signup', [SignupController::class, 'signupDoctor']);
     Route::get('/doctor/list', [DoctorController::class, 'getListDoctor']);
     Route::get('/drug/list', [DrugController::class, 'getListDrugs']);
+});
+
+Route::prefix('/notification')->group(function() {
+    Route::get('/', [NotificationController::class, 'getNotification']);
+    Route::post('/markSeen', [NotificationController::class, 'markNotificationsSeen']);
 });
 
 //Route::get('/test', [BookingController::class, 'getSoonestBooking']);

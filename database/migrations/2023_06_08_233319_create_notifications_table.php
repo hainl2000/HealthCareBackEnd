@@ -15,9 +15,9 @@ return new class extends Migration
     {
         Schema::create('notifications', function (Blueprint $table) {
             $table->id();
-            $table->integer('direct_id');
-            $table->string('direct_object');
-            $table->integer('receiver_id');
+            $table->integer('direct_id')->nullable();
+            $table->string('direct_object')->nullable();
+            $table->integer('receiver_id')->nullable();
             $table->string('receive_actor');
             $table->string('title');
             $table->text('description');
