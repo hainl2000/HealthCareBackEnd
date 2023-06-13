@@ -58,7 +58,19 @@ class NotificationController extends ApiController
 
     public function markNotificationsSeen(Request $request)
     {
-
+        try {
+            $loggingActor = $this->handleLoggingActor();
+            if (!$loggingActor) {
+                throw new \Exception();
+            }
+            $isUpdated = $this->notifcationService->markNotificationsSeen($loggingActor, Auth::guard('sanctum')->id());
+            if (!$isUpdated) {
+                throw new \Exception();
+            }
+            $this->respondNoContent();
+        } catch (\Exception $e) {
+            return $this->respondError($e->getMessage());
+        }
     }
 
     private function handleLoggingActor()

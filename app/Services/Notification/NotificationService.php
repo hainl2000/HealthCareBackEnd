@@ -29,7 +29,7 @@ class NotificationService implements NotificationServiceInterface
     {
         $query = Notification::where([
             'receive_actor' => $receiveActor
-        ]);
+        ])->orderBy('created_at', 'DESC');
         if ($receiveActor != Config::get('constants.ACTOR.ADMIN')) {
             $query = $query->where([
                 'receiver_id' => $receiverId
@@ -106,5 +106,20 @@ class NotificationService implements NotificationServiceInterface
         ];
 
         return $this->createNotification($transferringMoneyNotificationData);
+    }
+
+    public function markNotificationsSeen($receiveActor, $receiverId)
+    {
+        $query = Notification::where([
+            'receive_actor' => $receiveActor
+        ]);
+        if ($receiveActor != Config::get('constants.ACTOR.ADMIN')) {
+            $query = $query->where([
+                'receiver_id' => $receiverId
+            ]);
+        }
+        return $query->update([
+            'is_seen' => Status::INACTIVE
+        ]);
     }
 }
