@@ -67,10 +67,11 @@ class DoctorController extends ApiController
     public function getListDoctor(Request $request)
     {
         $paginationParams = [];
-        $paginationParams['itemsPerPage'] = $request->input('itemsPerPage', PaginationParams::RecordsPerPage);
-        $paginationParams['currentPage'] = $request->input('currentPage', PaginationParams::FirstPage);
-        $paginationParams['name'] = $request->input('name');
-        $paginationParams['type'] = $request->input('type');
+        $paginationParams['itemsPerPage'] = $request->query('itemsPerPage', PaginationParams::RecordsPerPage);
+        $paginationParams['currentPage'] = $request->query('currentPage', PaginationParams::FirstPage);
+        $paginationParams['name'] = $request->query('name');
+        $paginationParams['type'] = $request->query('type');
+        $paginationParams['specialization_id'] = $request->query('specialization_id');
         $doctors = $this->doctorService->getListDoctor($paginationParams);
         return $this->respondSuccess($doctors);
     }

@@ -159,6 +159,9 @@ class DoctorService implements DoctorServiceInterface
         if (isset($paginationParams['type'])) {
             $query = $query->where('doctors.type', "=", $paginationParams['type']);
         }
+        if (isset($paginationParams['specialization_id'])) {
+            $query = $query->whereIn('doctors.specialization_id', $paginationParams['specialization_id']);
+        }
 
         $query = $query->whereNull('deleted_at');
         if ($paginationParams['itemsPerPage'] == PaginationParams::GetAllItems) {
