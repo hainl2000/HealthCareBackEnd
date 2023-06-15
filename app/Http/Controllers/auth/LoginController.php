@@ -113,9 +113,6 @@ class LoginController extends ApiController
                 throw new AuthorizationException();
             }
 
-            //login in 1 device at the same time
-            $admin->tokens()->delete();
-
             $adminData = [];
             $adminData['id'] = $admin->id;
             $adminData['name'] = $admin->name;

@@ -75,14 +75,14 @@ class SignupController extends ApiController
 
             $doctorInfo = $this->doctorService->insertDoctorInformation($doctor->id, $signupDoctorData);
             if ($doctor && $doctorInfo) {
-                $this->apiCommit();
+                $this->apiRollback();
             }
             $respData = [
                 "message" => 'Create new doctor successfully',
             ];
             $resp = $this->respondCreated($respData);
         } catch (\Exception $e) {
-            $this->apiRollback();
+            $this->apiCommit();
             $resp = $this->respondError($e->getMessage(),400);
         }
         return $resp;

@@ -12,7 +12,7 @@ class DrugService implements DrugServiceInterface
     {
         return Drug::create([
             'name' => Arr::get($drugData, 'name'),
-            'register_code' => Arr::get($drugData, 'registerCode'),
+            'register_code' => Arr::get($drugData, 'register_code'),
             'properties' => Arr::get($drugData, 'properties'),
             'unit' => Arr::get($drugData, 'unit'),
         ]);

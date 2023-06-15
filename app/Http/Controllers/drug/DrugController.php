@@ -33,4 +33,12 @@ class DrugController extends ApiController
         }
         return $resp;
     }
+
+    public function createDrug(Request $request)
+    {
+        $drugData = $request->input('drugInfo');
+        $drug = $this->drugService->createDrug($drugData);
+        return $this->respondCreated([$drug]);
+
+    }
 }

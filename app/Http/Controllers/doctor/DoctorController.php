@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\doctor;
 
+use App\Enums\PaginationParams;
 use App\Http\Controllers\ApiController;
 use App\Services\Doctors\DoctorServiceInterface;
 use Illuminate\Http\Request;
@@ -65,7 +66,12 @@ class DoctorController extends ApiController
 
     public function getListDoctor(Request $request)
     {
-        $doctors = $this->doctorService->getListDoctor($request);
+        $paginationParams = [];
+        $paginationParams['itemsPerPage'] = $request->input('itemsPerPage', PaginationParams::RecordsPerPage);
+        $paginationParams['currentPage'] = $request->input('currentPage', PaginationParams::FirstPage);
+        $paginationParams['name'] = $request->input('name');
+        $paginationParams['type'] = $request->input('type');
+        $doctors = $this->doctorService->getListDoctor($paginationParams);
         return $this->respondSuccess($doctors);
     }
 

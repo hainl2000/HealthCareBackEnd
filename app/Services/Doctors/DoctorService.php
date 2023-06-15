@@ -2,8 +2,10 @@
 
 namespace App\Services\Doctors;
 
+use App\Enums\PaginationParams;
 use App\Models\Doctor;
 use App\Models\DoctorInformation;
+use App\Models\Drug;
 use App\Models\Shift;
 use App\Models\Specialization;
 use Carbon\Carbon;
@@ -140,9 +142,9 @@ class DoctorService implements DoctorServiceInterface
         return $doctor;
     }
 
-    public function getListDoctor($searchParams)
+    public function getListDoctor($paginationParams)
     {
-        $selectData = [
+        $selectAttributes = [
             'doctors.id',
             'doctors.name',
             'doctors.type',
@@ -150,9 +152,21 @@ class DoctorService implements DoctorServiceInterface
             'doctors.created_by',
             'doctors.specialization_id'
         ];
-        return Doctor::select($selectData)->with("specializations:id,name","admin:id,name")
-            ->whereNull('deleted_at')
-            ->get();
+        $query = Doctor::query()->select($selectAttributes)->with("specializations:id,name","admin:id,name");
+        if (!empty($paginationParams['name'])) {
+            $query = $query->whereLike('doctors.name', "%{$paginationParams['name']}%");
+        }
+        if (isset($paginationParams['type'])) {
+            $query = $query->where('doctors.type', "=", $paginationParams['type']);
+        }
+
+        $query = $query->whereNull('deleted_at');
+        if ($paginationParams['itemsPerPage'] == PaginationParams::GetAllItems) {
+            $records = $query->get();
+        } else {
+            $records = $query->paginate($paginationParams['itemsPerPage']);
+        }
+        return $records;
     }
 
     public function getDoctorInformationByBookingId($bookingId)

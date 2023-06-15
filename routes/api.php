@@ -9,6 +9,7 @@ use App\Http\Controllers\shift\ShiftController;
 use App\Http\Controllers\booking\BookingController;
 use App\Http\Controllers\drug\DrugController;
 use App\Http\Controllers\NotificationController;
+use App\Http\Controllers\auth\LogoutController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -76,13 +77,16 @@ Route::prefix('/admin')->group(function() {
     Route::post('/doctor/signup', [SignupController::class, 'signupDoctor']);
     Route::get('/doctor/list', [DoctorController::class, 'getListDoctor']);
     Route::get('/drug/list', [DrugController::class, 'getListDrugs']);
+    Route::post('/drug/create', [DrugController::class, 'createDrug']);
 });
 
 Route::prefix('/notification')->group(function() {
     Route::get('/', [NotificationController::class, 'getNotifications']);
     Route::post('/markSeen', [NotificationController::class, 'markNotificationsSeen']);
 });
-
+Route::middleware(['auth:sanctum'])->group(function() {
+    Route::post('/logout', [LogoutController::class, 'actionLogout']);
+});
 //Route::get('/test', [BookingController::class, 'getSoonestBooking']);
 //Route::post('/create-meet', [\App\Services\Google\GoogleService::class, 'createMeeting']);
 
