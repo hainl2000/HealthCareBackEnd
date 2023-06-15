@@ -62,6 +62,7 @@ Route::prefix('/doctor')->group(function () {
     Route::middleware(['auth:sanctum', 'type.doctor'])->group(function () {
         Route::prefix('shift')->group(function () {
             Route::post('/register', [DoctorController::class, 'registerShift']);
+            Route::post('/cancel', [DoctorController::class, 'cancelShift']);
             Route::get('/list', [DoctorController::class, 'getRegisteredShifts']);
         });
         Route::prefix('booking')->group(function () {

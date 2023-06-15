@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\booking;
 
+use App\Enums\PaginationParams;
 use App\Enums\Status;
 use App\Http\Controllers\ApiController;
 use App\Services\Auth\AuthServiceInterface;
@@ -96,6 +97,7 @@ class BookingController extends ApiController
                 "booking_information.comment as booking_comment",
                 "booking_information.patient_finish",
                 "booking_information.doctor_finish",
+                "booking_information.status",
                 "ds.date as booking_start_date",
                 "do.name as doctor_name",
                 "do.id as doctor_id",
@@ -138,9 +140,14 @@ class BookingController extends ApiController
         return $returnPrescriptionData;
     }
 
-    public function getListBooking()
+    public function getListBooking(Request $request)
     {
         $loggingActor = $this->authService->getLoggingInActor();
+        $paginationParams = [];
+        $paginationParams['itemsPerPage'] = $request->query('itemsPerPage', PaginationParams::RecordsPerPage);
+        $paginationParams['patient_name'] = $request->query('patient_name');
+        $paginationParams['statuses'] = $request->query('statuses');
+        $paginationParams['dateRange'] = $request->query('dateRange');
         $attributes = [];
         if (isset($loggingActor["user"])) {
             $attributes = $this->getBookingAttributesForUser();
@@ -149,7 +156,7 @@ class BookingController extends ApiController
         } else if (isset($loggingActor["admin"])) {
             $attributes = $this->getBookingAttributesForAdmin();
         }
-        $listBooking = $this->bookingService->getListBooking($attributes, $loggingActor);
+        $listBooking = $this->bookingService->getListBooking($attributes, $loggingActor, $paginationParams);
         return $this->respondSuccess($listBooking);
     }
 
@@ -194,6 +201,9 @@ class BookingController extends ApiController
     public function deleteBooking(Request $request)
     {
         $id = $request->input('id');
+        if (!$id) {
+            return $this->respondError();
+        }
         try {
             $this->apiBeginTransaction();
             $this->bookingService->updateBookingStatus($id, Config::get('constants.BOOKING_STATUS.CANCEL'));

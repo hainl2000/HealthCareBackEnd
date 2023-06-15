@@ -5,9 +5,8 @@ namespace App\Services\Doctors;
 use App\Enums\PaginationParams;
 use App\Models\Doctor;
 use App\Models\DoctorInformation;
-use App\Models\Drug;
+use App\Models\DoctorShift;
 use App\Models\Shift;
-use App\Models\Specialization;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Arr;
@@ -188,6 +187,13 @@ class DoctorService implements DoctorServiceInterface
                 'bi.id' => $bookingId
             ])
             ->first();
+    }
+
+    public function cancelShift($cancelShiftId)
+    {
+        return DoctorShift::where([
+            'id' => $cancelShiftId
+        ])->delete();
     }
 }
 

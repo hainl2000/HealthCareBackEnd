@@ -42,6 +42,28 @@ class DoctorController extends ApiController
         return $resp;
     }
 
+    public function cancelShift(Request $request)
+    {
+        try {
+            $this->apiBeginTransaction();
+            $choseData = $request->input("deletedShift");
+            $isDeletedSuccessfully = $this->doctorService->cancelShift($choseData);
+            if ($isDeletedSuccessfully) {
+                $respData = [
+                    "message" => 'Cancel shift successfully',
+                ];
+                $this->apiCommit();
+                $resp = $this->respondSuccess($respData);
+            } else {
+                throw new \Exception("Cancel shift fail");
+            }
+        } catch (\Exception $e) {
+            $this->apiRollback();
+            $resp = $this->respondError($e->getMessage());
+        }
+        return $resp;
+    }
+
     public function getRegisteredShifts(Request $request)
     {
         $startDate = $request->input('startDate');
@@ -68,7 +90,6 @@ class DoctorController extends ApiController
     {
         $paginationParams = [];
         $paginationParams['itemsPerPage'] = $request->query('itemsPerPage', PaginationParams::RecordsPerPage);
-        $paginationParams['currentPage'] = $request->query('currentPage', PaginationParams::FirstPage);
         $paginationParams['name'] = $request->query('name');
         $paginationParams['type'] = $request->query('type');
         $paginationParams['specialization_id'] = $request->query('specialization_id');

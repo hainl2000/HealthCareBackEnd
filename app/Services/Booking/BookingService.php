@@ -2,6 +2,7 @@
 
 namespace App\Services\Booking;
 
+use App\Enums\PaginationParams;
 use App\Enums\Status;
 use App\Events\PushLatestPatientEvent;
 use App\Models\BookingInformation;
@@ -101,6 +102,19 @@ class BookingService implements BookingServiceInterface
             ->join('specializations as sp', function ($join) {
                 $join->on('sp.id', '=', 'do.specialization_id');
             });
+        if (isset($searchConditions['patient_name'])) {
+            $query = $query->whereLike('booking_information.name', "%{$searchConditions['patient_name']}%");
+        }
+        if (!empty($searchConditions['statuses'])) {
+            $query = $query->whereIn('booking_information.status', $searchConditions['statuses']);
+        }
+        if (!empty($searchConditions['dateRange'])) {
+            if (count($searchConditions['dateRange']) == 1) {
+                $query = $query->whereDate('booking_information.created_at', '=', $searchConditions['dateRange'][0]);
+            } else {
+                $query = $query->whereBetween('booking_information.created_at', [$searchConditions['dateRange'][0], $searchConditions['dateRange'][1]]);
+            }
+        }
         if ($data) {
             if (isset($data["doctor"])) {
                 $query->where("ds.doctor_id", "=", $data["doctor"]["id"])
@@ -113,7 +127,12 @@ class BookingService implements BookingServiceInterface
             }
         }
         $query->orderBy('booking_information.created_at', 'desc');
-        return $query->get();
+        if ($searchConditions['itemsPerPage'] == PaginationParams::GetAllItems) {
+            $records = $query->get();
+        } else {
+            $records = $query->paginate($searchConditions['itemsPerPage']);
+        }
+        return $records;
     }
 
     public function updateBookingStatus($bookingId, $status)
