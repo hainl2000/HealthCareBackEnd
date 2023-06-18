@@ -3,20 +3,17 @@
 namespace App\Http\Controllers\booking;
 
 use App\Enums\Status;
-use App\Events\PushLatestPatientEvent;
 use App\Http\Controllers\ApiController;
-use App\Models\BookingInformation;
 use App\Services\Auth\AuthServiceInterface;
 use App\Services\Booking\BookingServiceInterface;
 use App\Services\File\FileServiceInterface;
-use App\Services\Prescription\PrescriptionService;
+use App\Services\Notification\NotificationServiceInterface;
 use App\Services\Prescription\PrescriptionServiceInterface;
 use App\Services\Shifts\ShiftServiceInterface;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Config;
-use Illuminate\Support\Facades\DB;
 
 class BookingController extends ApiController
 {
@@ -28,6 +25,7 @@ class BookingController extends ApiController
     private $shiftService;
     private $authService;
     private $prescriptionService;
+    private $notificationService;
 
 
     public function __construct(
@@ -35,7 +33,8 @@ class BookingController extends ApiController
         FileServiceInterface $fileService,
         ShiftServiceInterface $shiftService,
         AuthServiceInterface $authService,
-        PrescriptionServiceInterface $prescriptionService
+        PrescriptionServiceInterface $prescriptionService,
+        NotificationServiceInterface $notificationService
     )
     {
         $this->bookingService = $bookingService;
@@ -43,6 +42,7 @@ class BookingController extends ApiController
         $this->shiftService = $shiftService;
         $this->authService = $authService;
         $this->prescriptionService = $prescriptionService;
+        $this->notificationService = $notificationService;
     }
 
     public function createBooking(Request $request)
@@ -209,20 +209,46 @@ class BookingController extends ApiController
 
     public function confirmBooking(Request $request)
     {
-        $id = $request->input('id');
+        $bookingId = $request->input('id');
         try {
             $this->apiBeginTransaction();
-            $this->bookingService->updateBookingStatus($id, Config::get('constants.BOOKING_STATUS.NOT_START'));
-            $doctorShift = $this->shiftService->getShiftByBookingId($id);
+            $this->bookingService->updateBookingStatus($bookingId, Config::get('constants.BOOKING_STATUS.NOT_START'));
+            $doctorShift = $this->shiftService->getShiftByBookingId($bookingId);
             $this->shiftService->updateShiftStatus($doctorShift->id, Config::get('constants.SHIFT.HAVE_PATIENT_STATUS'));
             $this->apiCommit();
 
-            event(new PushLatestPatientEvent($doctorShift->doctor_id));
-            $this->respondNoContent();
+            $this->bookingService->pushLatestBookingForDoctor($doctorShift->doctor_id);
+            $bookingConfirmationNotificationForDoctor = $this->notificationService->createBookingConfirmationNotificationForDoctor($bookingId, $doctorShift->doctor_id);
+            $bookingInformation = $this->bookingService->getBookingInformationById($bookingId, ['*'], true);
+            $bookingConfirmationNotificationForUser = $this->notificationService->createBookingConfirmationNotificationForUser($bookingId, $bookingInformation->created_by);
         } catch (\Exception $e) {
             $this->apiRollback();
-            dd($e->getMessage());
+            return $this->respondError($e->getMessage());
         }
+
+        $this->notifyBookingConfirmationForDoctor($doctorShift->doctor_id, $bookingConfirmationNotificationForDoctor);
+        $this->notifyBookingConfirmationForUser($bookingInformation->created_by, $bookingConfirmationNotificationForUser);
+        return $this->respondNoContent();
+    }
+
+    private function notifyBookingConfirmationForDoctor($doctorId, $notification)
+    {
+        $replaceData = [
+            'doctorId' => $doctorId
+        ];
+        $channel = replacePlaceholders(Config::get('constants.NOTIFICATIONS.BOOKING_CONFIRMATION_FOR_DOCTOR.CHANNEL'), $replaceData);
+        $action = Config::get('constants.NOTIFICATIONS.BOOKING_CONFIRMATION_FOR_DOCTOR.ACTION');
+        $this->notificationService->notifyNewNotification($channel, $action, $notification);
+    }
+
+    private function notifyBookingConfirmationForUser($userId, $notification)
+    {
+        $replaceData = [
+            'userId' => $userId
+        ];
+        $channel = replacePlaceholders(Config::get('constants.NOTIFICATIONS.BOOKING_CONFIRMATION_FOR_USER.CHANNEL'), $replaceData);
+        $action = Config::get('constants.NOTIFICATIONS.BOOKING_CONFIRMATION_FOR_USER.ACTION');
+        $this->notificationService->notifyNewNotification($channel, $action, $notification);
     }
 
     public function rateBooking(Request $request)
@@ -240,7 +266,7 @@ class BookingController extends ApiController
                 if (!$this->bookingService->updateBookingStatus($updatedBooking->id, Config::get("constants.BOOKING_STATUS.END"))) {
                     throw new \Exception("Update status error");
                 }
-                event(new PushLatestPatientEvent($updatedBooking->doctor_id));
+                $this->bookingService->pushLatestBookingForDoctor($updatedBooking->doctor_id);
             }
             $this->apiCommit();
             $this->respondSuccessWithoutData(Config::get("constants.RES_MESSAGES.RATING_SUCCESSFULLY"));
@@ -279,7 +305,7 @@ class BookingController extends ApiController
                 if (!$this->bookingService->updateBookingStatus($booking->id, Config::get("constants.BOOKING_STATUS.END"))) {
                     throw new \Exception("Update status error");
                 }
-                event(new PushLatestPatientEvent($booking->doctor_id));
+                $this->bookingService->pushLatestBookingForDoctor($booking);
             }
 
             $this->apiCommit();
@@ -313,7 +339,7 @@ class BookingController extends ApiController
             if (!$this->bookingService->updateBookingShift($bookingId, $changeShiftId)) {
                 return new \Exception('update booking shift fail');
             }
-            event(new PushLatestPatientEvent($booking->doctor_id));
+            $this->bookingService->pushLatestBookingForDoctor($booking->doctor_id);
 
             $this->apiCommit();
             return $this->respondSuccessWithoutData("Cap nhat thanh cong");

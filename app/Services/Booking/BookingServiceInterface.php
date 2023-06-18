@@ -13,5 +13,6 @@ interface BookingServiceInterface
     public function updateFinishStatus($bookingId, $finishActor, $status);
     public function getBookingInformationByShiftId($shiftId);
     public function updateBookingShift($bookingId, $changeShiftId);
+    public function pushLatestBookingForDoctor($doctorId);
 
 }

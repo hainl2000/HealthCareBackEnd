@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Broadcast;
+use App\Http\Controllers\NotificationController;
 
 /*
 |--------------------------------------------------------------------------
@@ -19,3 +20,12 @@ use Illuminate\Support\Facades\Broadcast;
 Broadcast::channel('doctor-channel-{doctorId}', function () {
     return true;
 });
+
+Broadcast::channel('admin-channel', function () {
+    return true;
+});
+
+Broadcast::channel('user-channel-{userId}', function () {
+    return true;
+});
+

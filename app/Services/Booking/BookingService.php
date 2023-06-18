@@ -3,6 +3,7 @@
 namespace App\Services\Booking;
 
 use App\Enums\Status;
+use App\Events\PushLatestPatientEvent;
 use App\Models\BookingInformation;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Auth;
@@ -124,7 +125,6 @@ class BookingService implements BookingServiceInterface
 
     public function getSoonestBooking()
     {
-//        $loginDoctorId = Auth::guard('sanctum')->id();
         $loginDoctorId = Auth::guard('sanctum')->id();
         $selectAttributes = [
             'booking_information.id',
@@ -194,5 +194,10 @@ class BookingService implements BookingServiceInterface
         ])->update([
             'shift_id' => $changeShiftId
         ]);
+    }
+
+    public function pushLatestBookingForDoctor($doctorId)
+    {
+        event(new PushLatestPatientEvent($doctorId));
     }
 }
