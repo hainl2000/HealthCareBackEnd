@@ -148,6 +148,8 @@ class BookingController extends ApiController
         $paginationParams['patient_name'] = $request->query('patient_name');
         $paginationParams['statuses'] = $request->query('statuses');
         $paginationParams['dateRange'] = $request->query('dateRange');
+        $paginationParams['doctor_name'] = $request->query('doctor_name');
+        $paginationParams['specializations'] = $request->query('specializations');
         $attributes = [];
         if (isset($loggingActor["user"])) {
             $attributes = $this->getBookingAttributesForUser();

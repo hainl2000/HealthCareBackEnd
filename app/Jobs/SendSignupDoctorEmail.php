@@ -2,15 +2,16 @@
 
 namespace App\Jobs;
 
-use App\Mail\VerifyAccountEmail;
+use App\Mail\SignupDoctorEmail;
 use Illuminate\Bus\Queueable;
+use Illuminate\Contracts\Queue\ShouldBeUnique;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Mail;
 
-class SendVerifyAccountEmail implements ShouldQueue
+class SendSignupDoctorEmail implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
@@ -34,6 +35,6 @@ class SendVerifyAccountEmail implements ShouldQueue
      */
     public function handle()
     {
-        Mail::to($this->email)->send(new VerifyAccountEmail($this->data));
+        Mail::to($this->email)->send(new SignupDoctorEmail($this->data));
     }
 }

@@ -28,7 +28,7 @@ return [
         'MONEY_TRANSFER' => [
             'CHANNEL' => 'admin-channel',
             'ACTION' => 'notify-transferring-money',
-            'DIRECT_OBJECT' => 'AdminBookingInformation',
+            'DIRECT_OBJECT' => 'BookingDetailAdminPage',
             'RECEIVE_ACTOR' => 'admin',
             'TITLE' => 'THÔNG BÁO CHUYỂN TIỀN',
             'DESCRIPTION' => 'Người dùng {name} đã thông báo chuyển tiền tới ca khám #{bookingId}'

@@ -45,20 +45,27 @@ class DoctorService implements DoctorServiceInterface
         ]);
     }
 
-    public function registerShift($choseData)
+    public function registerShift($chooseDatas)
     {
         try {
             $loginDoctorId = Auth::guard('sanctum')->id();
             $doctor = Doctor::find($loginDoctorId);
-            $shiftId = Arr::get($choseData, "shiftId");
-            $shift = Shift::where('id', '=', $shiftId)->first('start_time');
-            $date = Arr::get($choseData, "date");
-            $dateTimeRegister = Carbon::create($date)->toDateString() . " " . Carbon::create($shift->start_time)->toTimeString();
-            $dateTimeRegister = Carbon::create($dateTimeRegister);
-            $doctor->shifts()->attach($shiftId, [
-                "status" => Config::get("constants.SHIFT.NO_PATIENT_STATUS"),
-                "date" => $dateTimeRegister
-            ]);
+            $pivotData = [];
+
+            foreach ($chooseDatas as $chooseData) {
+                $shiftId = Arr::get($chooseData, 'shiftId');
+                $shift = Shift::find($shiftId, ['start_time']);
+                $date = Arr::get($chooseData, 'date');
+                $dateTimeRegister = Carbon::createFromFormat('Y-m-d H:i:s', $date . ' ' . $shift->start_time);
+
+                $insertData[] = [
+                    'doctor_id' => $doctor->id,
+                    'shift_id' => $shiftId,
+                    'status' => Config::get('constants.SHIFT.NO_PATIENT_STATUS'),
+                    'date' => $dateTimeRegister,
+                ];
+            }
+            $doctor->shifts()->attach($insertData);
             return true;
         } catch (\Exception $e) {
             return false;

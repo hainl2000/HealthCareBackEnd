@@ -24,10 +24,18 @@ class SignupDoctorRequest extends ApiRequest
         return [
             'name' => 'required',
             'email' => 'required|unique:doctors|email',
-            'password' => 'required|min:6',
             'gender' => 'required',
             'type' => 'required|in:0,1',
-            'specialization_id' => 'required'
+            'specialization_id' => 'required',
+            'shortIntro' => 'required',
+            'fullIntro' => 'required'
+        ];
+    }
+
+    public function messages()
+    {
+        return [
+            'email.unique' => 'Email đã được sử dụng'
         ];
     }
 }

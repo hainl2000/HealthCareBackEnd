@@ -108,6 +108,12 @@ class BookingService implements BookingServiceInterface
         if (!empty($searchConditions['statuses'])) {
             $query = $query->whereIn('booking_information.status', $searchConditions['statuses']);
         }
+        if (!empty($searchConditions['specializations'])) {
+            $query = $query->whereIn('sp.id', $searchConditions['specializations']);
+        }
+        if (!empty($searchConditions['doctor_name'])) {
+            $query = $query->whereLike('do.name', "%{$searchConditions['doctor_name']}%");
+        }
         if (!empty($searchConditions['dateRange'])) {
             if (count($searchConditions['dateRange']) == 1) {
                 $query = $query->whereDate('booking_information.created_at', '=', $searchConditions['dateRange'][0]);

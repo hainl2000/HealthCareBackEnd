@@ -7,7 +7,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 
-class VerifyAccountEmail extends Mailable
+class SignupDoctorEmail extends Mailable
 {
     use Queueable, SerializesModels;
 
@@ -30,7 +30,7 @@ class VerifyAccountEmail extends Mailable
     public function build()
     {
         return $this->from(env("MAIL_FROM_ADDRESS"),"health.care.project.2000@gmail.com")
-            ->view('auth.verify-email')
-            ->subject('Xác thực tài khoản');
+            ->view('auth.signup-doctor')
+            ->subject('Thư xác nhận');
     }
 }

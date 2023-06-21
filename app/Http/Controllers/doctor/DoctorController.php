@@ -24,8 +24,8 @@ class DoctorController extends ApiController
     {
         try {
             $this->apiBeginTransaction();
-            $choseData = $request->input("registerData");
-            $isRegisterShiftSuccess = $this->doctorService->registerShift($choseData);
+            $chooseDatas = $request->input("registerData");
+            $isRegisterShiftSuccess = $this->doctorService->registerShift($chooseDatas);
             if ($isRegisterShiftSuccess) {
                 $respData = [
                     "message" => 'Register shift successfully',

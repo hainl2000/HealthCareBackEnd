@@ -11,6 +11,7 @@ use App\Services\File\FileServiceInterface;
 use App\Services\Mail\MailServiceInterface;
 use App\Services\Users\UserServiceInterface;
 use Illuminate\Http\Request;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Config;
 
 class SignupController extends ApiController
@@ -63,6 +64,7 @@ class SignupController extends ApiController
         return $resp;
     }
 
+
     public function signupDoctor(SignupDoctorRequest $request)
     {
         try {
@@ -71,21 +73,32 @@ class SignupController extends ApiController
             $avatar = $request->file('image');
             $folderPath = Config::get("constants.UPLOAD_FOLDER.AVATAR");
             $signupDoctorData["image"] = $this->fileService->uploadImage($folderPath, $avatar);
+            $signupDoctorData["image"] = "default";
+            $signupDoctorData["password"] = generateRandomPassword();
             $doctor = $this->doctorService->signup($signupDoctorData);
 
             $doctorInfo = $this->doctorService->insertDoctorInformation($doctor->id, $signupDoctorData);
+
+            $isSendEmailSuccess = $this->mailService->sendSignupDoctorEmail($signupDoctorData, $signupDoctorData['email']);
+            if (!$isSendEmailSuccess) {
+                throw new SendMailFailException("Send Email Fail",400);
+            }
             if ($doctor && $doctorInfo) {
-                $this->apiRollback();
+                $this->apiCommit();
             }
             $respData = [
                 "message" => 'Create new doctor successfully',
             ];
             $resp = $this->respondCreated($respData);
+        } catch (SendMailFailException $e) {
+            $this->apiRollback();
+            $resp = $this->respondError($e->getMessage(),$e->getCode());
         } catch (\Exception $e) {
-            $this->apiCommit();
-            $resp = $this->respondError($e->getMessage(),400);
+            $this->apiRollback();
+            $resp = $this->respondError($e->getMessage());
         }
         return $resp;
     }
+
 
 }
