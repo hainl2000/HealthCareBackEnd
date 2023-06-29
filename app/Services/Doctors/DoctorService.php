@@ -50,7 +50,6 @@ class DoctorService implements DoctorServiceInterface
         try {
             $loginDoctorId = Auth::guard('sanctum')->id();
             $doctor = Doctor::find($loginDoctorId);
-            $pivotData = [];
 
             foreach ($chooseDatas as $chooseData) {
                 $shiftId = Arr::get($chooseData, 'shiftId');

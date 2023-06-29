@@ -9,6 +9,7 @@ use App\Services\Auth\AuthServiceInterface;
 use App\Services\Booking\BookingServiceInterface;
 use App\Services\File\FileServiceInterface;
 use App\Services\Notification\NotificationServiceInterface;
+use App\Services\Payment\VnpayServiceInterface;
 use App\Services\Prescription\PrescriptionServiceInterface;
 use App\Services\Shifts\ShiftServiceInterface;
 use Illuminate\Http\Request;
@@ -27,6 +28,7 @@ class BookingController extends ApiController
     private $authService;
     private $prescriptionService;
     private $notificationService;
+    private $vnPayService;
 
 
     public function __construct(
@@ -35,7 +37,8 @@ class BookingController extends ApiController
         ShiftServiceInterface $shiftService,
         AuthServiceInterface $authService,
         PrescriptionServiceInterface $prescriptionService,
-        NotificationServiceInterface $notificationService
+        NotificationServiceInterface $notificationService,
+        VnpayServiceInterface $vnPayService
     )
     {
         $this->bookingService = $bookingService;
@@ -44,6 +47,7 @@ class BookingController extends ApiController
         $this->authService = $authService;
         $this->prescriptionService = $prescriptionService;
         $this->notificationService = $notificationService;
+        $this->vnPayService = $vnPayService;
     }
 
     public function createBooking(Request $request)
@@ -58,10 +62,10 @@ class BookingController extends ApiController
         }
         try {
             $this->apiBeginTransaction();
-            $this->bookingService->createBooking($bookingData);
+            $booking = $this->bookingService->createBooking($bookingData);
             $this->shiftService->updateShiftStatus($bookingData["shift_id"], Config::get("constants.SHIFT.CHOSEN_STATUS"));
             $this->apiCommit();
-            return $this->respondCreated();
+            return $this->respondCreated(['booking' => $booking]);
         } catch (\Exception $e) {
             $this->apiRollback();
             dd($e->getMessage());
@@ -306,18 +310,19 @@ class BookingController extends ApiController
             if (!$isCreatedPrescription) {
                 throw new \Exception('tao moi loi');
             }
-
-            $booking = $this->bookingService->getBookingInformationById($bookingId);
-
-            if (!$this->bookingService->updateFinishStatus($booking->id, self::DOCTOR_ACTOR, Status::ACTIVE)) {
-                throw new \Exception("Update patient finish error");
+            $selectAttributes = [
+              'booking_information.doctor_finish',
+              'booking_information.patient_finish',
+            ];
+            $booking = $this->bookingService->getBookingInformationById($bookingId, $selectAttributes);
+            if (!$this->bookingService->updateFinishStatus($bookingId, self::DOCTOR_ACTOR, Status::ACTIVE)) {
+                throw new \Exception("Update actor finish error");
             }
 
             if ($booking->patient_finish) {
-                if (!$this->bookingService->updateBookingStatus($booking->id, Config::get("constants.BOOKING_STATUS.END"))) {
+                if (!$this->bookingService->updateBookingStatus($bookingId, Config::get("constants.BOOKING_STATUS.END"))) {
                     throw new \Exception("Update status error");
                 }
-                $this->bookingService->pushLatestBookingForDoctor($booking);
             }
 
             $this->apiCommit();
@@ -359,5 +364,32 @@ class BookingController extends ApiController
             $this->apiRollback();
             return $this->respondError($e->getMessage());
         }
+    }
+
+    public function exportPrescriptionPdf(Request $request)
+    {
+        $bookingId = $request->input('booking_id');
+        $fileName = 'prescription-' . $bookingId;
+        $path = replacePlaceholders(Config::get("constants.UPLOAD_FOLDER.PRESCRIPTION"), [
+            'filename' => $fileName
+        ]);
+        try {
+            $this->fileService->exportPrescriptionPdf($path, []);
+            return $fileName;
+        } catch (\Exception $e) {
+            return $this->respondError($e->getMessage());
+        }
+    }
+
+    public function payment(Request $request)
+    {
+        $bookingId = $request->query('booking_id');
+        $paymentUrl = $this->vnPayService->createPayment($bookingId);
+        return $this->respondSuccess(['payment_url' => $paymentUrl]);
+    }
+
+    public function getPaymentInformation(Request $request)
+    {
+        dd($request);
     }
 }

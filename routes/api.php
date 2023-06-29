@@ -35,6 +35,7 @@ Route::prefix('/user')->group(function() {
         Route::post('/rate', [BookingController::class, 'rateBooking']);
         Route::post('/change', [BookingController::class, 'changeBooking']);
         Route::post('/notify', [NotificationController::class, 'notifyTransferringMoney']);
+        Route::get('/payment', [BookingController::class, 'payment']);
     });
 });
 
@@ -88,7 +89,10 @@ Route::prefix('/notification')->group(function() {
 Route::middleware(['auth:sanctum'])->group(function() {
     Route::post('/logout', [LogoutController::class, 'actionLogout']);
 });
-//Route::get('/test', [BookingController::class, 'getSoonestBooking']);
+
+Route::get('/vnpay-return', [BookingController::class, 'getPaymentInformation']);
+
+Route::post('/test', [BookingController::class, 'exportPrescriptionPdf']);
 //Route::post('/create-meet', [\App\Services\Google\GoogleService::class, 'createMeeting']);
 
 

@@ -200,9 +200,14 @@ class BookingService implements BookingServiceInterface
     public function updateFinishStatus($bookingId, $finishActor, $status)
     {
         $finishActor = $finishActor . "_finish";
-        return BookingInformation::where('id', $bookingId)->update([
-            $finishActor => $status
-        ]);
+        try {
+            BookingInformation::where('id', $bookingId)->update([
+                $finishActor => $status
+            ]);
+            return true;
+        } catch (\Exception $e) {
+            return false;
+        }
     }
 
     public function getBookingInformationByShiftId($shiftId)

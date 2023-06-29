@@ -28,7 +28,7 @@ class Prescription extends Model
         'is_other'
     ];
 
-    public $timestamps = false;
+    public $timestamps = true;
 
     public function prescriptionDrugs()
     {

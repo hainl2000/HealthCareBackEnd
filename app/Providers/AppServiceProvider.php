@@ -14,6 +14,8 @@ use App\Services\Google\GoogleService;
 use App\Services\Google\GoogleServiceInterface;
 use App\Services\Notification\NotificationService;
 use App\Services\Notification\NotificationServiceInterface;
+use App\Services\Payment\VnpayService;
+use App\Services\Payment\VnpayServiceInterface;
 use App\Services\Prescription\PrescriptionService;
 use App\Services\Prescription\PrescriptionServiceInterface;
 use Illuminate\Database\Eloquent\Builder;
@@ -51,6 +53,7 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(DrugServiceInterface::class, DrugService::class);
         $this->app->bind(PrescriptionServiceInterface::class, PrescriptionService::class);
         $this->app->bind(NotificationServiceInterface::class, NotificationService::class);
+        $this->app->bind(VnpayServiceInterface::class, VnpayService::class);
     }
 
     /**

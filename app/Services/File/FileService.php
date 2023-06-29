@@ -2,7 +2,9 @@
 
 namespace App\Services\File;
 
+use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Storage;
 
 class FileService implements FileServiceInterface
@@ -25,5 +27,19 @@ class FileService implements FileServiceInterface
     private function getFileType($file)
     {
         return pathinfo($file->getClientOriginalName(),PATHINFO_EXTENSION);
+    }
+
+    public function exportPrescriptionPdf($path, $data)
+    {
+        if (Storage::exists($path)) {
+            return true;
+        }
+        $pdf = Pdf::loadView('pdf/prescription', $data);
+        try {
+            Storage::put($path, $pdf->output());
+            return true;
+        } catch (\Exception $e) {
+            dd($e->getMessage());
+        }
     }
 }
