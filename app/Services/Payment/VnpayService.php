@@ -17,8 +17,8 @@ class VnpayService implements VnpayServiceInterface
         $vnPayConfig['vnp_TxnRef'] = rand(1,10000);
         $vnPayConfig['vnp_CurrCode'] = "VND";
         $vnPayConfig['vnp_OrderType'] = 'other';
-        $vnPayConfig['vnp_OrderInfo'] = 'Thanh toán phí khám bệnh ca khám #' . $orderId;
-        $vnPayConfig['vnp_Amount'] = 100000000;
+        $vnPayConfig['vnp_OrderInfo'] = $orderId;
+        $vnPayConfig['vnp_Amount'] = 20000000;
         $vnPayConfig['vnp_Locale'] = 'vn';
         $vnPayConfig['vnp_IpAddr'] = '127.0.0.1';
         $vnPayConfig['vnp_Command'] = "pay";

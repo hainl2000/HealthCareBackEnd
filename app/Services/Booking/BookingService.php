@@ -40,8 +40,7 @@ class BookingService implements BookingServiceInterface
             "created_by" => Arr::get($data, "created_by")
         ];
         try {
-            BookingInformation::create($createData);
-            return true;
+            return BookingInformation::create($createData);
         } catch (\Exception $e) {
             return false;
         }

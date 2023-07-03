@@ -56,5 +56,9 @@ return [
         'ADMIN' => 'admin',
         'DOCTOR' => 'doctor',
         'PATIENT' => 'patient',
+    ],
+
+    'PAYMENT' => [
+        'SUCCESS' => '00'
     ]
 ];

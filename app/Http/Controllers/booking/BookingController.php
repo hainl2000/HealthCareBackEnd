@@ -6,6 +6,7 @@ use App\Enums\PaginationParams;
 use App\Enums\Status;
 use App\Http\Controllers\ApiController;
 use App\Services\Auth\AuthServiceInterface;
+use App\Services\Booking\BookingService;
 use App\Services\Booking\BookingServiceInterface;
 use App\Services\File\FileServiceInterface;
 use App\Services\Notification\NotificationServiceInterface;
@@ -16,6 +17,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\Redirect;
 
 class BookingController extends ApiController
 {
@@ -390,6 +392,28 @@ class BookingController extends ApiController
 
     public function getPaymentInformation(Request $request)
     {
-        dd($request);
+        $paymentResult = $request->query('vnp_TransactionStatus');
+        if ($paymentResult == Config::get('constants.PAYMENT.SUCCESS')) {
+            $bookingId = $request->query('vnp_OrderInfo');
+            try {
+                $this->apiBeginTransaction();
+                $this->bookingService->updateBookingStatus($bookingId, Config::get('constants.BOOKING_STATUS.NOT_START'));
+                $doctorShift = $this->shiftService->getShiftByBookingId($bookingId);
+                $this->shiftService->updateShiftStatus($doctorShift->id, Config::get('constants.SHIFT.HAVE_PATIENT_STATUS'));
+                $this->apiCommit();
+
+                $this->bookingService->pushLatestBookingForDoctor($doctorShift->doctor_id);
+                $bookingConfirmationNotificationForDoctor = $this->notificationService->createBookingConfirmationNotificationForDoctor($bookingId, $doctorShift->doctor_id);
+                $bookingInformation = $this->bookingService->getBookingInformationById($bookingId, ['*'], true);
+                $bookingConfirmationNotificationForUser = $this->notificationService->createBookingConfirmationNotificationForUser($bookingId, $bookingInformation->created_by);
+            } catch (\Exception $e) {
+                $this->apiRollback();
+                return Redirect::to('http://localhost:8080/user/page/booking-history');
+            }
+
+            $this->notifyBookingConfirmationForDoctor($doctorShift->doctor_id, $bookingConfirmationNotificationForDoctor);
+            $this->notifyBookingConfirmationForUser($bookingInformation->created_by, $bookingConfirmationNotificationForUser);
+            return Redirect::to('http://localhost:8080/user/page/booking-history');
+        }
     }
 }
