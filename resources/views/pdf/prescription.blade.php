@@ -4,6 +4,7 @@
     <title>Laravel 9 Create PDF File using DomPDF Tutorial - LaravelTuts.com</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 </head>
+
 <body>
 <h1>Bản mẫu</h1>
 <p>Ngày 10/12/2000</p>
@@ -22,5 +23,6 @@
         <td>Test 3</td>
     </tr>
 </table>
+<img src="data:image/png;base64,{{ base64_encode(file_get_contents(public_path('storage/avatar/anhdep.jpeg'))) }}">
 </body>
 </html>

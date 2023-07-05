@@ -34,7 +34,7 @@ class FileService implements FileServiceInterface
         if (Storage::exists($path)) {
             return true;
         }
-        $pdf = Pdf::loadView('pdf/prescription', $data);
+        $pdf = Pdf::loadView('pdf/prescription', $data, [], 'UTF-8');
         try {
             Storage::put($path, $pdf->output());
             return true;

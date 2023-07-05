@@ -29,6 +29,7 @@ class DoctorService implements DoctorServiceInterface
             'password' => Hash::make(Arr::get($signupDoctorData, 'password')),
             'gender' => Arr::get($signupDoctorData, 'gender'),
             'image' => Arr::get($signupDoctorData, 'image'),
+            'sign' => Arr::get($signupDoctorData, 'sign'),
             'type' => Arr::get($signupDoctorData, 'type'),
             'specialization_id' => Arr::get($signupDoctorData, 'specialization_id'),
             'created_by' => 1,

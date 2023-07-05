@@ -22,6 +22,7 @@ class Doctor extends Authenticatable
         'type',
         'specialization_id',
         'image',
+        'sign',
         'created_by'
     ];
 

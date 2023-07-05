@@ -71,18 +71,19 @@ class SignupController extends ApiController
             $this->apiBeginTransaction();
             $signupDoctorData = $request->input();
             $avatar = $request->file('image');
+            $sign = $request->file('sign');
             $folderPath = Config::get("constants.UPLOAD_FOLDER.AVATAR");
+            $folderSignPath = Config::get("constants.UPLOAD_FOLDER.SIGN");
             $signupDoctorData["image"] = $this->fileService->uploadImage($folderPath, $avatar);
-            $signupDoctorData["image"] = "default";
+            $signupDoctorData["sign"] = $this->fileService->uploadImage($folderSignPath, $sign);
             $signupDoctorData["password"] = generateRandomPassword();
             $doctor = $this->doctorService->signup($signupDoctorData);
-
             $doctorInfo = $this->doctorService->insertDoctorInformation($doctor->id, $signupDoctorData);
 
-            $isSendEmailSuccess = $this->mailService->sendSignupDoctorEmail($signupDoctorData, $signupDoctorData['email']);
-            if (!$isSendEmailSuccess) {
-                throw new SendMailFailException("Send Email Fail",400);
-            }
+//            $isSendEmailSuccess = $this->mailService->sendSignupDoctorEmail($signupDoctorData, $signupDoctorData['email']);
+//            if (!$isSendEmailSuccess) {
+//                throw new SendMailFailException("Send Email Fail",400);
+//            }
             if ($doctor && $doctorInfo) {
                 $this->apiCommit();
             }
