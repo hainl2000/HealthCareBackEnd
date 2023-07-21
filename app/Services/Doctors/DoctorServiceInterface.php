@@ -12,5 +12,6 @@ interface DoctorServiceInterface
     public function getListDoctor($searchParams);
     public function insertDoctorInformation($doctorId, $doctorInfo);
     public function getDoctorInformationByBookingId($bookingId);
+    public function getDoctorFullInformationById($id);
 
 }

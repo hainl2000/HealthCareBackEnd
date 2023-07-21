@@ -78,6 +78,7 @@ Route::prefix('/admin')->group(function() {
     Route::post('/booking/confirm', [BookingController::class, 'confirmBooking']);
     Route::post('/doctor/signup', [SignupController::class, 'signupDoctor']);
     Route::get('/doctor/list', [DoctorController::class, 'getListDoctor']);
+    Route::get('/doctor/{id}', [DoctorController::class, 'getDoctorFullInformationById']);
     Route::get('/drug/list', [DrugController::class, 'getListDrugs']);
     Route::post('/drug/create', [DrugController::class, 'createDrug']);
 });

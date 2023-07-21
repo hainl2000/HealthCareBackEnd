@@ -103,4 +103,10 @@ class DoctorController extends ApiController
         return $this->respondSuccess($doctors);
     }
 
+    public function getDoctorFullInformationById(Request $request, $id)
+    {
+        $doctor = $this->doctorService->getDoctorFullInformationById($id);
+        return $this->respondSuccess($doctor);
+    }
+
 }

@@ -148,6 +148,15 @@ class DoctorService implements DoctorServiceInterface
         return $doctor;
     }
 
+    public function getDoctorFullInformationById($id)
+    {
+        $selectData = [
+            "doctors.*",
+        ];
+
+        return Doctor::select($selectData)->with("doctor_information")->where('id', '=', $id)->first();
+    }
+
     public function getListDoctor($paginationParams)
     {
         $selectAttributes = [
@@ -156,9 +165,13 @@ class DoctorService implements DoctorServiceInterface
             'doctors.type',
             'doctors.created_at',
             'doctors.created_by',
-            'doctors.specialization_id'
+            'doctors.specialization_id',
+            "doctors.email",
+            "doctors.gender",
+            "doctors.image",
+            "doctors.sign",
         ];
-        $query = Doctor::query()->select($selectAttributes)->with("specializations:id,name","admin:id,name");
+        $query = Doctor::query()->select($selectAttributes)->with("specializations:id,name","admin:id,name", "doctor_information");
         if (!empty($paginationParams['name'])) {
             $query = $query->whereLike('doctors.name', "%{$paginationParams['name']}%");
         }
