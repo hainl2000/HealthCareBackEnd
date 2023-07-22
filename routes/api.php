@@ -8,6 +8,7 @@ use App\Http\Controllers\specialization\SpecializationController;
 use App\Http\Controllers\shift\ShiftController;
 use App\Http\Controllers\booking\BookingController;
 use App\Http\Controllers\drug\DrugController;
+use App\Http\Controllers\user\UserController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -33,6 +34,7 @@ Route::prefix('/user')->group(function() {
         Route::post('/rate', [BookingController::class, 'rateBooking']);
         Route::post('/change', [BookingController::class, 'changeBooking']);
     });
+    Route::post('/change-password', [UserController::class, 'changePassword']);
 });
 
 Route::prefix('/specialization')->group(function () {
