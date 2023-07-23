@@ -10,6 +10,7 @@ use App\Http\Controllers\booking\BookingController;
 use App\Http\Controllers\drug\DrugController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\auth\LogoutController;
+use App\Http\Controllers\user\UserController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -37,6 +38,7 @@ Route::prefix('/user')->group(function() {
         Route::post('/notify', [NotificationController::class, 'notifyTransferringMoney']);
         Route::get('/payment', [BookingController::class, 'payment']);
     });
+    Route::post('/change-password', [UserController::class, 'changePassword']);
 });
 
 Route::prefix('/specialization')->group(function () {
