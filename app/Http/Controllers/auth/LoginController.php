@@ -65,7 +65,7 @@ class LoginController extends ApiController
             if(!Auth::guard('doctor')->attempt($credentials)){
                 throw new AuthorizationException();
             }
-            $doctor = Doctor::with('specializations:id,name')->where('email','=', $email)->first();
+            $doctor = Doctor::with(['specializations:id,name', 'doctor_information'])->where('email','=', $email)->first();
 
             if (!$doctor || !Hash::check($password, $doctor->password)) {
                 throw new AuthorizationException();
@@ -80,6 +80,8 @@ class LoginController extends ApiController
             $doctorData['gender'] = $doctor->gender;
             $doctorData['specializationId'] = $doctor->specialization_id;
             $doctorData['specializationName'] = $doctor->specializations->name;
+            $doctorData['short_introduction'] = $doctor->doctor_information->short_introduction;
+            $doctorData['introduction'] = $doctor->doctor_information->introduction;
 
             $respData = [
                 "message" => 'Login successfully',

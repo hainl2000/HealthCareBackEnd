@@ -48,10 +48,10 @@ class SignupController extends ApiController
             if ($isSendEmailSuccess) {
                 $this->apiCommit();
             } else {
-                throw new SendMailFailException("Send Email Fail",400);
+                throw new SendMailFailException("Gửi email thất bại",400);
             }
             $respData = [
-                "message" => 'Create new user successfully',
+                "message" => 'Tạo tài khoản thành công',
             ];
             $resp = $this->respondCreated($respData);
         }  catch (SendMailFailException $e) {
@@ -80,15 +80,15 @@ class SignupController extends ApiController
             $doctor = $this->doctorService->signup($signupDoctorData);
             $doctorInfo = $this->doctorService->insertDoctorInformation($doctor->id, $signupDoctorData);
 
-//            $isSendEmailSuccess = $this->mailService->sendSignupDoctorEmail($signupDoctorData, $signupDoctorData['email']);
-//            if (!$isSendEmailSuccess) {
-//                throw new SendMailFailException("Send Email Fail",400);
-//            }
+            $isSendEmailSuccess = $this->mailService->sendSignupDoctorEmail($signupDoctorData, $signupDoctorData['email']);
+            if (!$isSendEmailSuccess) {
+                throw new SendMailFailException("Gửi email thất bại",400);
+            }
             if ($doctor && $doctorInfo) {
                 $this->apiCommit();
             }
             $respData = [
-                "message" => 'Create new doctor successfully',
+                "message" => 'Tạo bác sĩ thành công',
             ];
             $resp = $this->respondCreated($respData);
         } catch (SendMailFailException $e) {
