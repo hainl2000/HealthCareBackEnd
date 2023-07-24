@@ -77,8 +77,8 @@ class BookingController extends ApiController
     public function getBookingInformation(Request $request, $id)
     {
         $isShortInformation = $request->input('short', false);
-        $isFromShirt = $request->input('from_shift', false);
-        if ($isFromShirt) {
+        $isFromShift = $request->input('from_shift', false);
+        if ($isFromShift) {
             $id = $this->bookingService->getBookingInformationByShiftId($id)->id;
         }
         if ($isShortInformation) {
