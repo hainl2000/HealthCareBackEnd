@@ -1,44 +1,63 @@
 version: "3.7"
-services:
 
-    #Laravel App
+services:
+    # image project
     app:
         build:
-            args:
-                user: maruan
-                uid: 1000
-            context: ./
-            dockerfile: ./docker/Dockerfile
+            context: .
+            dockerfile: Dockerfile
+        container_name: healthcare-app
         restart: unless-stopped
         working_dir: /var/www/
         volumes:
             - ./:/var/www
+        depends_on:
+            - redis
         networks:
-            - healthcare-network
+            - healthcare
 
-    #Nginx Service
+    # nginx
     nginx:
         image: nginx:alpine
+        container_name: healthcare_nginx
         restart: unless-stopped
         ports:
-            - 8000:80
+            - "8089:80"
         volumes:
             - ./:/var/www
-            - ./docker/nginx:/etc/nginx/conf.d/
+            - ./dev/nginx/:/etc/nginx/conf.d/
         networks:
-            - healthcare-network
-    #Mysl Service
+            - healthcare
+
+    # db mysql
     db:
-        image: mysql:8
+        image: mysql:8.0
+        container_name: healthcare_db
         restart: unless-stopped
         environment:
-            MYSQL_DATABASE: laravel
+            MYSQL_DATABASE: healthcare
             MYSQL_ROOT_PASSWORD: hailuong1012
+        volumes:
+            - dbdata:/var/lib/mysql/
+            - ./dev/mysql/my.cnf:/etc/mysql/my.cnf
         ports:
-            - "3307:3306"
+            - "33066:3306"
         networks:
-            - healthcare-network
+            - healthcare
 
+    # redis
+    redis:
+        image: redis:latest
+        container_name: healthcare_redis
+        networks:
+            - healthcare
+
+#Docker Networks
 networks:
-    healthcare-network:
+    healthcare:
         driver: bridge
+
+#Volumes
+volumes:
+    dbdata:
+        driver: local
