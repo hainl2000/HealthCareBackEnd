@@ -4,6 +4,9 @@ services:
     # image project
     app:
         build:
+            args:
+                user: healthcare
+                uid: 1000
             context: .
             dockerfile: Dockerfile
         container_name: healthcare-app
@@ -11,7 +14,6 @@ services:
         working_dir: /var/www/
         volumes:
             - ./:/var/www
-            - ./vendor:/var/www/vendor
         environment:
             MYSQL_DATABASE: healthcare
             MYSQL_ROOT_PASSWORD: hailuong1012
