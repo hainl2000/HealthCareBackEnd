@@ -83,6 +83,9 @@ Route::prefix('/admin')->group(function() {
     Route::get('/doctor/{id}', [DoctorController::class, 'getDoctorFullInformationById']);
     Route::get('/drug/list', [DrugController::class, 'getListDrugs']);
     Route::post('/drug/create', [DrugController::class, 'createDrug']);
+    Route::prefix('/specialization')->group(function() {
+
+    });
 });
 
 Route::prefix('/notification')->group(function() {

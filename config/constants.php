@@ -30,7 +30,7 @@ return [
         'MONEY_TRANSFER' => [
             'CHANNEL' => 'admin-channel',
             'ACTION' => 'notify-transferring-money',
-            'DIRECT_OBJECT' => 'BookingDetailAdminPage',
+            'DIRECT_OBJECT' => 'AdminBookingInformation',
             'RECEIVE_ACTOR' => 'admin',
             'TITLE' => 'THÔNG BÁO CHUYỂN TIỀN',
             'DESCRIPTION' => 'Người dùng {name} đã thông báo chuyển tiền tới ca khám #{bookingId}'
@@ -47,7 +47,7 @@ return [
             'CHANNEL' => 'user-channel-{userId}',
             'ACTION' => 'notify-booking-confirmation',
             'DIRECT_OBJECT' => 'UserBookingInformation',
-            'RECEIVE_ACTOR' => 'user',
+            'RECEIVE_ACTOR' => 'patient',
             'TITLE' => 'CA KHÁM ĐÃ ĐƯỢC XÁC NHẬN',
             'DESCRIPTION' => 'Ca khám #{bookingId} của bạn đã được xác nhận. Bấm vào để xem thông tin ca khám'
         ]

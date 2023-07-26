@@ -339,6 +339,9 @@ class BookingController extends ApiController
     {
         $bookingId = $request->input('booking_id');
         $changeShiftId = $request->input('change_shift_id');
+        if (empty($bookingId) || empty($changeShiftId)) {
+            return $this->respondError('Đã xảy ra lỗi');
+        }
 
         try {
             $this->apiBeginTransaction();
@@ -348,9 +351,10 @@ class BookingController extends ApiController
             }
 
             $selectBookingAttributes = [
-                'shift_id'
+                'booking_information.shift_id',
+                'do.id as doctor_id'
             ];
-            $booking = $this->bookingService->getBookingInformationById($bookingId, $selectBookingAttributes, true);
+            $booking = $this->bookingService->getBookingInformationById($bookingId, $selectBookingAttributes);
             if (!$this->shiftService->updateShiftStatus($booking->shift_id, Config::get('constants.SHIFT.NO_PATIENT_STATUS'))) {
                 return new \Exception('update old shift status fail');
             }
@@ -358,6 +362,7 @@ class BookingController extends ApiController
             if (!$this->bookingService->updateBookingShift($bookingId, $changeShiftId)) {
                 return new \Exception('update booking shift fail');
             }
+
             $this->bookingService->pushLatestBookingForDoctor($booking->doctor_id);
 
             $this->apiCommit();

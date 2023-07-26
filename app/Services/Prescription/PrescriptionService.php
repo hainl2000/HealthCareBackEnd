@@ -53,7 +53,7 @@ class PrescriptionService implements PrescriptionServiceInterface
             }
             return $insertPrescriptionDrugsDatas;
         } catch (\Exception $e ) {
-            dd(1, $e->getMessage());
+            dd($e->getMessage());
         }
     }
 

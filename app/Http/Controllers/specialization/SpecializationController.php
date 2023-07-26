@@ -27,4 +27,11 @@ class SpecializationController extends ApiController
         $specializationDetail = $this->specializationService->getSpecializationDetail($slug);
         return $this->respondSuccess($specializationDetail);
     }
+
+    public function createNewSpecialization(Request $request)
+    {
+        $specializationData = $request->input('specializationInfo');
+        $specialization = $this->specializationService->createSpecialization($specializationData);
+        return $this->respondCreated([$specialization]);
+    }
 }

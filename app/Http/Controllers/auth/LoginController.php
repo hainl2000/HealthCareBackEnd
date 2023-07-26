@@ -34,7 +34,7 @@ class LoginController extends ApiController
             }
 
             //login in 1 device at the same time
-            $user->tokens()->delete();
+//            $user->tokens()->delete();
 
             $userData = [];
             $userData['id'] = $user->id;
