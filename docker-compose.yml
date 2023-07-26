@@ -28,7 +28,7 @@ services:
     # nginx
     nginx:
         image: nginx:alpine
-        container_name: healthcare_nginx
+        container_name: healthcare-nginx
         restart: unless-stopped
         ports:
             - "8089:80"
@@ -41,7 +41,7 @@ services:
     # db mysql
     db:
         image: mysql:8.0
-        container_name: healthcare_db
+        container_name: healthcare-db
         restart: unless-stopped
         environment:
             MYSQL_DATABASE: healthcare
@@ -59,7 +59,7 @@ services:
     # redis
     redis:
         image: redis:latest
-        container_name: healthcare_redis
+        container_name: healthcare-redis
         networks:
             - healthcare
 
