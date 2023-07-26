@@ -31,6 +31,7 @@ class DoctorService implements DoctorServiceInterface
             'image' => Arr::get($signupDoctorData, 'image'),
             'sign' => Arr::get($signupDoctorData, 'sign'),
             'type' => Arr::get($signupDoctorData, 'type'),
+            'price' => Arr::get($signupDoctorData, 'price'),
             'specialization_id' => Arr::get($signupDoctorData, 'specialization_id'),
             'created_by' => 1,
         ]);

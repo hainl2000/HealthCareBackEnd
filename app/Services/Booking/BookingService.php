@@ -181,9 +181,20 @@ class BookingService implements BookingServiceInterface
     public function rateBooking($bookingId, $rating)
     {
         try {
-            $booking = BookingInformation::where([
-                'id' => $bookingId
+            $selectAttributes = [
+                'booking_information.id as id',
+                'booking_information.doctor_finish as doctor_finish',
+                'do.id as doctor_id',
+            ];
+            $booking = BookingInformation::select($selectAttributes)
+            ->join('doctor_shift as ds', function ($join) {
+                $join->on('ds.id', '=', 'booking_information.shift_id');
+            })->join('doctors as do', function ($join) {
+                $join->on('do.id', '=', 'ds.doctor_id');
+            })->where([
+                'booking_information.id' => $bookingId
             ])->first();
+
             if ($booking) {
                 $booking->rating = Arr::get($rating, 'rating');
                 $booking->comment = Arr::get($rating, 'comment');
@@ -192,6 +203,7 @@ class BookingService implements BookingServiceInterface
             }
             return $booking;
         } catch (\Exception $e) {
+            dd($e->getMessage());
             return false;
         }
     }
