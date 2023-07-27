@@ -52,7 +52,7 @@ services:
             - dbdata:/var/lib/mysql/
             - ./dev/mysql/my.cnf:/etc/mysql/my.cnf
         ports:
-            - "33067:3306"
+            - "3306:3306"
         networks:
             - healthcare
 
