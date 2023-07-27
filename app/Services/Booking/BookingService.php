@@ -6,6 +6,8 @@ use App\Enums\PaginationParams;
 use App\Enums\Status;
 use App\Events\PushLatestPatientEvent;
 use App\Models\BookingInformation;
+use App\Services\Shifts\ShiftServiceInterface;
+use Carbon\Carbon;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Config;
@@ -14,15 +16,21 @@ use App\Services\Google\GoogleServiceInterface;
 class BookingService implements BookingServiceInterface
 {
     private $googleService;
+    private $shiftService;
 
-    public function __construct(GoogleServiceInterface $googleServiceInterface)
+    public function __construct(
+        GoogleServiceInterface $googleService,
+        ShiftServiceInterface $shiftService
+    )
     {
-        $this->googleService = $googleServiceInterface;
+        $this->googleService = $googleService;
+        $this->shiftService = $shiftService;
     }
 
     public function createBooking($data)
     {
-//        $data["video_link"] = $this->googleService->createMeeting();
+        $shiftInfo = $this->shiftService->getShiftInformationById(Arr::get($data, "shift_id"));
+        $data["video_link"] = $this->googleService->createMeeting(Carbon::parse($shiftInfo->date), Arr::get($data, "email"));
         $createData = [
             "shift_id" => Arr::get($data, "shift_id"),
             "name" => Arr::get($data, "name"),
@@ -112,6 +120,9 @@ class BookingService implements BookingServiceInterface
         }
         if (!empty($searchConditions['doctor_name'])) {
             $query = $query->whereLike('do.name', "%{$searchConditions['doctor_name']}%");
+        }
+        if (!empty($searchConditions['selectedDoctors'])) {
+            $query = $query->whereIn('do.id', $searchConditions['selectedDoctors']);
         }
         if (!empty($searchConditions['dateRange'])) {
             if (count($searchConditions['dateRange']) == 1) {

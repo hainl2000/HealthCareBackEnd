@@ -20,6 +20,7 @@ class GoogleService implements GoogleServiceInterface
             $client->setAccessType(config('google.access_type'));
             $client->setScopes(config('google.scopes'));
             $client->setPrompt(config('google.prompt'));
+            $client->setRedirectUri('http://127.0.0.1:8000/oauthcallback');
 
             // Load previously authorized token from a file, if it exists.
             // The file token.json stores the user's access and refresh tokens, and is
@@ -30,18 +31,17 @@ class GoogleService implements GoogleServiceInterface
                 $accessToken = json_decode(file_get_contents($tokenPath), true);
                 $client->setAccessToken($accessToken);
             }
-//            $authUrl = $client->createAuthUrl();
-//            dd($authUrl);
             //get code and delete file google-token.json
 
-            // If there is no previous token or it's expired.
+//             If there is no previous token or it's expired.
             if ($client->isAccessTokenExpired()) {
                 // Refresh the token if possible, else fetch a new one.
                 if ($client->getRefreshToken()) {
                     $client->fetchAccessTokenWithRefreshToken($client->getRefreshToken());
                 } else {
                     // Request authorization from the user.
-
+                    $client->getAccessToken();
+                    $client->getRefreshToken();
                     $authCode = config('google.auth_code');
                     // Exchange authorization code for an access token.
                     $accessToken = $client->fetchAccessTokenWithAuthCode($authCode);
@@ -63,7 +63,7 @@ class GoogleService implements GoogleServiceInterface
         return $client;
     }
 
-    public function createMeeting()
+    public function createMeeting($startDateTime, $patientEmail)
     {
         try{
             $client = $this->getClient();
@@ -73,13 +73,13 @@ class GoogleService implements GoogleServiceInterface
             $event = new Google_Service_Calendar_Event([
                 'summary' => config('google.application_name'),
                 'description' => config('google.application_name'),
-                'location' => 'Hanoi VietNam',
+                'location' => 'Hanoi, VietNam',
                 'start' => [
-                    'dateTime' => Carbon::now()->addHour(),
+                    'dateTime' => $startDateTime->format('Y-m-d\TH:i:s'),
                     'timeZone' => config('app.timezone')
                 ],
                 'end' => [
-                    'dateTime' => Carbon::now()->addHours(2),
+                    'dateTime' => $startDateTime->addMinutes(40)->format('Y-m-d\TH:i:s'),
                     'timeZone' => config('app.timezone')
                 ],
                 'conferenceData' => [
@@ -87,14 +87,16 @@ class GoogleService implements GoogleServiceInterface
                         "conferenceSolutionKey" => [
                             "type" => "hangoutsMeet"
                         ],
-                        'requestId' => 'random12312312312'
+                        'requestId' => uniqid()
                     ]
                 ],
-                "conferenceProperties" => [
-                    "allowedConferenceSolutionTypes" => [
-                        "hangoutsMeet"
-                    ]
-                ]
+                "allowedConferenceSolutionTypes" => [
+                    "hangoutsMeet"
+                ],
+                'attendees' => [ [
+                    "email" => $patientEmail,
+                    "displayName" => "Bệnh nhân"
+                ]]
             ]);
             $meet = $service->events->insert($calendarId, $event, ['conferenceDataVersion' => 1]);
             return $meet->getHangoutLink();

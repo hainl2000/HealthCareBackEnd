@@ -5,6 +5,7 @@ namespace App\Http\Controllers\doctor;
 use App\Enums\PaginationParams;
 use App\Http\Controllers\ApiController;
 use App\Services\Doctors\DoctorServiceInterface;
+use App\Services\File\FileServiceInterface;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -106,7 +107,22 @@ class DoctorController extends ApiController
     public function getDoctorFullInformationById(Request $request, $id)
     {
         $doctor = $this->doctorService->getDoctorFullInformationById($id);
+        if (isset($doctor['image'])) {
+            $doctor['image'] = env('APP_URL') . '/' . $this->replaceFilePath($doctor['image']);
+        }
+        if (isset($doctor['sign'])) {
+            $doctor['sign'] = env('APP_URL') . '/' . $this->replaceFilePath($doctor['sign']);
+        }
         return $this->respondSuccess($doctor);
+    }
+
+    private function replaceFilePath($filePath) {
+        if (strpos($filePath, 'public') !== false) {
+            $newFilePath = str_replace('public', 'storage', $filePath);
+            return $newFilePath;
+        } else {
+            return $filePath;
+        }
     }
 
 }

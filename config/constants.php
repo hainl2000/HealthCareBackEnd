@@ -17,9 +17,9 @@ return [
 
     'UPLOAD_FOLDER' => [
         'BOOKING_DIAGNOSE' => "storage/booking/PreviousDiagnose",
-        'AVATAR' => "public/avatar/",
+        'AVATAR' => "public/images/avatar",
         "PRESCRIPTION" => '/public/booking/prescription/{filename}.pdf',
-        'SIGN' => "public/sign/"
+        'SIGN' => "public/images/sign"
     ],
 
     "RES_MESSAGES" => [

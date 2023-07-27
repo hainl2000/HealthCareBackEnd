@@ -4,5 +4,5 @@ namespace App\Services\Google;
 
 interface GoogleServiceInterface
 {
-    public function createMeeting();
+    public function createMeeting($startDateTime, $patientEmail);
 }

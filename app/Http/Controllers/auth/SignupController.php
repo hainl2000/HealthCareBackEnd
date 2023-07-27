@@ -12,6 +12,7 @@ use App\Services\Mail\MailServiceInterface;
 use App\Services\Users\UserServiceInterface;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Config;
 
 class SignupController extends ApiController
@@ -76,6 +77,7 @@ class SignupController extends ApiController
             $folderSignPath = Config::get("constants.UPLOAD_FOLDER.SIGN");
             $signupDoctorData["image"] = $this->fileService->uploadImage($folderPath, $avatar);
             $signupDoctorData["sign"] = $this->fileService->uploadImage($folderSignPath, $sign);
+            $signupDoctorData["created_by"] = Auth::guard('sanctum')->id();
             $signupDoctorData["password"] = generateRandomPassword();
             $doctor = $this->doctorService->signup($signupDoctorData);
             $doctorInfo = $this->doctorService->insertDoctorInformation($doctor->id, $signupDoctorData);

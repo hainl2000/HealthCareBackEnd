@@ -33,7 +33,7 @@ class DoctorService implements DoctorServiceInterface
             'type' => Arr::get($signupDoctorData, 'type'),
             'price' => Arr::get($signupDoctorData, 'price'),
             'specialization_id' => Arr::get($signupDoctorData, 'specialization_id'),
-            'created_by' => 1,
+            'created_by' => Arr::get($signupDoctorData, 'created_by'),
         ]);
         return $doctor;
     }
