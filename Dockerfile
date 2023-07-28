@@ -4,6 +4,8 @@ FROM php:8.1.0-fpm
 ARG user
 ARG uid
 
+Composer could not find a composer.json file in /var/www/html
+
 # Install system dependencies
 RUN apt-get update && apt-get install -y \
     git \
@@ -26,7 +28,8 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 # Create system user to run Composer and Artisan Commands
 RUN useradd -G www-data,root -u $uid -d /home/$user $user
 RUN mkdir -p /home/$user/.composer && \
-    chown -R $user:$user /home/$user
+    chown -R $user:$user /home/$user \
+
 ENV COMPOSER_ALLOW_SUPERUSER=1
 RUN composer install
 
@@ -35,8 +38,6 @@ RUN pecl install -o -f redis \
     &&  rm -rf /tmp/pear \
     &&  docker-php-ext-enable redis
 
-# Set working directory
-WORKDIR /var/www
 
 # Copy custom configurations PHP
 COPY dev/php/custom.ini /usr/local/etc/php/conf.d/custom.ini
