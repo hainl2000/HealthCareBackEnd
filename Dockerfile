@@ -4,7 +4,8 @@ FROM php:8.1.0-fpm
 ARG user
 ARG uid
 
-Composer could not find a composer.json file in /var/www/html
+# Set working directory
+WORKDIR /var/www
 
 # Install system dependencies
 RUN apt-get update && apt-get install -y \
@@ -37,7 +38,6 @@ RUN composer install
 RUN pecl install -o -f redis \
     &&  rm -rf /tmp/pear \
     &&  docker-php-ext-enable redis
-
 
 # Copy custom configurations PHP
 COPY dev/php/custom.ini /usr/local/etc/php/conf.d/custom.ini
