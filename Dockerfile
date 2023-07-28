@@ -1,9 +1,6 @@
 FROM php:8.1.0-fpm
 
 # set your user name, ex: user=bernardo
-ARG user
-ARG uid
-
 
 # Install system dependencies
 RUN apt-get update && apt-get install -y \
@@ -25,7 +22,7 @@ RUN docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd sockets
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
 # Create system user to run Composer and Artisan Commands
-RUN useradd -G www-data,root -u $uid -d /home/$user $user
+USER root
 RUN mkdir -p /home/$user/.composer && \
     chown -R $user:$user /home
 

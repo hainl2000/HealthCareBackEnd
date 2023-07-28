@@ -4,9 +4,6 @@ services:
     # image project
     app:
         build:
-            args:
-                user: healthcare
-                uid: 1000
             context: .
             dockerfile: Dockerfile
         container_name: healthcare-app
