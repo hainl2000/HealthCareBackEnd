@@ -38,7 +38,7 @@ RUN pecl install -o -f redis \
 # Set working directory
 WORKDIR /var/www
 ENV COMPOSER_ALLOW_SUPERUSER=1
-RUN composer íntall
+RUN composer install
 
 # Copy custom configurations PHP
 COPY dev/php/custom.ini /usr/local/etc/php/conf.d/custom.ini
