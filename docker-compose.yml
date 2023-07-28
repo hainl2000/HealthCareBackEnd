@@ -28,7 +28,7 @@ services:
         container_name: healthcare-nginx
         restart: unless-stopped
         ports:
-            - "8089:80"
+            - "8000:80"
         volumes:
             - ./:/var/www
             - ./dev/nginx/:/etc/nginx/conf.d/
