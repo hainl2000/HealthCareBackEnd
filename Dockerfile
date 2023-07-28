@@ -37,7 +37,18 @@ RUN pecl install -o -f redis \
 
 # Set working directory
 WORKDIR /var/www
+# Install dependencies
+COPY composer.json .
+COPY composer.lock .
+RUN composer install --prefer-dist --no-scripts --no-dev --no-autoloader && rm -rf /root/.composer
 
+# Copy codebase
+COPY . .
+
+RUN mkdir -p storage/app
+
+# Finish composer
+RUN composer install --no-dev
 # Copy custom configurations PHP
 COPY dev/php/custom.ini /usr/local/etc/php/conf.d/custom.ini
 
