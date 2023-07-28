@@ -31,7 +31,7 @@ RUN pecl install -o -f redis \
     &&  rm -rf /tmp/pear \
     &&  docker-php-ext-enable redis
 
-RUN mkdir -p storage/framework/cache/data storage/app storage/framework/sessions storage/framework/views
+RUN mkdir -p storage/framework/cache/data storage/app storage/framework/sessions storage/framework/views storage/logs
 # Set working directory
 WORKDIR /var/www
 
