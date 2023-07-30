@@ -2,12 +2,20 @@
 
 namespace App\Services\Payment;
 
+use App\Services\Booking\BookingServiceInterface;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Config;
 
 class VnpayService implements VnpayServiceInterface
 {
-    private function setupVnPayConfig($orderId)
+    private $bookingService;
+
+    public function __construct(BookingServiceInterface $bookingService)
+    {
+        $this->bookingService = $bookingService;
+    }
+
+    private function setupVnPayConfig($orderId, $price)
     {
         $vnPayConfig = [];
         $vnPayConfig['vnp_Version'] = "2.1.0";
@@ -18,7 +26,7 @@ class VnpayService implements VnpayServiceInterface
         $vnPayConfig['vnp_CurrCode'] = "VND";
         $vnPayConfig['vnp_OrderType'] = 'other';
         $vnPayConfig['vnp_OrderInfo'] = $orderId;
-        $vnPayConfig['vnp_Amount'] = 25000000;
+        $vnPayConfig['vnp_Amount'] = $price * 100;
         $vnPayConfig['vnp_Locale'] = 'vn';
         $vnPayConfig['vnp_IpAddr'] = '127.0.0.1';
         $vnPayConfig['vnp_Command'] = "pay";
@@ -48,7 +56,8 @@ class VnpayService implements VnpayServiceInterface
     }
     public function createPayment($bookingId)
     {
-        $vnPayConfig = $this->setupVnPayConfig($bookingId);
+        $booking = $this->bookingService->getBookingPrice($bookingId);
+        $vnPayConfig = $this->setupVnPayConfig($bookingId, $booking->price);
         return $this->createPaymentUrl($vnPayConfig);
     }
 

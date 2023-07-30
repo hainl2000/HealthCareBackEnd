@@ -29,8 +29,8 @@ class BookingService implements BookingServiceInterface
 
     public function createBooking($data)
     {
-        $shiftInfo = $this->shiftService->getShiftInformationById(Arr::get($data, "shift_id"));
-        $data["video_link"] = $this->googleService->createMeeting(Carbon::parse($shiftInfo->date), Arr::get($data, "email"));
+//        $shiftInfo = $this->shiftService->getShiftInformationById(Arr::get($data, "shift_id"));
+//        $data["video_link"] = $this->googleService->createMeeting(Carbon::parse($shiftInfo->date), Arr::get($data, "email"));
         $createData = [
             "shift_id" => Arr::get($data, "shift_id"),
             "name" => Arr::get($data, "name"),
@@ -92,6 +92,16 @@ class BookingService implements BookingServiceInterface
         }
 
         return $query->where("booking_information.id", "=", $id)->first();
+    }
+
+    public function getBookingPrice($bookingId)
+    {
+        return BookingInformation::select('do.price')
+            ->join('doctor_shift as ds', function ($join) {
+                $join->on('ds.id', '=', 'booking_information.shift_id');
+            })->join('doctors as do', function ($join) {
+                $join->on('do.id', '=', 'ds.doctor_id');
+            })->where("booking_information.id", "=", $bookingId)->first();
     }
 
     public function getListBooking($attributes = ["*"], $data = null, $searchConditions = [])

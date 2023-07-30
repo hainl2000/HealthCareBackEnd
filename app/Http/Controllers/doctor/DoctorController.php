@@ -108,21 +108,12 @@ class DoctorController extends ApiController
     {
         $doctor = $this->doctorService->getDoctorFullInformationById($id);
         if (isset($doctor['image'])) {
-            $doctor['image'] = env('APP_URL') . '/' . $this->replaceFilePath($doctor['image']);
+            $doctor['image'] = env('APP_URL') . '/' . replaceFilePath($doctor['image']);
         }
         if (isset($doctor['sign'])) {
-            $doctor['sign'] = env('APP_URL') . '/' . $this->replaceFilePath($doctor['sign']);
+            $doctor['sign'] = env('APP_URL') . '/' . replaceFilePath($doctor['sign']);
         }
         return $this->respondSuccess($doctor);
-    }
-
-    private function replaceFilePath($filePath) {
-        if (strpos($filePath, 'public') !== false) {
-            $newFilePath = str_replace('public', 'storage', $filePath);
-            return $newFilePath;
-        } else {
-            return $filePath;
-        }
     }
 
 }

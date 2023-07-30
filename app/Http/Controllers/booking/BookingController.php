@@ -107,6 +107,7 @@ class BookingController extends ApiController
                 "ds.date as booking_start_date",
                 "do.name as doctor_name",
                 "do.id as doctor_id",
+                "do.price as price",
                 "sp.name as doctor_specialization",
                 "sp.slug"
             ];
@@ -114,6 +115,9 @@ class BookingController extends ApiController
         $bookingInformation = $this->bookingService->getBookingInformationById($id, $selectData, $isShortInformation)->toArray();
         if ($prescription = Arr::get($bookingInformation, "prescription")) {
             $bookingInformation["prescription"] = $this->handlePrescriptionResource($prescription);
+        }
+        if (isset($bookingInformation['patient_history_image'])) {
+            $bookingInformation["patient_history_image"] = replaceFilePath($bookingInformation["patient_history_image"]);
         }
         return $this->respondSuccess($bookingInformation);
     }
@@ -382,6 +386,14 @@ class BookingController extends ApiController
             'filename' => $fileName
         ]);
         try {
+            $data = [
+                'doctor_name' => 'Bác sĩ A',
+                'patient_name' => 'Nguyễn Văn A',
+                'address' => 'Tập thể đại học công nghiệp hà nội, tây tựu, bắc từ liêm, hà nội',
+                'age' => '18',
+                'gender' => 'Nam',
+                'booking_date' => 'a'
+            ];
             $this->fileService->exportPrescriptionPdf($path, []);
             return $fileName;
         } catch (\Exception $e) {

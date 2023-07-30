@@ -10,7 +10,7 @@ use App\Http\Controllers\booking\BookingController;
 use App\Http\Controllers\drug\DrugController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\auth\LogoutController;
-use App\Http\Controllers\user\UserController;
+use App\Http\Controllers\auth\ChangePasswordController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -38,7 +38,7 @@ Route::prefix('/user')->group(function() {
         Route::post('/notify', [NotificationController::class, 'notifyTransferringMoney']);
         Route::get('/payment', [BookingController::class, 'payment']);
     });
-    Route::post('/change-password', [UserController::class, 'changePassword']);
+    Route::post('/change-password', [ChangePasswordController::class, 'changePassword']);
 });
 
 Route::prefix('/specialization')->group(function () {
@@ -72,6 +72,7 @@ Route::prefix('/doctor')->group(function () {
             Route::get('/soonest', [BookingController::class, 'getSoonestBooking']);
         });
     });
+    Route::post('/doctor-change-password', [ChangePasswordController::class, 'doctorChangePassword']);
 });
 
 Route::prefix('/admin')->group(function() {
@@ -83,6 +84,7 @@ Route::prefix('/admin')->group(function() {
     Route::get('/doctor/{id}', [DoctorController::class, 'getDoctorFullInformationById']);
     Route::get('/drug/list', [DrugController::class, 'getListDrugs']);
     Route::post('/drug/create', [DrugController::class, 'createDrug']);
+    Route::post('/drug/update', [DrugController::class, 'updateDrug']);
     Route::prefix('/specialization')->group(function() {
 
     });

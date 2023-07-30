@@ -18,7 +18,7 @@ class ShiftService implements ShiftServiceInterface
 
     public function getShiftInformationById($id)
     {
-        return DoctorShift::with(["shift", "doctor:id,name,image", "doctor.doctor_information"])
+        return DoctorShift::with(["shift", "doctor:id,name,image,price", "doctor.doctor_information"])
             ->where('id', $id)
             ->first();
     }
