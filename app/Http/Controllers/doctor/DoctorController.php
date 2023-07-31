@@ -108,10 +108,10 @@ class DoctorController extends ApiController
     {
         $doctor = $this->doctorService->getDoctorFullInformationById($id);
         if (isset($doctor['image'])) {
-            $doctor['image'] = env('APP_URL') . '/' . replaceFilePath($doctor['image']);
+            $doctor['image'] = replaceFilePath($doctor['image']);
         }
         if (isset($doctor['sign'])) {
-            $doctor['sign'] = env('APP_URL') . '/' . replaceFilePath($doctor['sign']);
+            $doctor['sign'] = replaceFilePath($doctor['sign']);
         }
         return $this->respondSuccess($doctor);
     }

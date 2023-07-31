@@ -78,10 +78,10 @@
             <div class="col-5">
                 <div class="d-flex">
                     <div class="form-text">
-                        <span>Chẩn đoán: AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA</span>
+                        <span>Chẩn đoán: AAAAAAAAAAA AAAAAAAAAAAAAAAAA AAAAAAAAAAAAAA AAAAAAAAA A A A A</span>
                     </div>
                     <div class="form-text">
-                        <span>Lưu ý: AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA</span>
+                        <span>Lưu ý: AAAAAAAAAAAAAAAA AAAAAAAAAAAAAAAAA AAAAAAAAAAAAAAAA AAAAAAAAAAA AA A AA AA</span>
                     </div>
                 </div>
             </div>
@@ -165,7 +165,6 @@
     <div class="footer pt-2">
         <div class="form-text">
             <span>Doctor's signature:</span>
-            <img width="100" height="80" src="data:image/png;base64,{{ base64_encode(file_get_contents(public_path('storage/avatar/lichhoc-1686773000104.png'))) }}" alt="sign">
         </div>
     </div>
 </div>

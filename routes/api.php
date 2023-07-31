@@ -86,7 +86,8 @@ Route::prefix('/admin')->group(function() {
     Route::post('/drug/create', [DrugController::class, 'createDrug']);
     Route::post('/drug/update', [DrugController::class, 'updateDrug']);
     Route::prefix('/specialization')->group(function() {
-
+        Route::post('/create', [SpecializationController::class, 'createNewSpecialization']);
+        Route::post('/update', [SpecializationController::class, 'updateSpecialization']);
     });
 });
 

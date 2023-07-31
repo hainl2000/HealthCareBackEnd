@@ -27,9 +27,9 @@ if (!function_exists('replaceFilePath')) {
      function replaceFilePath($filePath) {
         if (strpos($filePath, 'public') !== false) {
             $newFilePath = str_replace('public', 'storage', $filePath);
-            return $newFilePath;
+            return env('APP_URL') . '/' . $newFilePath;
         } else {
-            return $filePath;
+            return env('APP_URL') . '/' . $filePath;
         }
     }
 }

@@ -19,7 +19,8 @@ return [
         'BOOKING_DIAGNOSE' => "public/images/booking/previous-diagnose",
         'AVATAR' => "public/images/avatar",
         "PRESCRIPTION" => 'public/pdf/prescription/{filename}.pdf',
-        'SIGN' => "public/images/sign"
+        'SIGN' => "public/images/sign",
+        "SPECIALIZATION" => "public/images/specialization"
     ],
 
     "RES_MESSAGES" => [
