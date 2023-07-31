@@ -54,10 +54,12 @@ class BookingController extends ApiController
 
     public function createBooking(Request $request)
     {
+        $bookingData = $request->input();
+        //check condition create same
+
         $loginUserId = Auth::guard('sanctum')->id();
         $prevDiagnose = $request->file('prev_diagnose');
         $folderPath = Config::get("constants.UPLOAD_FOLDER.BOOKING_DIAGNOSE") . "/" . $loginUserId;
-        $bookingData = $request->input();
         $bookingData["created_by"] = $loginUserId;
         if (isset($prevDiagnose)) {
             $bookingData["prev_diagnose"] = $this->fileService->uploadImage($folderPath, $prevDiagnose);

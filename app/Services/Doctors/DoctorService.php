@@ -92,6 +92,7 @@ class DoctorService implements DoctorServiceInterface
             "doctors.id",
             "doctors.name",
             "doctors.image",
+            "doctors.price"
         ];
         $next30Mins = Carbon::now()->addMinutes(30)->toDateTimeLocalString();
         $next3Days = Carbon::now()->addDay(3)->endOfDay();
@@ -125,6 +126,7 @@ class DoctorService implements DoctorServiceInterface
             "doctors.id",
             "doctors.name",
             "doctors.image",
+            "doctors.price"
         ];
 
         $query = Doctor::select($selectData)->with("doctor_information");
