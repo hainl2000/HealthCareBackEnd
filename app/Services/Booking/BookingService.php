@@ -6,6 +6,8 @@ use App\Enums\PaginationParams;
 use App\Enums\Status;
 use App\Events\PushLatestPatientEvent;
 use App\Models\BookingInformation;
+use App\Services\Shifts\ShiftServiceInterface;
+use Carbon\Carbon;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Config;
@@ -14,15 +16,21 @@ use App\Services\Google\GoogleServiceInterface;
 class BookingService implements BookingServiceInterface
 {
     private $googleService;
+    private $shiftService;
 
-    public function __construct(GoogleServiceInterface $googleServiceInterface)
+    public function __construct(
+        GoogleServiceInterface $googleService,
+        ShiftServiceInterface $shiftService
+    )
     {
-        $this->googleService = $googleServiceInterface;
+        $this->googleService = $googleService;
+        $this->shiftService = $shiftService;
     }
 
     public function createBooking($data)
     {
-//        $data["video_link"] = $this->googleService->createMeeting();
+//        $shiftInfo = $this->shiftService->getShiftInformationById(Arr::get($data, "shift_id"));
+//        $data["video_link"] = $this->googleService->createMeeting(Carbon::parse($shiftInfo->date), Arr::get($data, "email"));
         $createData = [
             "shift_id" => Arr::get($data, "shift_id"),
             "name" => Arr::get($data, "name"),
@@ -86,6 +94,16 @@ class BookingService implements BookingServiceInterface
         return $query->where("booking_information.id", "=", $id)->first();
     }
 
+    public function getBookingPrice($bookingId)
+    {
+        return BookingInformation::select('do.price')
+            ->join('doctor_shift as ds', function ($join) {
+                $join->on('ds.id', '=', 'booking_information.shift_id');
+            })->join('doctors as do', function ($join) {
+                $join->on('do.id', '=', 'ds.doctor_id');
+            })->where("booking_information.id", "=", $bookingId)->first();
+    }
+
     public function getListBooking($attributes = ["*"], $data = null, $searchConditions = [])
     {
         $query = BookingInformation::select($attributes)
@@ -112,6 +130,9 @@ class BookingService implements BookingServiceInterface
         }
         if (!empty($searchConditions['doctor_name'])) {
             $query = $query->whereLike('do.name', "%{$searchConditions['doctor_name']}%");
+        }
+        if (!empty($searchConditions['selectedDoctors'])) {
+            $query = $query->whereIn('do.id', $searchConditions['selectedDoctors']);
         }
         if (!empty($searchConditions['dateRange'])) {
             if (count($searchConditions['dateRange']) == 1) {
@@ -181,9 +202,20 @@ class BookingService implements BookingServiceInterface
     public function rateBooking($bookingId, $rating)
     {
         try {
-            $booking = BookingInformation::where([
-                'id' => $bookingId
+            $selectAttributes = [
+                'booking_information.id as id',
+                'booking_information.doctor_finish as doctor_finish',
+                'do.id as doctor_id',
+            ];
+            $booking = BookingInformation::select($selectAttributes)
+            ->join('doctor_shift as ds', function ($join) {
+                $join->on('ds.id', '=', 'booking_information.shift_id');
+            })->join('doctors as do', function ($join) {
+                $join->on('do.id', '=', 'ds.doctor_id');
+            })->where([
+                'booking_information.id' => $bookingId
             ])->first();
+
             if ($booking) {
                 $booking->rating = Arr::get($rating, 'rating');
                 $booking->comment = Arr::get($rating, 'comment');
@@ -192,6 +224,7 @@ class BookingService implements BookingServiceInterface
             }
             return $booking;
         } catch (\Exception $e) {
+            dd($e->getMessage());
             return false;
         }
     }

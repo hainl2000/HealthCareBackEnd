@@ -14,7 +14,17 @@ class DrugService implements DrugServiceInterface
             'name' => Arr::get($drugData, 'name'),
             'register_code' => Arr::get($drugData, 'register_code'),
             'properties' => Arr::get($drugData, 'properties'),
-            'unit' => Arr::get($drugData, 'unit'),
+            'unit' => Arr::get($drugData, 'unit')
+        ]);
+    }
+
+    public function updateDrug($drugData)
+    {
+        return Drug::where('id', '=', $drugData['id'])->update([
+            'name' => Arr::get($drugData, 'name'),
+            'register_code' => Arr::get($drugData, 'register_code'),
+            'properties' => Arr::get($drugData, 'properties'),
+            'unit' => Arr::get($drugData, 'unit')
         ]);
     }
 

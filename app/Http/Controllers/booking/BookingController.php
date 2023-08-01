@@ -54,10 +54,12 @@ class BookingController extends ApiController
 
     public function createBooking(Request $request)
     {
+        $bookingData = $request->input();
+        //check condition create same
+
         $loginUserId = Auth::guard('sanctum')->id();
         $prevDiagnose = $request->file('prev_diagnose');
         $folderPath = Config::get("constants.UPLOAD_FOLDER.BOOKING_DIAGNOSE") . "/" . $loginUserId;
-        $bookingData = $request->input();
         $bookingData["created_by"] = $loginUserId;
         if (isset($prevDiagnose)) {
             $bookingData["prev_diagnose"] = $this->fileService->uploadImage($folderPath, $prevDiagnose);
@@ -107,6 +109,7 @@ class BookingController extends ApiController
                 "ds.date as booking_start_date",
                 "do.name as doctor_name",
                 "do.id as doctor_id",
+                "do.price as price",
                 "sp.name as doctor_specialization",
                 "sp.slug"
             ];
@@ -114,6 +117,9 @@ class BookingController extends ApiController
         $bookingInformation = $this->bookingService->getBookingInformationById($id, $selectData, $isShortInformation)->toArray();
         if ($prescription = Arr::get($bookingInformation, "prescription")) {
             $bookingInformation["prescription"] = $this->handlePrescriptionResource($prescription);
+        }
+        if (isset($bookingInformation['patient_history_image'])) {
+            $bookingInformation["patient_history_image"] = replaceFilePath($bookingInformation["patient_history_image"]);
         }
         return $this->respondSuccess($bookingInformation);
     }
@@ -156,6 +162,7 @@ class BookingController extends ApiController
         $paginationParams['dateRange'] = $request->query('dateRange');
         $paginationParams['doctor_name'] = $request->query('doctor_name');
         $paginationParams['specializations'] = $request->query('specializations');
+        $paginationParams['selectedDoctors'] = $request->query('selectedDoctors');
         $attributes = [];
         if (isset($loggingActor["user"])) {
             $attributes = $this->getBookingAttributesForUser();
@@ -339,6 +346,9 @@ class BookingController extends ApiController
     {
         $bookingId = $request->input('booking_id');
         $changeShiftId = $request->input('change_shift_id');
+        if (empty($bookingId) || empty($changeShiftId)) {
+            return $this->respondError('Đã xảy ra lỗi');
+        }
 
         try {
             $this->apiBeginTransaction();
@@ -348,9 +358,10 @@ class BookingController extends ApiController
             }
 
             $selectBookingAttributes = [
-                'shift_id'
+                'booking_information.shift_id',
+                'do.id as doctor_id'
             ];
-            $booking = $this->bookingService->getBookingInformationById($bookingId, $selectBookingAttributes, true);
+            $booking = $this->bookingService->getBookingInformationById($bookingId, $selectBookingAttributes);
             if (!$this->shiftService->updateShiftStatus($booking->shift_id, Config::get('constants.SHIFT.NO_PATIENT_STATUS'))) {
                 return new \Exception('update old shift status fail');
             }
@@ -358,6 +369,7 @@ class BookingController extends ApiController
             if (!$this->bookingService->updateBookingShift($bookingId, $changeShiftId)) {
                 return new \Exception('update booking shift fail');
             }
+
             $this->bookingService->pushLatestBookingForDoctor($booking->doctor_id);
 
             $this->apiCommit();
@@ -376,6 +388,14 @@ class BookingController extends ApiController
             'filename' => $fileName
         ]);
         try {
+            $data = [
+                'doctor_name' => 'Bác sĩ A',
+                'patient_name' => 'Nguyễn Văn A',
+                'address' => 'Tập thể đại học công nghiệp hà nội, tây tựu, bắc từ liêm, hà nội',
+                'age' => '18',
+                'gender' => 'Nam',
+                'booking_date' => 'a'
+            ];
             $this->fileService->exportPrescriptionPdf($path, []);
             return $fileName;
         } catch (\Exception $e) {

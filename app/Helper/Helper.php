@@ -1,7 +1,6 @@
 <?php
 if (!function_exists('replacePlaceholders')) {
-    function replacePlaceholders($text, $data)
-    {
+    function replacePlaceholders($text, $data) {
         foreach ($data as $key => $value) {
             $placeholder = '{' . $key . '}';
             $text = str_replace($placeholder, $value, $text);
@@ -22,5 +21,15 @@ if (!function_exists('generateRandomPassword')) {
 
         return $password;
     }
+}
 
+if (!function_exists('replaceFilePath')) {
+     function replaceFilePath($filePath) {
+        if (strpos($filePath, 'public') !== false) {
+            $newFilePath = str_replace('public', 'storage', $filePath);
+            return env('APP_URL') . '/' . $newFilePath;
+        } else {
+            return $filePath;
+        }
+    }
 }

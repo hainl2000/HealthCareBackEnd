@@ -12,6 +12,7 @@ use App\Services\Mail\MailServiceInterface;
 use App\Services\Users\UserServiceInterface;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Config;
 
 class SignupController extends ApiController
@@ -48,10 +49,10 @@ class SignupController extends ApiController
             if ($isSendEmailSuccess) {
                 $this->apiCommit();
             } else {
-                throw new SendMailFailException("Send Email Fail",400);
+                throw new SendMailFailException("Gửi email thất bại",400);
             }
             $respData = [
-                "message" => 'Create new user successfully',
+                "message" => 'Tạo tài khoản thành công',
             ];
             $resp = $this->respondCreated($respData);
         }  catch (SendMailFailException $e) {
@@ -76,19 +77,20 @@ class SignupController extends ApiController
             $folderSignPath = Config::get("constants.UPLOAD_FOLDER.SIGN");
             $signupDoctorData["image"] = $this->fileService->uploadImage($folderPath, $avatar);
             $signupDoctorData["sign"] = $this->fileService->uploadImage($folderSignPath, $sign);
+            $signupDoctorData["created_by"] = Auth::guard('sanctum')->id();
             $signupDoctorData["password"] = generateRandomPassword();
             $doctor = $this->doctorService->signup($signupDoctorData);
             $doctorInfo = $this->doctorService->insertDoctorInformation($doctor->id, $signupDoctorData);
 
-//            $isSendEmailSuccess = $this->mailService->sendSignupDoctorEmail($signupDoctorData, $signupDoctorData['email']);
-//            if (!$isSendEmailSuccess) {
-//                throw new SendMailFailException("Send Email Fail",400);
-//            }
+            $isSendEmailSuccess = $this->mailService->sendSignupDoctorEmail($signupDoctorData, $signupDoctorData['email']);
+            if (!$isSendEmailSuccess) {
+                throw new SendMailFailException("Gửi email thất bại",400);
+            }
             if ($doctor && $doctorInfo) {
                 $this->apiCommit();
             }
             $respData = [
-                "message" => 'Create new doctor successfully',
+                "message" => 'Tạo bác sĩ thành công',
             ];
             $resp = $this->respondCreated($respData);
         } catch (SendMailFailException $e) {

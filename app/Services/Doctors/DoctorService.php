@@ -31,8 +31,9 @@ class DoctorService implements DoctorServiceInterface
             'image' => Arr::get($signupDoctorData, 'image'),
             'sign' => Arr::get($signupDoctorData, 'sign'),
             'type' => Arr::get($signupDoctorData, 'type'),
+            'price' => Arr::get($signupDoctorData, 'price'),
             'specialization_id' => Arr::get($signupDoctorData, 'specialization_id'),
-            'created_by' => 1,
+            'created_by' => Arr::get($signupDoctorData, 'created_by'),
         ]);
         return $doctor;
     }
@@ -91,6 +92,7 @@ class DoctorService implements DoctorServiceInterface
             "doctors.id",
             "doctors.name",
             "doctors.image",
+            "doctors.price"
         ];
         $next30Mins = Carbon::now()->addMinutes(30)->toDateTimeLocalString();
         $next3Days = Carbon::now()->addDay(3)->endOfDay();
@@ -124,6 +126,7 @@ class DoctorService implements DoctorServiceInterface
             "doctors.id",
             "doctors.name",
             "doctors.image",
+            "doctors.price"
         ];
 
         $query = Doctor::select($selectData)->with("doctor_information");
@@ -214,6 +217,30 @@ class DoctorService implements DoctorServiceInterface
         return DoctorShift::where([
             'id' => $cancelShiftId
         ])->delete();
+    }
+
+    public function getFeaturedDoctor()
+    {
+        $selectAttributes = [
+            'doctors.id',
+            'doctors.name',
+            'doctors.image',
+            'doctors.specialization_id',
+        ];
+        $doctors = Doctor::select($selectAttributes)->with(['specializations:id,name'])
+            ->orderBy('doctors.created_at')
+            ->get();
+
+        $result = [];
+        foreach ($doctors as $doctor) {
+            $specializationId = $doctor->specializations->id;
+
+            if (!isset($result[$specializationId]) || count($result[$specializationId]) < 2) {
+                $result[$specializationId][] = $doctor;
+            }
+        }
+
+        return collect($result)->flatten();
     }
 }
 

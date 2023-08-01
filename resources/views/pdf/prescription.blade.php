@@ -8,6 +8,10 @@
     <link href="http://fonts.googleapis.com/css2?family=Amiri&display=swap" rel="stylesheet">
 </head>
 <style>
+    body, h1 {
+        font-family: DejaVu Sans, sans-serif !important;
+    }
+
     .title {
         text-align: center;
         color: #4b4b98;
@@ -44,8 +48,9 @@
 <body>
 <div class="container mt-5 mb-2">
     <div class="header">
-        <h1 class="title">Hospital Name</h1>
-        <p class="name pb-3 pt-3">Dr.John Killer M.B.B.S, M.s(Orthor)</p>
+        <p class="title">Hệ Thống HCARE</p>
+        <p class="name pb-3 pt-3">Bác sĩ Nguyễn Văn Hà</p>
+        <span> Ngày khám: 10/12/2000 </span>
     </div>
     <div class="body pt-2 pb-2">
         <div class="d-flex col-12 form mt-2">
@@ -66,58 +71,89 @@
                         <span>Gender: Nam</span>
                     </div>
                 </div>
-                <div class="form-text">
-                    <span>Date: 10/12/2000</span>
+            </div>
+        </div>
+        Chẩn đoán:
+        <div class="d-flex col-12 form mt-2">
+            <div class="col-5">
+                <div class="d-flex">
+                    <div class="form-text">
+                        <span>Chẩn đoán: AAAAAAAAAAA AAAAAAAAAAAAAAAAA AAAAAAAAAAAAAA AAAAAAAAA A A A A</span>
+                    </div>
+                    <div class="form-text">
+                        <span>Lưu ý: AAAAAAAAAAAAAAAA AAAAAAAAAAAAAAAAA AAAAAAAAAAAAAAAA AAAAAAAAAAA AA A AA AA</span>
+                    </div>
                 </div>
             </div>
         </div>
+        Đơn thuốc:
         <div class="mt-5">
             <div class="table-wrapper-scroll-y my-custom-scrollbar">
-
                 <table class="table table-bordered table-striped mb-0">
                     <thead>
                     <tr>
-                        <th scope="col">#</th>
-                        <th scope="col">First</th>
-                        <th scope="col">Last</th>
-                        <th scope="col">Handle</th>
+                        <th scope="col">Tên thuốc</th>
+                        <th scope="col">Đơn vị</th>
+                        <th scope="col">Số lượng</th>
+                        <th scope="col">Liều dùng</th>
+                        <th scope="col">Số lần uống</th>
+                        <th scope="col">Thời gian</th>
+                        <th scope="col">Ghi chú</th>
                     </tr>
                     </thead>
                     <tbody>
                     <tr>
-                        <th scope="row">1</th>
-                        <td>Mark</td>
+                        <th scope="row">Paraphetamolllllll</th>
+                        <td>12</td>
                         <td>Otto</td>
+                        <td>@mdo</td>
+                        <td>Uống sau ăn</td>
+                        <td>@mdo</td>
                         <td>@mdo</td>
                     </tr>
                     <tr>
-                        <th scope="row">2</th>
+                        <th scope="row">Paraphetamolllllll</th>
                         <td>Jacob</td>
                         <td>Thornton</td>
                         <td>@fat</td>
+                        <td>Sau hoặc trước ăn</td>
+                        <td>@fat</td>
+                        <td>@fat</td>
                     </tr>
                     <tr>
-                        <th scope="row">3</th>
+                        <th scope="row">Paraphetamolllllll</th>
                         <td>Larry</td>
                         <td>the Bird</td>
                         <td>@twitter</td>
+                        <td>@twitter</td>
+                        <td>@twitter</td>
+                        <td>@twitter</td>
                     </tr>
                     <tr>
-                        <th scope="row">4</th>
+                        <th scope="row">Paraphetamolllllll</th>
                         <td>Mark</td>
                         <td>Otto</td>
                         <td>@mdo</td>
+                        <td>@mdo</td>
+                        <td>@mdo</td>
+                        <td>@mdo</td>
                     </tr>
                     <tr>
-                        <th scope="row">5</th>
+                        <th scope="row">Paraphetamolllllll</th>
                         <td>Jacob</td>
                         <td>Thornton</td>
                         <td>@fat</td>
+                        <td>@fat</td>
+                        <td>@fat</td>
+                        <td>@fat</td>
                     </tr>
                     <tr>
-                        <th scope="row">6</th>
+                        <th scope="row">Paraphetamolllllll</th>
                         <td>Larry</td>
                         <td>the Bird</td>
+                        <td>@twitter</td>
+                        <td>@twitter</td>
+                        <td>@twitter</td>
                         <td>@twitter</td>
                     </tr>
                     </tbody>
@@ -129,7 +165,6 @@
     <div class="footer pt-2">
         <div class="form-text">
             <span>Doctor's signature:</span>
-            <img width="100" height="80" src="data:image/png;base64,{{ base64_encode(file_get_contents(public_path('storage/avatar/anhdep.jpeg'))) }}" alt="sign">
         </div>
     </div>
 </div>

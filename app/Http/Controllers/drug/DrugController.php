@@ -38,6 +38,18 @@ class DrugController extends ApiController
         $drugData = $request->input('drugInfo');
         $drug = $this->drugService->createDrug($drugData);
         return $this->respondCreated([$drug]);
+    }
 
+    public function updateDrug(Request $request)
+    {
+        $drugData = $request->input('drugInfo');
+        try {
+            if ($this->drugService->updateDrug($drugData)) {
+                return $this->respondSuccessWithoutData("Cập nhật thông tin thuốc thành công");
+            };
+            return $this->respondError("Cập nhật thông tin thuốc lỗi");
+        } catch (\Exception $e) {
+            return $this->respondError("Cập nhật thông tin thuốc lỗi");
+        }
     }
 }

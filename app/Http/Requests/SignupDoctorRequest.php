@@ -28,7 +28,8 @@ class SignupDoctorRequest extends ApiRequest
             'type' => 'required|in:0,1',
             'specialization_id' => 'required',
             'shortIntro' => 'required',
-            'fullIntro' => 'required'
+            'fullIntro' => 'required',
+            'price' => 'required|integer'
         ];
     }
 

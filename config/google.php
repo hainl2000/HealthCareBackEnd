@@ -7,8 +7,7 @@ return [
     'redirect_uri' => env('GOOGLE_REDIRECT'),
     'scopes' => [
         Google_Service_Calendar::CALENDAR,
-        Google_Service_Calendar::CALENDAR_EVENTS,
-        Google_Service_Calendar::CALENDAR_READONLY
+        Google_Service_Calendar::CALENDAR_EVENTS
     ],
     'access_type' => 'offline',
     'approval_prompt' => 'force',
