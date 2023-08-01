@@ -116,4 +116,13 @@ class DoctorController extends ApiController
         return $this->respondSuccess($doctor);
     }
 
+    public function getFeaturedDoctors()
+    {
+        $doctors = $this->doctorService->getFeaturedDoctor();
+        foreach ($doctors as $doctor) {
+            $doctor['image'] = replaceFilePath($doctor['image']);
+        }
+        return $this->respondSuccess($doctors);
+    }
+
 }

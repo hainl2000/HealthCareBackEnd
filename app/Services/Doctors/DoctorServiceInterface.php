@@ -13,5 +13,6 @@ interface DoctorServiceInterface
     public function insertDoctorInformation($doctorId, $doctorInfo);
     public function getDoctorInformationByBookingId($bookingId);
     public function getDoctorFullInformationById($id);
+    public function getFeaturedDoctor();
 
 }

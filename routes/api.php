@@ -58,6 +58,7 @@ Route::prefix('/booking')->group(function () {
 });
 
 Route::prefix('/doctor')->group(function () {
+    Route::get('/featured', [DoctorController::class, 'getFeaturedDoctors']);
     Route::post('/login', [LoginController::class, 'doctorLogin']);
     Route::get('/{id}', [DoctorController::class, 'getDoctorInformationById']);
     Route::get('/drug/list', [DrugController::class, 'getListDrugs']);

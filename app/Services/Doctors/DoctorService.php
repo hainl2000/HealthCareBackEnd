@@ -218,5 +218,29 @@ class DoctorService implements DoctorServiceInterface
             'id' => $cancelShiftId
         ])->delete();
     }
+
+    public function getFeaturedDoctor()
+    {
+        $selectAttributes = [
+            'doctors.id',
+            'doctors.name',
+            'doctors.image',
+            'doctors.specialization_id',
+        ];
+        $doctors = Doctor::select($selectAttributes)->with(['specializations:id,name'])
+            ->orderBy('doctors.created_at')
+            ->get();
+
+        $result = [];
+        foreach ($doctors as $doctor) {
+            $specializationId = $doctor->specializations->id;
+
+            if (!isset($result[$specializationId]) || count($result[$specializationId]) < 2) {
+                $result[$specializationId][] = $doctor;
+            }
+        }
+
+        return collect($result)->flatten();
+    }
 }
 

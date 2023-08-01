@@ -29,7 +29,7 @@ if (!function_exists('replaceFilePath')) {
             $newFilePath = str_replace('public', 'storage', $filePath);
             return env('APP_URL') . '/' . $newFilePath;
         } else {
-            return env('APP_URL') . '/' . $filePath;
+            return $filePath;
         }
     }
 }
