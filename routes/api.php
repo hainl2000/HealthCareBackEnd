@@ -96,6 +96,10 @@ Route::middleware(['auth:sanctum'])->group(function() {
 Route::get('/vnpay-return', [BookingController::class, 'getPaymentInformation']);
 
 Route::post('/test', [BookingController::class, 'exportPrescriptionPdf']);
+
+Route::get('/health', function () {
+    return 200;
+});
 //Route::post('/create-meet', [\App\Services\Google\GoogleService::class, 'createMeeting']);
 
 
