@@ -8,6 +8,7 @@ use App\Services\Doctors\DoctorServiceInterface;
 use App\Services\File\FileServiceInterface;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 
 
 class DoctorController extends ApiController

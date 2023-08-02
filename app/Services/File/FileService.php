@@ -4,7 +4,6 @@ namespace App\Services\File;
 
 use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
-use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Storage;
 
 class FileService implements FileServiceInterface
@@ -13,7 +12,7 @@ class FileService implements FileServiceInterface
     {
         $imageName = $this->getFileNameWithoutType($image) . "-" .Carbon::now()->getTimestampMs() . "." . $this->getFileType($image);
         try {
-            return Storage::putFileAs($path, $image, $imageName);
+            return Storage::disk('s3')->putFileAs($path, $image, $imageName);
         } catch (\Exception $e) {
             dd($e->getMessage());
         }

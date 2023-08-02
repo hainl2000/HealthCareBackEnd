@@ -76,6 +76,8 @@ Route::prefix('/doctor')->group(function () {
     Route::post('/doctor-change-password', [ChangePasswordController::class, 'doctorChangePassword']);
 });
 
+Route::post('/s3/test', [DoctorController::class, 'test']);
+
 Route::prefix('/admin')->group(function() {
     Route::post('/login', [LoginController::class, 'adminLogin']);
     Route::post('/booking/delete', [BookingController::class, 'deleteBooking']);
@@ -102,7 +104,6 @@ Route::middleware(['auth:sanctum'])->group(function() {
 
 Route::get('/vnpay-return', [BookingController::class, 'getPaymentInformation']);
 
-Route::post('/test', [BookingController::class, 'exportPrescriptionPdf']);
 //Route::post('/create-meet', [\App\Services\Google\GoogleService::class, 'createMeeting']);
 
 
