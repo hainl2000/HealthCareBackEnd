@@ -36,7 +36,7 @@ Route::prefix('/user')->group(function() {
         Route::post('/change', [BookingController::class, 'changeBooking']);
         Route::post('/notify', [NotificationController::class, 'notifyTransferringMoney']);
         Route::get('/payment', [BookingController::class, 'payment']);
-        Route::post('export', [BookingController::class, 'exportPrescriptionPdf']);
+        Route::post('/export', [BookingController::class, 'exportPrescription']);
     });
     Route::post('/change-password', [ChangePasswordController::class, 'changePassword']);
 });

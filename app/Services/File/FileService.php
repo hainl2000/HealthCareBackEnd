@@ -12,7 +12,7 @@ class FileService implements FileServiceInterface
     {
         $imageName = $this->getFileNameWithoutType($image) . "-" .Carbon::now()->getTimestampMs() . "." . $this->getFileType($image);
         try {
-            return Storage::disk('s3')->putFileAs($path, $image, $imageName);
+            return Storage::disk('s3')->putFileAs($path, $image, $imageName, 'public');
         } catch (\Exception $e) {
             dd($e->getMessage());
         }
@@ -35,13 +35,14 @@ class FileService implements FileServiceInterface
 
     public function exportPrescriptionPdf($path, $data)
     {
-//        if (Storage::exists($path)) {
-//            return true;
-//        }
-        $pdf = Pdf::loadView('pdf/prescriptions', $data, [], 'UTF-8');
+        if (Storage::disk('s3')->exists($path)) {
+            return true;
+        }
+
+        $pdf = Pdf::loadView('pdf/prescription', compact('data'), [], 'UTF-8');
         try {
-            $pdfPath =  Storage::put($path, $pdf->output());
-            return $this->getFileUrl($pdfPath);
+            Storage::disk('s3')->put($path, $pdf->output(), 'public');
+            return true;
         } catch (\Exception $e) {
             dd($e->getMessage());
         }

@@ -18,6 +18,7 @@ use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Facades\Storage;
 
 class BookingController extends ApiController
 {
@@ -291,8 +292,12 @@ class BookingController extends ApiController
                 if (!$this->bookingService->updateBookingStatus($updatedBooking->id, Config::get("constants.BOOKING_STATUS.END"))) {
                     throw new \Exception("Update status error");
                 }
-                $this->bookingService->pushLatestBookingForDoctor($updatedBooking->doctor_id);
+            } else {
+                if (!$this->bookingService->updateBookingStatus($updatedBooking->id, Config::get("constants.BOOKING_STATUS.EXAMINED"))) {
+                    throw new \Exception("Update status error");
+                }
             }
+            $this->bookingService->pushLatestBookingForDoctor($updatedBooking->doctor_id);
             $this->apiCommit();
             $this->respondSuccessWithoutData(Config::get("constants.RES_MESSAGES.RATING_SUCCESSFULLY"));
 
@@ -330,6 +335,10 @@ class BookingController extends ApiController
 
             if ($booking->patient_finish) {
                 if (!$this->bookingService->updateBookingStatus($bookingId, Config::get("constants.BOOKING_STATUS.END"))) {
+                    throw new \Exception("Update status error");
+                }
+            } else {
+                if (!$this->bookingService->updateBookingStatus($bookingId, Config::get("constants.BOOKING_STATUS.EXAMINED"))) {
                     throw new \Exception("Update status error");
                 }
             }
@@ -380,17 +389,20 @@ class BookingController extends ApiController
         }
     }
 
-    public function exportPrescriptionPdf(Request $request)
+    public function exportPrescription(Request $request)
     {
         $bookingId = $request->input('booking_id');
-        $fileName = 'prescription-' . $bookingId;
+        $fileName = 'chandoan-' . $bookingId;
         $path = replacePlaceholders(Config::get("constants.UPLOAD_FOLDER.PRESCRIPTION"), [
             'filename' => $fileName
         ]);
         $data = $this->bookingService->getExportBookingData($bookingId);
         try {
-            $this->fileService->exportPrescriptionPdf($path, []);
-            return $fileName;
+            $this->fileService->exportPrescriptionPdf($path, $data);
+            $url =  Storage::disk('s3')->url($path);
+            return $this->respondSuccess([
+                'url' => $url
+            ]);
         } catch (\Exception $e) {
             return $this->respondError($e->getMessage());
         }

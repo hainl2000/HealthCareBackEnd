@@ -12,15 +12,16 @@ return [
         'NOT_START' => 0,
         'END' => 1,
         'CANCEL' => 2,
-        'WAITING_PAYMENT' => 3
+        'WAITING_PAYMENT' => 3,
+        'EXAMINED' => 4
     ],
 
     'UPLOAD_FOLDER' => [
-        'BOOKING_DIAGNOSE' => "public/images/booking/previous-diagnose",
-        'AVATAR' => "public/images/avatar",
-        "PRESCRIPTION" => 'public/pdf/prescription/{filename}.pdf',
-        'SIGN' => "public/images/sign",
-        "SPECIALIZATION" => "public/images/specialization"
+        'BOOKING_DIAGNOSE' => "images/booking/previous-diagnose",
+        'AVATAR' => "images/avatar",
+        "PRESCRIPTION" => 'pdf/prescription/{filename}.pdf',
+        'SIGN' => "images/sign",
+        "SPECIALIZATION" => "images/specialization"
     ],
 
     "RES_MESSAGES" => [
