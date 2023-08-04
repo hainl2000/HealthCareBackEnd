@@ -15,5 +15,5 @@ interface BookingServiceInterface
     public function updateBookingShift($bookingId, $changeShiftId);
     public function pushLatestBookingForDoctor($doctorId);
     public function getBookingPrice($bookingId);
-
+    public function getExportBookingData($id);
 }

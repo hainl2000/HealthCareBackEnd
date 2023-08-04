@@ -26,7 +26,6 @@ use Illuminate\Support\Facades\Route;
 
 
 Route::prefix('/user')->group(function() {
-    Route::get('test', [LoginController::class, 'test']);
     Route::post('/login', [LoginController::class, 'login']);
     Route::post('/signup', [SignupController::class, 'register']);
 //    Route::get('/signup/verify/{id}/{hash}', [VerifyController::class,'verifyAccount'])->middleware('auth:sanctum','type.user');
@@ -37,6 +36,7 @@ Route::prefix('/user')->group(function() {
         Route::post('/change', [BookingController::class, 'changeBooking']);
         Route::post('/notify', [NotificationController::class, 'notifyTransferringMoney']);
         Route::get('/payment', [BookingController::class, 'payment']);
+        Route::post('export', [BookingController::class, 'exportPrescriptionPdf']);
     });
     Route::post('/change-password', [ChangePasswordController::class, 'changePassword']);
 });
@@ -76,8 +76,6 @@ Route::prefix('/doctor')->group(function () {
     Route::post('/doctor-change-password', [ChangePasswordController::class, 'doctorChangePassword']);
 });
 
-Route::post('/s3/test', [DoctorController::class, 'test']);
-
 Route::prefix('/admin')->group(function() {
     Route::post('/login', [LoginController::class, 'adminLogin']);
     Route::post('/booking/delete', [BookingController::class, 'deleteBooking']);
@@ -103,7 +101,6 @@ Route::middleware(['auth:sanctum'])->group(function() {
 });
 
 Route::get('/vnpay-return', [BookingController::class, 'getPaymentInformation']);
-
 //Route::post('/create-meet', [\App\Services\Google\GoogleService::class, 'createMeeting']);
 
 

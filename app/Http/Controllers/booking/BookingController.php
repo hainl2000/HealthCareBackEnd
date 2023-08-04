@@ -387,15 +387,8 @@ class BookingController extends ApiController
         $path = replacePlaceholders(Config::get("constants.UPLOAD_FOLDER.PRESCRIPTION"), [
             'filename' => $fileName
         ]);
+        $data = $this->bookingService->getExportBookingData($bookingId);
         try {
-            $data = [
-                'doctor_name' => 'Bác sĩ A',
-                'patient_name' => 'Nguyễn Văn A',
-                'address' => 'Tập thể đại học công nghiệp hà nội, tây tựu, bắc từ liêm, hà nội',
-                'age' => '18',
-                'gender' => 'Nam',
-                'booking_date' => 'a'
-            ];
             $this->fileService->exportPrescriptionPdf($path, []);
             return $fileName;
         } catch (\Exception $e) {

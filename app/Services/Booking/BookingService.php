@@ -262,4 +262,64 @@ class BookingService implements BookingServiceInterface
     {
         event(new PushLatestPatientEvent($doctorId));
     }
+
+    public function getExportBookingData($id)
+    {
+        $attributes = [
+            'do.name as doctor_name',
+            'do.sign as doctor_sign',
+            'booking_information.id',
+            'booking_information.name as patient_name',
+            'booking_information.gender as patient_gender',
+            'booking_information.address as patient_address',
+        ];
+        return BookingInformation::select($attributes)->with([
+            'prescription' => function ($builder) {
+                $builder->select('id', 'booking_id', 'diagnose', 'additional_direction');
+            },
+            'prescription.prescriptionDrugs' => function ($builder) {
+                $builder->select(
+                    'prescription_id',
+                    'drug_id',
+                    'other_drug_name',
+                    'other_drug_unit',
+                    'dosages',
+                    'number_per_time',
+                    'meals',
+                    'note',
+                    'times'
+                );
+            },
+            'prescription.prescriptionDrugs.drug' => function ($builder) {
+                $builder->select(
+                    'id', 'name', 'unit'
+                );
+            }
+        ])->join('doctor_shift as ds', function ($join) {
+            $join->on('ds.id', '=', 'booking_information.shift_id');
+        })->join('doctors as do', function ($join) {
+            $join->on('do.id', '=', 'ds.doctor_id');
+        })->where("booking_information.id", "=", $id)
+        ->first();
+    }
+
+    private function handleShowPrescriptionData($prescriptionData)
+    {
+        $showPrescriptionData = [];
+        $showPrescriptionData['diagnose'] = $prescriptionData['diagnose'];
+        $showPrescriptionData['additional_direction'] = $prescriptionData['additional_direction'];
+
+        $drugsData = $prescriptionData['prescription_drugs'];
+        foreach ($drugsData as $drug) {
+            $showData = [];
+            $showData['drug_name'] = $drug['drug'] ? $drug['drug']['name'] : $drug['other_drug_name'];
+            $showData['drug_unit'] = $drug['drug'] ? $drug['drug']['unit'] : $drug['other_drug_unit'];
+            $showData['dosages'] = $drug['dosages'];
+            $showData['number_per_time'] = $drug['number_per_time'];
+            $showData['meals'] = $drug['meals'];
+            $showData['note'] = $drug['note'];
+            $showData['times_text'] = $drug['note'];
+        }
+//        $showPrescriptionData[]
+    }
 }

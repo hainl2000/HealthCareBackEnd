@@ -28,15 +28,20 @@ class FileService implements FileServiceInterface
         return pathinfo($file->getClientOriginalName(),PATHINFO_EXTENSION);
     }
 
+    public function getFileUrl($filePath)
+    {
+        return Storage::disk('s3')->url($filePath);
+    }
+
     public function exportPrescriptionPdf($path, $data)
     {
-        if (Storage::exists($path)) {
-            return true;
-        }
-        $pdf = Pdf::loadView('pdf/prescription', $data, [], 'UTF-8');
+//        if (Storage::exists($path)) {
+//            return true;
+//        }
+        $pdf = Pdf::loadView('pdf/prescriptions', $data, [], 'UTF-8');
         try {
-            Storage::put($path, $pdf->output());
-            return true;
+            $pdfPath =  Storage::put($path, $pdf->output());
+            return $this->getFileUrl($pdfPath);
         } catch (\Exception $e) {
             dd($e->getMessage());
         }
