@@ -29,8 +29,8 @@ class BookingService implements BookingServiceInterface
 
     public function createBooking($data)
     {
-//        $shiftInfo = $this->shiftService->getShiftInformationById(Arr::get($data, "shift_id"));
-//        $data["video_link"] = $this->googleService->createMeeting(Carbon::parse($shiftInfo->date), Arr::get($data, "email"));
+        $shiftInfo = $this->shiftService->getShiftInformationById(Arr::get($data, "shift_id"));
+        $data["video_link"] = $this->googleService->createMeeting(Carbon::parse($shiftInfo->date), Arr::get($data, "email"));
         $createData = [
             "shift_id" => Arr::get($data, "shift_id"),
             "name" => Arr::get($data, "name"),

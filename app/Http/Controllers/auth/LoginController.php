@@ -7,12 +7,19 @@ use App\Http\Requests\LoginRequest;
 use App\Models\Admin;
 use App\Models\Doctor;
 use App\Models\User;
+use App\Services\File\FileServiceInterface;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 
 class LoginController extends ApiController
 {
+    private $fileService;
+    public function __construct(FileServiceInterface $fileService)
+    {
+        $this->fileService = $fileService;
+    }
+
     public function login(LoginRequest $request)
     {
         try {
@@ -75,8 +82,9 @@ class LoginController extends ApiController
             $doctorData['id'] = $doctor->id;
             $doctorData['name'] = $doctor->name;
             $doctorData['email'] = $doctor->email;
-            $doctorData['image'] = $doctor->image;
+            $doctorData['image'] = $this->fileService->getFileUrl($doctor->image);
             $doctorData['type'] = $doctor->type;
+            $doctorData['sign'] = $this->fileService->getFileUrl($doctor->sign);
             $doctorData['gender'] = $doctor->gender;
             $doctorData['specializationId'] = $doctor->specialization_id;
             $doctorData['specializationName'] = $doctor->specializations->name;

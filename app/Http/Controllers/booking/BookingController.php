@@ -120,7 +120,7 @@ class BookingController extends ApiController
             $bookingInformation["prescription"] = $this->handlePrescriptionResource($prescription);
         }
         if (isset($bookingInformation['patient_history_image'])) {
-            $bookingInformation["patient_history_image"] = replaceFilePath($bookingInformation["patient_history_image"]);
+            $bookingInformation["patient_history_image"] = $this->fileService->getFileUrl($bookingInformation["patient_history_image"]);
         }
         return $this->respondSuccess($bookingInformation);
     }
