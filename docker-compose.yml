@@ -1,45 +1,71 @@
 version: "3.7"
-services:
 
-    #Laravel App
+services:
+    # image project
     app:
         build:
-            args:
-                user: maruan
-                uid: 1000
-            context: ./
-            dockerfile: ./docker/Dockerfile
-        image: php:8.1-fpm
+            context: .
+            dockerfile: Dockerfile
+        container_name: healthcare-app
         restart: unless-stopped
         working_dir: /var/www/
         volumes:
             - ./:/var/www
+        environment:
+            MYSQL_DATABASE: healthcare
+            MYSQL_ROOT_PASSWORD: hailuong1012
+            DB_DATABASE: healthcare
+            DB_USERNAME: root
+            DB_PASSWORD: hailuong1012
+        depends_on:
+            - redis
         networks:
-            - healthcare-network
+            - healthcare
 
-    #Nginx Service
+    # nginx
     nginx:
         image: nginx:alpine
+        container_name: healthcare-nginx
         restart: unless-stopped
         ports:
-            - 8000:80
+            - "8000:443"
         volumes:
             - ./:/var/www
-            - ./docker/nginx:/etc/nginx/conf.d/
+            - ./dev/nginx/:/etc/nginx/conf.d/
         networks:
-            - healthcare-network
-    #Mysl Service
+            - healthcare
+
+    # db mysql
     db:
-        image: mysql:8
+        image: mysql:latest
+        container_name: healthcare-db
         restart: unless-stopped
         environment:
-            MYSQL_DATABASE: laravel
+            MYSQL_DATABASE: healthcare
             MYSQL_ROOT_PASSWORD: hailuong1012
+            MYSQL_PASSWORD: hailuong1012
+            MYSQL_USER: root
+        volumes:
+            - dbdata:/var/lib/mysql/
+            - ./dev/mysql/my.cnf:/etc/mysql/my.cnf
         ports:
-            - "3307:3306"
+            - "3306:3306"
         networks:
-            - healthcare-network
+            - healthcare
 
+    # redis
+    redis:
+        image: redis:latest
+        container_name: healthcare-redis
+        networks:
+            - healthcare
+
+#Docker Networks
 networks:
-    healthcare-network:
+    healthcare:
         driver: bridge
+
+#Volumes
+volumes:
+    dbdata:
+        driver: local
