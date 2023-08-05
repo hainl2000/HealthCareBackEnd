@@ -7,6 +7,7 @@ use App\Models\Doctor;
 use App\Models\DoctorInformation;
 use App\Models\DoctorShift;
 use App\Models\Shift;
+use App\Services\File\FileServiceInterface;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Arr;
@@ -16,9 +17,10 @@ use Illuminate\Support\Facades\Hash;
 
 class DoctorService implements DoctorServiceInterface
 {
-    public function __construct()
+    private $fileService;
+    public function __construct(FileServiceInterface $fileService)
     {
-
+        $this->fileService = $fileService;
     }
 
     public function signup($signupDoctorData)
@@ -116,6 +118,7 @@ class DoctorService implements DoctorServiceInterface
                 $doctor["doctor_information"]["short_introduction"] = htmlspecialchars_decode($doctor["doctor_information"]["short_introduction"]);
                 $doctor["doctor_information"]["introduction"] = htmlspecialchars_decode($doctor["doctor_information"]["introduction"]);
             }
+            $doctor['image'] = $this->fileService->getFileUrl($doctor['image']);
         }
         return $doctors;
     }

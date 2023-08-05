@@ -8,17 +8,21 @@ use App\Services\Doctors\DoctorServiceInterface;
 use App\Services\File\FileServiceInterface;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 
 
 class DoctorController extends ApiController
 {
     private $doctorService;
+    private $fileService;
 
     public function __construct(
         DoctorServiceInterface $doctorService,
+        FileServiceInterface $fileService
     )
     {
         $this->doctorService = $doctorService;
+        $this->fileService = $fileService;
     }
 
     public function registerShift(Request $request)
@@ -28,7 +32,7 @@ class DoctorController extends ApiController
             $chooseDatas = $request->input("registerData");
             if (empty($chooseDatas)) {
                 $respData = [
-                    "message" => 'Register shift successfully',
+                    "message" => 'Đăng ký ca khám thành công',
                 ];
             } else {
                 $isRegisterShiftSuccess = $this->doctorService->registerShift($chooseDatas);
@@ -90,6 +94,7 @@ class DoctorController extends ApiController
     {
         $isIncludeShifts = $request->input('includeShifts');
         $doctor = $this->doctorService->getDoctorInformationById($id, $isIncludeShifts);
+        $doctor['image'] = $this->fileService->getFileUrl($doctor['image']);
         return $this->respondSuccess($doctor);
     }
 
@@ -108,10 +113,10 @@ class DoctorController extends ApiController
     {
         $doctor = $this->doctorService->getDoctorFullInformationById($id);
         if (isset($doctor['image'])) {
-            $doctor['image'] = replaceFilePath($doctor['image']);
+            $doctor['image'] = $this->fileService->getFileUrl($doctor['image']);
         }
         if (isset($doctor['sign'])) {
-            $doctor['sign'] = replaceFilePath($doctor['sign']);
+            $doctor['sign'] = $this->fileService->getFileUrl($doctor['sign']);
         }
         return $this->respondSuccess($doctor);
     }
@@ -120,7 +125,7 @@ class DoctorController extends ApiController
     {
         $doctors = $this->doctorService->getFeaturedDoctor();
         foreach ($doctors as $doctor) {
-            $doctor['image'] = replaceFilePath($doctor['image']);
+            $doctor['image'] = $this->fileService->getFileUrl($doctor['image']);
         }
         return $this->respondSuccess($doctors);
     }

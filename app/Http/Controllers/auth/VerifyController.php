@@ -6,6 +6,7 @@ use App\Http\Controllers\ApiController;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Redirect;
 
 class VerifyController extends ApiController
 {
@@ -17,12 +18,10 @@ class VerifyController extends ApiController
         if ($user) {
             $user->email_verified = Carbon::now();
             $user->save();
-            $resp = $this->respondNoContent();
         } else {
             $respMessage =  "Verify Account Fail";
             $respCode = 401;
-            $resp = $this->respondError($respMessage,$respCode);
         }
-        return $resp;
+        return Redirect::to(getenv("CLIENT_URL"));
     }
 }

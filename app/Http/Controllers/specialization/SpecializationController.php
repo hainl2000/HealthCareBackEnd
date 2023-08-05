@@ -4,16 +4,20 @@ namespace App\Http\Controllers\specialization;
 
 use App\Enums\PaginationParams;
 use App\Http\Controllers\ApiController;
+use App\Services\File\FileServiceInterface;
 use App\Services\Specializations\SpecializationServiceInterface;
 use Illuminate\Http\Request;
 
 class SpecializationController extends ApiController
 {
     private $specializationService;
+    private $fileService;
 
-    public function __construct(SpecializationServiceInterface $specializationService)
+    public function __construct(SpecializationServiceInterface $specializationService,
+                FileServiceInterface $fileService)
     {
         $this->specializationService = $specializationService;
+        $this->fileService = $fileService;
     }
 
     public function getListSpecializations(Request $request)
@@ -27,7 +31,7 @@ class SpecializationController extends ApiController
         }
         $listSpecializations = $this->specializationService->getListSpecializations($paginationParams, $isIncludeDetail);
         foreach ($listSpecializations as $specialization) {
-            $specialization['image'] = replaceFilePath($specialization['image']);
+            $specialization['image'] = $this->fileService->getFileUrl($specialization['image']);
         }
         return $this->respondSuccess($listSpecializations);
     }

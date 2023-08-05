@@ -43,7 +43,7 @@ class SignupController extends ApiController
             $user = $this->userService->register($registerData);
             $data = array(
                 'name' => $user->name,
-                'verifyLink' => env('API_ENDPOINT',"http://127.0.0.1:8000/api/") . "user/signup/verify/" . $user->email_verify_token
+                'verifyLink' => env('API_ENDPOINT') . "user/signup/verify/" . $user->email_verify_token
             );
             $isSendEmailSuccess = $this->mailService->sendVerificationEmail($data, $user->email);
             if ($isSendEmailSuccess) {

@@ -29,8 +29,8 @@ class BookingService implements BookingServiceInterface
 
     public function createBooking($data)
     {
-//        $shiftInfo = $this->shiftService->getShiftInformationById(Arr::get($data, "shift_id"));
-//        $data["video_link"] = $this->googleService->createMeeting(Carbon::parse($shiftInfo->date), Arr::get($data, "email"));
+        $shiftInfo = $this->shiftService->getShiftInformationById(Arr::get($data, "shift_id"));
+        $data["video_link"] = $this->googleService->createMeeting(Carbon::parse($shiftInfo->date), Arr::get($data, "email"));
         $createData = [
             "shift_id" => Arr::get($data, "shift_id"),
             "name" => Arr::get($data, "name"),
@@ -261,5 +261,76 @@ class BookingService implements BookingServiceInterface
     public function pushLatestBookingForDoctor($doctorId)
     {
         event(new PushLatestPatientEvent($doctorId));
+    }
+
+    public function getExportBookingData($id)
+    {
+        $attributes = [
+            'do.name as doctor_name',
+            'do.sign as doctor_sign',
+            'booking_information.id',
+            'booking_information.name as patient_name',
+            'booking_information.gender as patient_gender',
+            'booking_information.address as patient_address',
+        ];
+        $data = BookingInformation::select($attributes)->with([
+            'prescription' => function ($builder) {
+                $builder->select('id', 'booking_id', 'diagnose', 'additional_direction');
+            },
+            'prescription.prescriptionDrugs' => function ($builder) {
+                $builder->select(
+                    'prescription_id',
+                    'drug_id',
+                    'other_drug_name',
+                    'other_drug_unit',
+                    'dosages',
+                    'number_per_time',
+                    'meals',
+                    'note',
+                    'times'
+                );
+            },
+            'prescription.prescriptionDrugs.drug' => function ($builder) {
+                $builder->select(
+                    'id', 'name', 'unit'
+                );
+            }
+        ])->join('doctor_shift as ds', function ($join) {
+            $join->on('ds.id', '=', 'booking_information.shift_id');
+        })->join('doctors as do', function ($join) {
+            $join->on('do.id', '=', 'ds.doctor_id');
+        })->where("booking_information.id", "=", $id)
+        ->first();
+        return $this->handleShowPrescriptionData($data->toArray());
+    }
+
+    private function handleShowPrescriptionData($prescriptionData)
+    {
+        $showPrescriptionData = [];
+        $showPrescriptionData['doctorName'] = $prescriptionData['doctor_name'];
+        $showPrescriptionData['doctorSign'] = $prescriptionData['doctor_sign'];
+        $showPrescriptionData['patientName'] = $prescriptionData['patient_name'];
+        $showPrescriptionData['patientGender'] = $prescriptionData['patient_gender'] == 1 ? "Nam" : "Nữ";
+        $showPrescriptionData['patientAddress'] = $prescriptionData['patient_address'];
+        $showPrescriptionData['diagnose'] = $prescriptionData['prescription']['diagnose'];
+        $showPrescriptionData['additionalDirection'] = $prescriptionData['prescription']['additional_direction'];
+        $drugsData = $prescriptionData['prescription']['prescription_drugs'];
+        foreach ($drugsData as $drug) {
+            $showData = [];
+            $showData['drugName'] = isset($drug['drug']) ? $drug['drug']['name'] : $drug['other_drug_name'];
+            $showData['drugUnit'] = isset($drug['drug']) ? $drug['drug']['unit'] : $drug['other_drug_unit'];
+            $showData['dosages'] = $drug['dosages'];
+            $showData['numberPerTime'] = $drug['number_per_time'];
+            $showData['meals'] = $drug['meals'];
+            $showData['note'] = $drug['note'];
+            $showData['timesText'] = "";
+            foreach ($drug['times'] as $time) {
+                $showData['timesText'] .= Config::get('messages.time_in_text')[$time];
+                $showData['timesText'] .= " ";
+            }
+            $drugInformation[] = $showData;
+        }
+        $showPrescriptionData['drugs'] = $drugInformation;
+        return $showPrescriptionData;
     }
 }

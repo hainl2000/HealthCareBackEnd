@@ -20,7 +20,6 @@ class GoogleService implements GoogleServiceInterface
             $client->setAccessType(config('google.access_type'));
             $client->setScopes(config('google.scopes'));
             $client->setPrompt(config('google.prompt'));
-            $client->setRedirectUri('http://127.0.0.1:8000/oauthcallback');
 
             // Load previously authorized token from a file, if it exists.
             // The file token.json stores the user's access and refresh tokens, and is
@@ -31,7 +30,10 @@ class GoogleService implements GoogleServiceInterface
                 $accessToken = json_decode(file_get_contents($tokenPath), true);
                 $client->setAccessToken($accessToken);
             }
-            //get code and delete file google-token.json
+
+//            $authUrl = $client->createAuthUrl();
+//            dd($authUrl);
+//            get code and delete file google-token.json
 
 //             If there is no previous token or it's expired.
             if ($client->isAccessTokenExpired()) {

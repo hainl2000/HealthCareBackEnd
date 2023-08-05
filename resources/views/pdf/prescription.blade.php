@@ -44,22 +44,28 @@
     .footer span {
         font-size: 20px;
     }
+    table th {
+        font-size: 12px !important;
+    }
+    table td {
+        font-size: 10px !important;
+    }
 </style>
 <body>
 <div class="container mt-5 mb-2">
     <div class="header">
         <p class="title">Hệ Thống HCARE</p>
-        <p class="name pb-3 pt-3">Bác sĩ Nguyễn Văn Hà</p>
+        <p class="name pb-3 pt-3">Bác sĩ {{ $data['doctorName'] }}</p>
         <span> Ngày khám: 10/12/2000 </span>
     </div>
     <div class="body pt-2 pb-2">
         <div class="d-flex col-12 form mt-2">
             <div class="col-7">
                 <div class="form-text">
-                    <span>Tên bệnh nhân: Nguyễn Văn A</span>
+                    <span>Tên bệnh nhân: {{ $data['patientName'] }}</span>
                 </div>
                 <div class="form-text">
-                    <span>Address: Tập thể đại học công nghiệp hà nội, tây tựu, bắc từ liêm, hà nội</span>
+                    <span>Address: {{ $data['patientAddress'] }}</span>
                 </div>
             </div>
             <div class="col-5">
@@ -68,7 +74,7 @@
                         <span>Age: 18</span>
                     </div>
                     <div class="form-text">
-                        <span>Gender: Nam</span>
+                        <span>Gender: {{ $data['patientGender'] }}</span>
                     </div>
                 </div>
             </div>
@@ -78,10 +84,10 @@
             <div class="col-5">
                 <div class="d-flex">
                     <div class="form-text">
-                        <span>Chẩn đoán: AAAAAAAAAAA AAAAAAAAAAAAAAAAA AAAAAAAAAAAAAA AAAAAAAAA A A A A</span>
+                        <span>Chẩn đoán: {{ $data['diagnose'] }}</span>
                     </div>
                     <div class="form-text">
-                        <span>Lưu ý: AAAAAAAAAAAAAAAA AAAAAAAAAAAAAAAAA AAAAAAAAAAAAAAAA AAAAAAAAAAA AA A AA AA</span>
+                        <span>Lưu ý: {{ $data['additionalDirection'] }}</span>
                     </div>
                 </div>
             </div>
@@ -102,60 +108,17 @@
                     </tr>
                     </thead>
                     <tbody>
-                    <tr>
-                        <th scope="row">Paraphetamolllllll</th>
-                        <td>12</td>
-                        <td>Otto</td>
-                        <td>@mdo</td>
-                        <td>Uống sau ăn</td>
-                        <td>@mdo</td>
-                        <td>@mdo</td>
-                    </tr>
-                    <tr>
-                        <th scope="row">Paraphetamolllllll</th>
-                        <td>Jacob</td>
-                        <td>Thornton</td>
-                        <td>@fat</td>
-                        <td>Sau hoặc trước ăn</td>
-                        <td>@fat</td>
-                        <td>@fat</td>
-                    </tr>
-                    <tr>
-                        <th scope="row">Paraphetamolllllll</th>
-                        <td>Larry</td>
-                        <td>the Bird</td>
-                        <td>@twitter</td>
-                        <td>@twitter</td>
-                        <td>@twitter</td>
-                        <td>@twitter</td>
-                    </tr>
-                    <tr>
-                        <th scope="row">Paraphetamolllllll</th>
-                        <td>Mark</td>
-                        <td>Otto</td>
-                        <td>@mdo</td>
-                        <td>@mdo</td>
-                        <td>@mdo</td>
-                        <td>@mdo</td>
-                    </tr>
-                    <tr>
-                        <th scope="row">Paraphetamolllllll</th>
-                        <td>Jacob</td>
-                        <td>Thornton</td>
-                        <td>@fat</td>
-                        <td>@fat</td>
-                        <td>@fat</td>
-                        <td>@fat</td>
-                    </tr>
-                    <tr>
-                        <th scope="row">Paraphetamolllllll</th>
-                        <td>Larry</td>
-                        <td>the Bird</td>
-                        <td>@twitter</td>
-                        <td>@twitter</td>
-                        <td>@twitter</td>
-                        <td>@twitter</td>
-                    </tr>
+                    @foreach($data['drugs'] as $drug)
+                        <tr>
+                            <th scope="row">{{ $drug['drugName'] }}</th>
+                            <td>{{ $drug['drugUnit'] }}</td>
+                            <td>{{ $drug['dosages'] }}</td>
+                            <td>{{ $drug['numberPerTime'] }}</td>
+                            <td>{{ $drug['meals'] }}</td>
+                            <td>{{ $drug['timesText'] }}</td>
+                            <td>{{ $drug['note'] }}</td>
+                        </tr>
+                    @endforeach
                     </tbody>
                 </table>
 

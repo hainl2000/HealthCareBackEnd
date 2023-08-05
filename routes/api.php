@@ -26,7 +26,6 @@ use Illuminate\Support\Facades\Route;
 
 
 Route::prefix('/user')->group(function() {
-    Route::get('test', [LoginController::class, 'test']);
     Route::post('/login', [LoginController::class, 'login']);
     Route::post('/signup', [SignupController::class, 'register']);
 //    Route::get('/signup/verify/{id}/{hash}', [VerifyController::class,'verifyAccount'])->middleware('auth:sanctum','type.user');
@@ -37,6 +36,7 @@ Route::prefix('/user')->group(function() {
         Route::post('/change', [BookingController::class, 'changeBooking']);
         Route::post('/notify', [NotificationController::class, 'notifyTransferringMoney']);
         Route::get('/payment', [BookingController::class, 'payment']);
+        Route::post('/export', [BookingController::class, 'exportPrescription']);
     });
     Route::post('/change-password', [ChangePasswordController::class, 'changePassword']);
 });
@@ -101,8 +101,6 @@ Route::middleware(['auth:sanctum'])->group(function() {
 });
 
 Route::get('/vnpay-return', [BookingController::class, 'getPaymentInformation']);
-
-Route::post('/test', [BookingController::class, 'exportPrescriptionPdf']);
 
 Route::get('/health', function () {
     return 200;
