@@ -83,6 +83,7 @@ Route::prefix('/admin')->group(function() {
     Route::post('/doctor/signup', [SignupController::class, 'signupDoctor']);
     Route::get('/doctor/list', [DoctorController::class, 'getListDoctor']);
     Route::get('/doctor/{id}', [DoctorController::class, 'getDoctorFullInformationById']);
+    Route::post('/doctor/update', [DoctorController::class, 'updateDoctorInformation']);
     Route::get('/drug/list', [DrugController::class, 'getListDrugs']);
     Route::post('/drug/create', [DrugController::class, 'createDrug']);
     Route::post('/drug/update', [DrugController::class, 'updateDrug']);

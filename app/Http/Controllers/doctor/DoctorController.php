@@ -7,8 +7,6 @@ use App\Http\Controllers\ApiController;
 use App\Services\Doctors\DoctorServiceInterface;
 use App\Services\File\FileServiceInterface;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Storage;
 
 
 class DoctorController extends ApiController
@@ -18,7 +16,7 @@ class DoctorController extends ApiController
 
     public function __construct(
         DoctorServiceInterface $doctorService,
-        FileServiceInterface $fileService
+        FileServiceInterface   $fileService
     )
     {
         $this->doctorService = $doctorService;
@@ -48,7 +46,7 @@ class DoctorController extends ApiController
             $resp = $this->respondCreated($respData);
         } catch (\Exception $e) {
             $this->apiRollback();
-            $resp = $this->respondError($e->getMessage(),400);
+            $resp = $this->respondError($e->getMessage(), 400);
         }
         return $resp;
     }
@@ -106,6 +104,11 @@ class DoctorController extends ApiController
         $paginationParams['type'] = $request->query('type');
         $paginationParams['specialization_id'] = $request->query('specialization_id');
         $doctors = $this->doctorService->getListDoctor($paginationParams);
+        foreach ($doctors as $doctor) {
+            $rating = $this->doctorService->getDoctorRating($doctor->id);
+            $doctor['average_rating'] = $rating['average_rating'];
+            $doctor['total_ratings'] = $rating['total_ratings'];
+        }
         return $this->respondSuccess($doctors);
     }
 
@@ -128,6 +131,20 @@ class DoctorController extends ApiController
             $doctor['image'] = $this->fileService->getFileUrl($doctor['image']);
         }
         return $this->respondSuccess($doctors);
+    }
+
+    public function updateDoctorInformation(Request $request)
+    {
+        $doctorId = $request->input('doctor_id');
+        $this->apiBeginTransaction();
+        $updateResult = $this->doctorService->updateDoctorInformation($doctorId, $request->except(['doctor_id']));
+        if ($updateResult) {
+            $this->apiCommit();
+            return $this->respondSuccessWithoutData("Update successfully");
+        } else {
+            $this->apiRollback();
+            return $this->respondError("Update fail");
+        }
     }
 
 }

@@ -3,6 +3,7 @@
 namespace App\Services\Doctors;
 
 use App\Enums\PaginationParams;
+use App\Models\BookingInformation;
 use App\Models\Doctor;
 use App\Models\DoctorInformation;
 use App\Models\DoctorShift;
@@ -13,6 +14,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 
 class DoctorService implements DoctorServiceInterface
@@ -244,6 +246,48 @@ class DoctorService implements DoctorServiceInterface
         }
 
         return collect($result)->flatten();
+    }
+
+    public function updateDoctorInformation($doctorId, $information)
+    {
+        try {
+            Doctor::where('id', '=', $doctorId)->update([
+                'email' => $information['email'],
+                'price' => $information['price'],
+                'type' => $information['type'],
+            ]);
+            DoctorInformation::where('doctor_id', '=', $doctorId)->update([
+                'short_introduction' => $information['detail_information']['short_introduction'],
+                'introduction' => $information['detail_information']['introduction']
+            ]);
+            return true;
+        } catch (\Exception $e) {
+            return false;
+        }
+    }
+
+    public function getDoctorRating($doctorId)
+    {
+        $selectAttributes = [
+            DB::raw('AVG(booking_information.rating) AS average_rating'),
+            DB::raw('COUNT(booking_information.rating) AS total_ratings')
+        ];
+        return BookingInformation::select($selectAttributes)
+            ->join('doctor_shift as ds', function ($join) {
+                $join->on('ds.id', '=', 'booking_information.shift_id');
+            })
+            ->join('doctors as do', function ($join) {
+                $join->on('do.id', '=', 'ds.doctor_id');
+            })
+            ->where(
+                'do.id', '=', $doctorId
+            )
+            ->whereNotIn("booking_information.status", [
+                Config::get("constants.BOOKING_STATUS.CANCEL"),
+                Config::get("constants.BOOKING_STATUS.WAITING_PAYMENT")
+            ])
+            ->whereNotNull('booking_information.rating')
+            ->first();
     }
 }
 

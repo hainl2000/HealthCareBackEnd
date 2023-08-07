@@ -14,5 +14,6 @@ interface DoctorServiceInterface
     public function getDoctorInformationByBookingId($bookingId);
     public function getDoctorFullInformationById($id);
     public function getFeaturedDoctor();
-
+    public function updateDoctorInformation($doctorId, $information);
+    public function getDoctorRating($doctorId);
 }
